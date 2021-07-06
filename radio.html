@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--dark mode icon-->
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+ <!--fonts:font-family: 'Montserrat', sans-serif;-->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+ <!--#region-->
+<!--//Information about the creator//-->
+<link rel="icon" href="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png"/>
+<meta name="description" content="Radio website , by Mohammed Mahdi Albedran"/>
+  <meta name="author" content="Mohammed Mahdi Albedran"/>
+  <!-- //Facebook// -->
+  <meta property="og:description" content="Radio website , by Muhammed Mahdi Albedran" />
+  <meta property="og:title" content="VX radio" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png" />
+  <!-- //End Facebook// -->
+  <!-- //Twitter//-->
+  <meta name="twitter:title" content="VX Radio">
+  <meta name="twitter:description" content="Radio website, by Muhammed Mahdi Albedran">
+  <meta name="twitter:image:src" content="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png">
+  <!-- //End twitter// -->
+  <!--#endregion-->
+   <title>VX Radio</title>
+   <style>
+      *{
+    margin: 0;
+    padding: 0;
+}
+#container{
+    position: relative;
+    width: 320px;
+    height: 490px;
+    /* background-color: rgb(194, 194, 194); */
+    /* border: 1px solid black; */
+    border-radius: 7px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    transform: translateX(-50%);
+    left: 50%;
+    margin-top: 20px;
+    padding: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+#container img{
+    width: 200px;
+    height: 200px;
+    border-radius: 20%;
+}
+#container h2{
+    margin: 10px 0;
+}
+#buttons{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+#buttons span{
+    font-size: 38px;
+    cursor: pointer;
+}
+#sliders{
+    text-align: center;
+}
+#sliders [type="range"]{
+    width: 90%;
+    -webkit-appearance: none;
+    height: 4px;
+    background-color: rgb(170, 169, 169);
+}
+[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    background: #2980b9;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+}
+#sliders h3{
+    margin: 10px 0;
+}
+#creator{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: gray;
+}
+   </style>
+   
+</head>
+<body>
+   <div id="container">
+   <img src="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png" />
+   <h2>VX Radio</h2>
+   <h4 id="radioName">BBC</h4>
+   <div id="buttons">
+      <span id="back" class="material-icons">skip_previous</span>
+      <span id="playButton" class="material-icons">play_arrow</span>
+      <span id="next" class="material-icons">skip_next</span>
+      <audio src="" id="audioFile"></audio>
+   </div>
+   <div id="sliders">
+      <h3>audio</h3>
+      <input id="volumeSlider" type="range">
+      <h3>speed</h3>
+      <input id="speedSlider" type="range" value="100" min="0" max="200">
+   </div>
+   <h6 id="creator">©Mohammed Albedran</h6>
+</div>
+<script>
+   class audioPlayer{
+    constructor(){
+        this.audioFile = document.getElementById("audioFile");
+        this.radioName = document.getElementById("radioName");
+        this.back = document.getElementById("back");
+        this.playButton = document.getElementById("playButton");
+        this.next = document.getElementById("next");
+        this.playing = false;
+        this.playButton.onclick = ()=>{
+            this.playPauseAudio();
+        }
+        this.radioNames = [];
+        this.radioNames[0] = "BBC Arabic";
+        this.radioNames[1] = "Capital London";
+        this.radioNames[2] = "LBC";
+
+        this.radioSources = [];
+        this.radioSources[0] = "https://stream.live.vc.bbcmedia.co.uk/bbc_arabic_radio";
+        this.radioSources[1] = "http://media-ice.musicradio.com/CapitalMP3";
+        this.radioSources[2] = "http://media-ice.musicradio.com/LBCLondonMP3Low";
+
+        this.currentSrc = 0;
+        this.speedSlider = document.getElementById("speedSlider");
+        this.setSource();
+        this.next.onclick = ()=>{
+            if(this.currentSrc<this.radioSources.length-1){
+                ++this.currentSrc
+                this.playing = false;
+            }else{
+                this.currentSrc = 0;
+            }
+            localStorage.setItem("currentChannel",this.currentSrc);
+            this.setSource();
+            this.audioFile.playbackRate = 1;
+            this.speedSlider.value = 100;
+        }
+        this.back.onclick = ()=>{
+            if(this.currentSrc>0){
+                --this.currentSrc
+                this.playing = false;
+            }else{
+                this.currentSrc = this.radioSources.length-1;
+            }
+            localStorage.setItem("currentChannel",this.currentSrc);
+            this.setSource();
+            this.audioFile.playbackRate = 1;
+            this.speedSlider.value = 100;
+        }
+    }
+    setSource(){
+        if(localStorage.getItem("currentChannel") != null){
+            this.currentSrc = localStorage.getItem("currentChannel");
+        }
+        this.audioFile.src = this.radioSources[this.currentSrc];
+        this.radioName.innerHTML = this.radioNames[this.currentSrc];
+        this.playPauseAudio();
+    }
+    playPauseAudio(){
+        if(this.playing == false){
+            this.audioFile.play();
+            this.playing = true;
+            this.playButton.innerHTML = "pause";
+        }else{
+            this.audioFile.pause();
+            this.playing = false;
+            this.playButton.innerHTML = "play_arrow";
+        }
+    };
+};
+onload =  new audioPlayer;
+class sliders{
+    constructor(){
+        this.audioFile = document.getElementById("audioFile");
+        this.audioFile.volume = 50/100;
+        this.volumeSlider = document.getElementById("volumeSlider");
+        this.speedSlider = document.getElementById("speedSlider");
+        this.volumeSlider.onchange = ()=>{
+            this.audioFile.volume = this.volumeSlider.value/100;
+        }
+        this.audioFile.playbackRate = 1;
+        // this.speedSlider.onchange = ()=>{
+        //     this.audioFile.playbackRate = this.speedSlider.value/100;
+        // }
+        this.speedSlider.addEventListener("change",()=>{
+            this.audioFile.playbackRate = speedSlider.value / 100;
+           });
+    }
+}
+onload = new sliders;
+</script>
+</body>
+</html>

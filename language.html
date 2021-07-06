@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlID">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VX Coding</title>
+    <!--title font:font-family: 'Montserrat', sans-serif;-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+<!--icons-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+<!--langBox font:font-family: 'Raleway', sans-serif;-->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+<!--Arabic font:-->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&family=Tajawal&display=swap" rel="stylesheet">
+<!--article font:font-family: 'Raleway', sans-serif;
+font-family: 'Source Sans Pro', sans-serif;
+font-family: 'Tajawal', sans-serif;-->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&family=Source+Sans+Pro:ital@1&family=Tajawal&display=swap" rel="stylesheet">
+<!--#region-->
+<!--//Information about the creator//-->
+<link rel="icon" href="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png"/>
+<meta name="description" content="Multiple languages website , by Muhammed Mahdi Albedran"/>
+  <meta name="author" content="Mohammed Mahdi Albedran"/>
+  <!-- //Facebook// -->
+  <meta property="og:description" content="Multiple languages website , by Muhammed Mahdi Albedran" />
+  <meta property="og:title" content="VX Coding" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png" />
+  <!-- //End Facebook// -->
+  <!-- //Twitter//-->
+  <meta name="twitter:title" content="VX Coding">
+  <meta name="twitter:description" content="Multiple languages webiste, by Muhammed Mahdi Albedran">
+  <meta name="twitter:image:src" content="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png">
+  <!-- //End twitter// -->
+  <!--#endregion-->
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        header{
+            width: 100%;
+            height: 100px;
+            /* background-color: red; */
+            /* box-shadow: rgba(149, 157, 165, 0.2) 0px 10px 24px; */
+            /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+            /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
+        }
+        header h1{
+            line-height: 100px;
+            padding-left: 15px;
+            font-family: 'Montserrat', sans-serif;
+            float: left;
+        }
+        main{
+            padding: 10px;
+        }
+        main p{
+            font-size: 20px;
+            font-family: 'Raleway', sans-serif;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-family: 'Tajawal', sans-serif;
+        }
+        #theArticleEn{
+            animation-name: animation2;
+            animation-duration: 0.5s;
+            animation-iteration-count: 1;
+        }
+        #theArticleAr{
+            display: none;
+            animation-name: animation2;
+            animation-duration: 0.5s;
+            animation-iteration-count: 1;
+        }
+        @keyframes animation2{
+            0%{
+                color: white;
+            }
+            100%{
+                color: black;
+            }
+        }
+        main h1{
+            color: #e7aa00;
+            /* -webkit-text-stroke-color: black;
+            -webkit-text-stroke-width: 1px; */
+            font-family: 'Montserrat', sans-serif;
+            font-family: 'Raleway', sans-serif;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .outlined{
+            float: right;
+            margin: 25px;
+            font-size: 30px;
+            /* background-color: red; */
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .outlined:hover{
+            background-color: rgb(221, 221, 221);
+        }
+        #langBox{
+            width: 300px;
+            height: 300px;
+            background-color: white;
+            z-index: 1;
+            position: absolute;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            left: 50%;
+            display: none;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            text-align: center;
+            animation-name: animation;
+            animation-duration: 0.5s;
+            animation-iteration-count: 1;
+        }
+        @keyframes animation{
+            0%{
+                top: 40%;
+            }
+            100%{
+                top: 50%;
+            }
+        }
+        #langBox h3{
+            /* background-color: red; */
+            text-align: center;
+            margin-top: 25px;
+            font-family: 'Raleway', sans-serif;
+            font-family: 'Raleway', sans-serif;
+            font-family: 'Tajawal', sans-serif;
+        }
+        #langBox button{
+            width: 120px;
+            height: 40px;
+            font-size: 100%;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            /* box-shadow: rgba(0, 0, 0, 0.363) 0px 2px 4px 0px inset; */
+            border-radius: 7px;
+            font-family: 'Raleway', sans-serif;
+            font-family: 'Raleway', sans-serif;
+            font-family: 'Tajawal', sans-serif;
+        }
+        #langBox button:hover{
+            background-color: #207bb8;
+        }
+        #langBox a{
+            position: absolute;
+            top: 0;
+            right: 20px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: black;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #creator{
+            position: fixed;
+            right: 5px;
+            bottom: 5px;
+            font-family: 'Raleway', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <header>
+       <h1>VX Coding</h1> 
+       <span id="langButton" class="material-icons outlined" >
+        language
+        </span>
+    </header>
+    <br>
+    <br>
+    <br>
+    <main id="mainID">
+        <h1 id="articleTitle">Javascript</h1>
+        <br>
+        <p id="theArticleEn">JavaScript  often abbreviated as JS, is a programming language that conforms to the ECMAScript specification. JavaScript is high-level, often just-in-time compiled, and multi-paradigm. It has curly-bracket syntax, dynamic typing, prototype-based object-orientation, and first-class functions.
+
+            Alongside HTML and CSS, JavaScript is one of the core technologies of the World Wide Web. Over 97% of websites use it client-side for web page behavior, often incorporating third-party libraries. All major web browsers have a dedicated JavaScript engine to execute the code on the user's device.
+            
+            As a multi-paradigm language, JavaScript supports event-driven, functional, and imperative programming styles. It has application programming interfaces (APIs) for working with text, dates, regular expressions, standard data structures, and the Document Object Model (DOM).
+            
+            The ECMAScript standard does not include any input/output (I/O), such as networking, storage, or graphics facilities. In practice, the web browser or other runtime system provides JavaScript APIs for I/O.
+            
+            JavaScript engines were originally used only in web browsers, but they are now core components of other software systems, most notably servers and a variety of applications.
+            
+            Although there are similarities between JavaScript and Java, including language name, syntax, and respective standard libraries, the two languages are distinct and differ greatly in design.</p>
+            <p id="theArticleAr">جافا سكريبت أو في الغالب كاختصارا JS (بالإنجليزية: JavaScript)‏ هي لغة برمجة عالية المستوى تستخدم أساساً في متصفحات الويب لإنشاء صفحات أكثر تفاعلية. يتم تطويرها حالياً من طرف شركة موزيلا.
+
+                كانت لغة الجافاسكريبت موجهة للمبرمجين الهواة وغير المحترفين، إلا أنه تزايد الاهتمام بها وجذبت اهتمام مبرمجين محترفين بعد إضافتها لتقنيات جديدة كانتشار تقنية أجاكس التي أدت إلى سرعة في التفاعل بين الخادم والعميل.
+                
+                تُستخدَم لغة الجافا سكربت لإنشاء صفحات ويب تفاعلية، ولتوفير تطبيقات ويب بما في ذلك الألعاب؛ وهي مُستعمَلة من أغلبية المواقع، وتدعمها جميع المتصفحات تقريبًا دون الحاجة إلى إضافات خارجية.
+                في الماضى كانت لغة JavaScript محدودةً إلى متصفحات الويب فيما قد سلف، لكن توسّع مجال JavaScript في الفترة الأخيرة لتضم إنشاء تطبيقات ويب من جهة الخادم (server-side) مع التعامل مع قواعد البيانات، إضافةً إلى إمكانية استخدامها في بيئات ليست متعلقة بالويب مثل معالجات النصوص وبرمجيات PDF، ومن الممكن استعمالها أيضًا لكتابة تطبيقات سطح المكتب أو تطبيقات الهواتف، وحتى تطوير الألعاب!
+
+                هنالك الكثير من محركات JavaScript، وكل واحدٍ منها يخضع لمواصفة ECMAScript (مع أنَّها تختلف فيما بينها بالإصدارات التي تدعمها). يوجد في نهاية كل صفحة من صفحات هذا التوثيق قسمٌ بعنوان «دعم المتصفحات» الذي نذكر فيه ما هي المتصفحات التي تدعم الميزة المذكورة.
+            </p>
+    </main>
+    <div id="langBox">
+        <!-- <br> -->
+        <a id="closeLangBox">&times;</a>
+        <h3 id="chooseLang">Choose language</h3>
+        <br>
+        <br>
+        <br>
+        <br>
+        <button type="button" id="arabicButton">العربية</button>
+        <br>
+        <br>
+        <button type="button" id="englishButton">English</button>
+    </div>
+    <h4 id="creator">©Mohammed Albedran</h4>
+    <script>
+        var articleTitle = document.getElementById("articleTitle");
+        var theArticleEn = document.getElementById("theArticleEn");
+        var theArticleAr = document.getElementById("theArticleAr");
+        var langBox = document.getElementById("langBox");
+        var closeLangBox = document.getElementById("closeLangBox");
+        var langButton = document.getElementById("langButton");
+        var chooseLang = document.getElementById("chooseLang");
+        var arabicButton = document.getElementById("arabicButton");
+        var englishButton = document.getElementById("englishButton");
+        var mainID = document.getElementById("mainID");
+        var htmlID = document.getElementById("htmlID");
+        langButton.onclick = ()=>{
+            langBox.style.display = "block";
+        }
+        closeLangBox.onclick = ()=>{
+            langBox.style.display = "none";
+        }
+        arabicButton.onclick = ()=>{
+            langFunction("arabic");
+        }
+        englishButton.onclick = ()=>{
+            langFunction("english");
+        }
+        onload = ()=>{
+            langFunction(localStorage.getItem("lang"));
+        }
+        function langFunction(currentLang){
+            if(currentLang === "arabic"){
+                localStorage.setItem("lang","arabic")
+                mainID.style.textAlign = "right";
+                articleTitle.innerHTML = "جافا سكريبت";
+                theArticleEn.style.display = "none";
+                theArticleAr.style.display = "block";
+                htmlID.lang = "ar";
+                chooseLang.innerHTML = "اختر لغة";
+            }else if(currentLang === "english"){
+                localStorage.setItem("lang","english")
+                mainID.style.textAlign = "left";
+                articleTitle.innerHTML = "Javascript"
+                theArticleAr.style.display = "none";
+                theArticleEn.style.display = "block";
+                htmlID.lang = "en";
+                chooseLang.innerHTML = "Choose language";
+            }
+        }
+    </script>
+</body>
+</html>

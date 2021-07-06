@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decode and incode</title>
+    <!--logo:font-family: 'Montserrat', sans-serif;-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <!--textarea:-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
+<!--#region-->
+<!--//Information about the creator//-->
+<link rel="icon" href="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png"/>
+<meta name="description" content="A website to decode and incode , by Mohammed Mahdi Albedran"/>
+  <meta name="author" content="Mohammed Mahdi Albedran"/>
+  <!-- //Facebook// -->
+  <meta property="og:description" content="A website to decode and incode , by Muhammed Mahdi Albedran" />
+  <meta property="og:title" content="VX Coding" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png" />
+  <!-- //End Facebook// -->
+  <!-- //Twitter//-->
+  <meta name="twitter:title" content="VX Coding">
+  <meta name="twitter:description" content="A website to decode and incode, by Muhammed Mahdi Albedran">
+  <meta name="twitter:image:src" content="https://1.bp.blogspot.com/-WoGG2lfvnhs/YDjb01risbI/AAAAAAAAALk/k2SN_R2yj7QOUme2nFHuaPg4xWQYyiN7QCLcBGAsYHQ/w381-h384/VXLogo.png">
+  <!-- //End twitter// -->
+  <!--#endregion-->
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            outline: none;
+        }
+        header{
+            /* background-color: gray; */
+            width: 100%;
+            height: 70px;
+        }
+        header h1{
+            color: #2980b9;
+            padding: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        main{
+            position: absolute;
+            transform: translateX(-50%);
+            /* top: 50%; */
+            left: 50%;
+            text-align: center;
+            margin-top: 50px;
+        }
+        textarea{
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+            font-family: 'Montserrat', sans-serif;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            
+        }
+        fieldset{
+            width: 270px;
+            height: 170px;
+            padding: 5px;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+            background-color: white;
+            border: 1px solid black;
+        }
+        select{
+            margin: 5px;
+            /* width: 100px;
+            height: 20px; */
+            padding: 5px 20px;
+            font-family: 'Montserrat', sans-serif;
+            /* border-radius: 5px; */
+            border: 1.8px solid black;
+            font-weight: bold;
+            color: #EA2027;
+        }
+        option:hover{
+            color: white;
+            background-color: #ffa502;
+        }
+        legend{
+            color: #44bd32;
+            font-weight: bold;
+        }
+        #creator{
+            position: fixed;
+            bottom: 2px;
+            right: 2px;
+            color: rgb(73, 73, 73);
+            font-family: 'Montserrat', sans-serif;
+            z-index: -1;
+        }
+        @media only screen and (max-width:300px){
+            fieldset{
+                width: 100%;
+            }
+            main{
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>VX Coding</h1>
+    </header>
+    <main>
+        <select id="selectId">
+            <option value="incode">Inocode</option>
+            <option value="decode">Decode</option>
+        </select>
+        <br>
+        <fieldset>
+            <legend>Text</legend>
+            <textarea id="text"></textarea>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Result</legend>
+        <textarea id="result" disabled></textarea>
+    </fieldset>
+    </main>
+    <h4 id="creator">©Mohammed Albedran</h4>
+    <script>
+        var selectId = document.getElementById("selectId");
+        var text = document.getElementById("text");
+        var result = document.getElementById("result");
+        text.oninput = ()=>{
+            resultCode()
+        }
+        selectId.onchange = ()=>{
+            resultCode();
+        }
+        function resultCode(){
+            if(selectId.value == "decode"){
+                result.value = atob(text.value);
+            }else{
+                result.value = btoa(text.value)
+            }
+        }
+    </script>
+</body>
+</html>
