@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" placeholder="https://www.youtube.com/watch?v=asd5PvtALEO">
+  <a href="https://img.youtube.com/vi/XifynuEU3d4/maxresdefault.jpg" download><button type="button">Download</button></a>
+  <img id="imgId" src="" width="1000px" />
+  <script>
+    function putImage(){
+      let imgId = document.getElementById("imgId");
+      let imgUrl = "https://www.youtube.com/watch?v=XifynuEU3d4";
+      let vidId = imgUrl.split('v=')[1].substring(0, 11);
+      let ytImgUrl = `https://img.youtube.com/vi/${vidId}/maxresdefault.jpg`;
+      imgId.setAttribute("src",ytImgUrl);
+    }
+    
+
+  </script>
+</body>
+</html>
