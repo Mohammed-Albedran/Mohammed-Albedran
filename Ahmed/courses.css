@@ -1,0 +1,91 @@
+@media only screen and (max-width:1081px) and (min-width:918px){
+    .coursesPage main{
+        width: 100%;
+    }
+}
+@media only screen and (max-width:917px) and (min-width:774px){
+    .coursesPage main{
+        width: 100%;
+    }
+    .coursesPage .courseCard{
+        width: 250px;
+        height: 300px;
+    }
+    .coursesPage .courseCard img{
+        height: 140px;
+    }
+    .coursesPage .courseCard h2{
+        font-size: 20px;
+    }
+}
+@media only screen and (max-width:773px) and (min-width:595px){
+    .coursesPage main{
+        width: 100%;
+    }
+    .coursesPage .courseCard{
+        width: 200px;
+        height: 250px;
+    }
+    .coursesPage .courseCard img{
+        height: 120px;
+    }
+    .coursesPage .courseCard h2{
+        font-size: 20px;
+    }
+    .coursesPage .courseCard h5{
+        font-size: 10px;
+    }
+    .coursesPage .courseCard .price{
+        width: 100px;
+        height: 30px;
+    }
+}
+@media only screen and (max-width:594px) and (min-width:418px){
+    .coursesPage main{
+        width: 100%;
+    }
+    .coursesPage .courseCard{
+        width: 200px;
+        height: 250px;
+        margin-top: 10px;
+    }
+    .coursesPage .courseCard img{
+        height: 120px;
+    }
+    .coursesPage .courseCard h2{
+        font-size: 20px;
+    }
+    .coursesPage .courseCard h5{
+        font-size: 10px;
+    }
+    .coursesPage .courseCard .price{
+        width: 100px;
+        height: 30px;
+    }
+}
+@media only screen and (max-width:417px){
+    .coursesPage main{
+        width: 100%;
+    }
+    .coursesPage .courseCard{
+        width: 250px;
+        height: 300px;
+        margin-top: 10px;
+    }
+    .coursesPage .courseCard:first-child{
+        margin-top: 150px;
+    }
+    .coursesPage .courseCard img{
+        height: 120px;
+    }
+    .coursesPage .courseCard h2{
+        font-size: 20px;
+    }
+    .coursesPage .courseCard h5{
+        font-size: 10px;
+    }
+    .coursesPage .courseCard .price{
+        width: 100px;
+        height: 30px;
+    }
+}

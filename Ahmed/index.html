@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="about.css">
+    <link rel="stylesheet" href="myCertificates.css">
+    <link rel="stylesheet" href="courses.css">
+    <link rel="stylesheet" href="apps.css">
+    <title>Ahmed Al-Ghanim</title>
+    <!--#region-->
+<!--//Information about the website//-->
+<link rel="icon" href="images/photo1.png"/>
+<meta name="description" content="Programmer and designer"/>
+  <meta name="author" content="Ahmed Al-Ghanim"/>
+  <!-- //Facebook// -->
+  <meta property="og:description" content="Programmer and designer" />
+  <meta property="og:title" content="Ahmed Al-Ghanim" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="images/photo1.png" />
+  <!-- //End Facebook// -->
+  <!-- //Twitter//-->
+  <meta name="twitter:title" content="Ahmed Al-Ghanim">
+  <meta name="twitter:description" content="Programmer and designer">
+  <meta name="twitter:image:src" content="images/photo1.png">
+  <!-- //End twitter// -->
+  <!--#endregion-->
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alata&family=Rubik&family=Ubuntu&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="topHeader">
+        <h2>Ahmed Al-Ghanim</h2>
+        <div class="sideListButton"><ion-icon name="menu" id="icon1"></ion-icon></div>
+        <div class="headerUl"><ul id="drop-nav">
+            <li><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              </li>
+              <li><a href="#myCertificates">Certificates</a>
+                <ul>
+                  <li><a href="#myCertificates">My Certificates</a></li>
+                  <li><a href="#">Students</a></li>
+                </ul>
+              </li>
+              <li><a href="#courses">Courses</a></li>
+              <li><a href="#apps">Apps</a></li>
+            </ul></div>
+        
+    </header>
+    <div id="sideList">
+        <a id="close">&times;</a>
+        <ul>
+            <li><h3><a href="#">Home</a></h3></li>
+            <li><h3><a href="#about">About</a></h3></li>
+            <li><h3><a href="#myCertificates">My certificates</a></h3></li>
+            <li><h3><a href="#">Students's certificates</a></h3></li>
+            <li><h3><a href="#courses">Courses</a></h3></li>
+            <li><h3><a href="#apps">Apps</a></h3></li>
+        </ul>
+    </div>
+    <!--   🟢🟢🟢     HOME PAGE   🟢🟢🟢      -->
+    <div class="homePage">
+        <main>
+            <img src="images/photo1.png" />
+            <h1><b>Ahmed Al-Ghanim</b></h1>
+            <h3>Programmer and designer</h3>
+        </main>
+    </div>
+    <!--    🟢🟢🟢    ABOUT PAGE    🟢🟢🟢     -->
+    <div class="aboutPage" id="about">
+        <main>
+            <img src="images/photo2.jpg" alt="photo not loading">
+            <div class="aboutText">
+                <h1>About me</h1>
+                <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.incididunt ut labore et dolore magna aliqua</h4>
+                
+            </div>
+            <div class="progressBars" id="progressBars1">
+               
+            </div>
+        </main>
+    </div><br><br>
+    <!--      🟢🟢🟢  MY CERTIFICATES PAGE   🟢🟢🟢      -->
+    <div class="myCertificatesPage" id="myCertificates">
+        <main id="myCertificatesContainer">
+            
+        </main>
+    </div><br><br>
+    <!--      🟢🟢🟢  COURSES PAGE   🟢🟢🟢      -->
+    <div class="coursesPage" id="courses">
+        <main class="coursesContainer">
+            
+        </main>
+    </div><br><br>
+    <!--    🟢🟢🟢    APPS PAGE   🟢🟢🟢      -->
+    <div class="appsPage" id="apps">
+        <div class="appsSwitcher">
+            <a href="#apps" onclick="appsSwitcher('mobile')" id="mobileButton" class="active">Moblie apps</a>
+            <a href="#apps" onclick="appsSwitcher('desktop')" id="desktopButton">Desktop apps</a>
+        </div>
+        <!--//////////////////-->
+        <main id="appsContainer">
+            
+        </main>
+        <main id="appsDeskContainer">
+            
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+</html>

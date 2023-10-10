@@ -1,0 +1,116 @@
+   /* width */
+   ::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #001f3f; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ffd717; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+@media only screen and (max-width:883px) and (min-width:601px){
+    .myCertificatesPage main{
+        max-width: 90%;
+        
+    }
+    
+}
+@media only screen and (max-width:600px) and (min-width:530px){
+    .myCertificatesPage main{
+        max-width: 90%;
+    }
+    .myCertificatesPage .certificateCard{
+        width: 200px;
+        height: 220px;
+    }
+    .myCertificatesPage .certificateCard img{
+        width: 200px;
+        height: 120px;
+    }
+    .myCertificatesPage .certificateCard h4{
+        margin-top: 5px;
+    }
+}
+@media only screen and (max-width:529px) and (min-width:450px){
+    .myCertificatesPage main{
+        max-width: 100%;
+        width: 100%;
+    }
+    .myCertificatesPage .certificateCard{
+        width: 200px;
+        height: 220px;
+    }
+    .myCertificatesPage .certificateCard img{
+        width: 200px;
+        height: 120px;
+    }
+    .myCertificatesPage .certificateCard h4{
+        margin-top: 5px;
+    }
+}
+@media only screen and (max-width:449px) and (min-width:390px){
+    .myCertificatesPage main{
+        max-width: 100%;
+        width: 100%;
+    }
+    .myCertificatesPage .certificateCard{
+        width: 170px;
+        height: 190px;
+    }
+    .myCertificatesPage .certificateCard img{
+        width: 170px;
+        height: 100px;
+    }
+    .myCertificatesPage .certificateCard h4{
+        margin-top: 5px;
+    }
+    .myCertificatesPage .certificateCard h3{
+        font-size: 15px;
+        font-weight: bolder;
+    }
+    .myCertificatesPage .certificateCard h5{
+        font-size: 12px;
+    }
+    .myCertificatesPage .certificateCard h4{
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width:389px){
+    .myCertificatesPage main{
+        max-width: 100%;
+        width: 100%;
+    }
+    .myCertificatesPage .certificateCard{
+        width: 150px;
+        height: 170px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+    .myCertificatesPage .certificateCard img{
+        width: 150px;
+        height: 90px;
+    }
+    .myCertificatesPage .certificateCard h4{
+        margin-top: 5px;
+    }
+    .myCertificatesPage .certificateCard h3{
+        font-size: 15px;
+        margin-top: 2px;
+        font-weight: bolder;
+    }
+    .myCertificatesPage .certificateCard h5{
+        font-size: 10px;
+    }
+    .myCertificatesPage .certificateCard h4{
+        font-size: 12px;
+    }
+}

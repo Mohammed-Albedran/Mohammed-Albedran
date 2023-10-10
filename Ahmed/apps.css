@@ -1,0 +1,31 @@
+@media only screen and (max-width:1283px) and (min-width:1149px){
+    .appsPage #appsContainer , #appsDeskContainer{
+        width: 90%;
+    }
+}
+@media only screen and (max-width:1148px) and (min-width:1015px){
+    .appsPage #appsContainer , #appsDeskContainer{
+        width: 100%;
+    }
+}
+@media only screen and (max-width:1014px) and (min-width:763px){
+    .appsPage #appsContainer , #appsDeskContainer{
+        width: 100%;
+        margin-top: 100px;
+    }
+    
+}
+@media only screen and (max-width:762px) and (min-width:517px){
+    .appsPage #appsContainer , #appsDeskContainer{
+        width: 100%;
+        margin-top: 250px;
+    }
+    
+}
+@media only screen and (max-width:516px){
+    .appsPage #appsContainer , #appsDeskContainer{
+        width: 100%;
+        margin-top: 800px;
+    }
+    
+}

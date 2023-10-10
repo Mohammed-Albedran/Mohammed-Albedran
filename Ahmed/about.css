@@ -1,0 +1,198 @@
+@media only screen and (max-width:1337px) and (min-width:1224px){
+    .aboutPage .progressBars{
+        width: 60%;
+    }
+}
+@media only screen and (max-width:1223px) and (min-width:1095px){
+    .aboutPage .progressBars{
+        width: 55%;
+    }
+    .aboutPage .progressBars .progressContainer{
+        width: 28%;
+    }
+}
+@media only screen and (max-width:1094px) and (min-width:980px){
+    .aboutPage .progressBars{
+        width: 50%;
+    }
+    .aboutPage .progressBars .progressContainer{
+        width: 28%;
+    }
+}
+@media only screen and (max-width:979px) and (min-width:803px){
+    .aboutPage .progressBars{
+        width: 80%;
+        float: none;
+        clear: both;
+        margin-left: 0;
+        margin: auto;
+        margin-top: 10px;
+        /* position: absolute;
+        transform: translateX(-50%);
+        left: 50%; */
+    }
+    .aboutPage .progressBars .progressContainer{
+        width: 28%;
+    }
+    .progressBars h4{
+        font-size: 20px;
+    }
+    .aboutPage main{
+        top: 55%;
+        width: 70%;
+    }
+    .aboutPage main img{
+        width: 100%;
+        height: 200px;
+        float: none ;
+        object-fit: contain;
+        clear: both;
+    }
+    .aboutPage .aboutText{
+        height: auto;
+        margin-left: 0;
+        margin: auto;
+        float: none;
+        clear: both;
+        width: 50%;
+        text-align: center;
+    }
+}
+@media only screen and (max-width:802px) and (min-width:607px){
+    .aboutPage .progressBars{
+        width: 90%;
+        float: none;
+        clear: both;
+        margin-left: 0;
+        margin: auto;
+        margin-top: 10px;
+        /* position: absolute;
+        transform: translateX(-50%);
+        left: 50%; */
+    }
+    .aboutPage .progressBars .progressContainer{
+        width: 28%;
+    }
+    .progressBars h4{
+        font-size: 15px;
+    }
+    .aboutPage main{
+        top: 55%;
+        width: 70%;
+    }
+    .aboutPage main img{
+        width: 100%;
+        height: 200px;
+        float: none ;
+        object-fit: contain;
+        clear: both;
+    }
+    .aboutPage .aboutText{
+        height: auto;
+        margin-left: 0;
+        margin: auto;
+        float: none;
+        clear: both;
+        width: 70%;
+        text-align: center;
+    }
+}
+@media only screen and (max-width:606px) and (min-width:423px){
+    .aboutPage .progressBars{
+        width: 90%;
+        float: none;
+        clear: both;
+        margin-left: 0;
+        margin: auto;
+        margin-top: 10px;
+        /* position: absolute;
+        transform: translateX(-50%);
+        left: 50%; */
+    }
+    .aboutPage .progressBars .progressContainer{
+        width: 28%;
+    }
+    .progressBars h4{
+        font-size: 15px;
+    }
+    .aboutPage main{
+        top: 55%;
+        width: 100%;
+    }
+    .aboutPage main img{
+        width: 100%;
+        height: 200px;
+        float: none ;
+        object-fit: contain;
+        clear: both;
+    }
+    .aboutPage .aboutText{
+        height: auto;
+        margin-left: 0;
+        margin: auto;
+        float: none;
+        clear: both;
+        width: 70%;
+        text-align: center;
+    }
+}
+@media only screen and (max-width:422px){
+    .aboutPage .progressBars{
+        width: 100%;
+        float: none;
+        clear: both;
+        margin-left: 0;
+        margin: auto;
+        margin-top: 10px;
+        overflow: auto;
+        /* position: absolute;
+        transform: translateX(-50%);
+        left: 50%; */
+    }
+    .aboutPage .progressBars .progressContainer{
+        width: 40%;
+        float: left;    
+    }
+    .progressBars h4{
+        font-size: 15px;
+    }
+    .aboutPage main{
+        top: 55%;
+        width: 100%;
+    }
+    .aboutPage main img{
+        width: 100%;
+        height: 200px;
+        float: none ;
+        object-fit: contain;
+        clear: both;
+    }
+    .aboutPage .aboutText{
+        height: auto;
+        margin-left: 0;
+        margin: auto;
+        float: none;
+        clear: both;
+        width: 90%;
+        text-align: center;
+    }
+    /* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #001f3f; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ffd717; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+}
