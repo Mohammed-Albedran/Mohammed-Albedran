@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohammed — Web Developer & Computer and Control Engineer</title>
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Fonts: Fraunces (display), Inter (body), JetBrains Mono (labels) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Tailwind config with the exact palette -->
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'ink':        '#0A2943',  // main background
+          'slate-blue': '#576E7D',  // secondary section bg
+          'depth':      '#031830',  // darker accent / depth
+          'mist':       '#A4B2BA',  // body text
+          'cream':      '#EDE3E4',  // highlights
+        },
+        fontFamily: {
+          'display': ['Fraunces', 'serif'],
+          'sans':    ['Inter', 'sans-serif'],
+          'mono':    ['JetBrains Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  /* Base */
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #0A2943;
+    color: #A4B2BA;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle film grain — keeps dark surfaces from feeling flat */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Glass treatments */
+  .glass {
+    background: rgba(237, 227, 228, 0.025);
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    border: 1px solid rgba(237, 227, 228, 0.08);
+  }
+  .glass-strong {
+    background: rgba(237, 227, 228, 0.05);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgba(237, 227, 228, 0.1);
+  }
+
+  /* Scroll reveal — varied, not a single stagger */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-d1 { transition-delay: 0.08s; }
+  .reveal-d2 { transition-delay: 0.16s; }
+  .reveal-d3 { transition-delay: 0.24s; }
+
+  /* Slow float — only on hero ornaments */
+  @keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .float-slow   { animation: float-y 9s ease-in-out infinite; }
+  .float-slower { animation: float-y 14s ease-in-out infinite; }
+
+  /* Availability pulse */
+  @keyframes pulse-ring {
+    0%   { transform: scale(0.95); opacity: 0.7; }
+    100% { transform: scale(2.2);  opacity: 0; }
+  }
+  .pulse-ring { animation: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+  /* Skill card hover — restrained */
+  .skill-card { transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+  .skill-card:hover {
+    transform: translateY(-3px);
+    background: rgba(237, 227, 228, 0.06);
+    border-color: rgba(237, 227, 228, 0.18);
+  }
+  .skill-card:hover .skill-icon {
+    color: #EDE3E4;
+    transform: scale(1.06);
+  }
+  .skill-icon { transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* Form fields — glass input style */
+  .form-field {
+    background: rgba(237, 227, 228, 0.025);
+    border: 1px solid rgba(237, 227, 228, 0.1);
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+    color: #EDE3E4;
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+  }
+  .form-field::placeholder { color: rgba(164, 178, 186, 0.4); }
+  .form-field:focus {
+    outline: none;
+    background: rgba(237, 227, 228, 0.05);
+    border-color: rgba(237, 227, 228, 0.4);
+    box-shadow: 0 0 0 4px rgba(237, 227, 228, 0.04);
+  }
+  .form-field.error {
+    border-color: rgba(248, 113, 113, 0.5);
+    background: rgba(248, 113, 113, 0.04);
+  }
+
+  /* Active nav link */
+  .nav-link.active {
+    color: #EDE3E4;
+    background: rgba(237, 227, 228, 0.08);
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mobile-menu.open { transform: translateY(0); }
+  .mobile-menu-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mobile-menu.open .mobile-menu-item { opacity: 1; transform: translateY(0); }
+  .mobile-menu.open .mobile-menu-item:nth-child(1) { transition-delay: 0.10s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(2) { transition-delay: 0.16s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(3) { transition-delay: 0.22s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(4) { transition-delay: 0.28s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(5) { transition-delay: 0.34s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(6) { transition-delay: 0.40s; }
+
+  /* Project image zoom */
+  .project-image { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .project-card:hover .project-image { transform: scale(1.04); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0A2943; }
+  ::-webkit-scrollbar-thumb { background: #576E7D; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #A4B2BA; }
+
+  ::selection { background: #EDE3E4; color: #0A2943; }
+
+  /* Focus visible */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid rgba(237, 227, 228, 0.5);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .float-slow, .float-slower, .pulse-ring { animation: none; }
+    html { scroll-behavior: auto; }
+    .project-image, .skill-card, .skill-icon { transition: none; }
+  }
+
+  /* Touch devices — disable hover transforms */
+  @media (pointer: coarse) {
+    .skill-card:hover { transform: none; }
+    .project-card:hover .project-image { transform: none; }
+  }
+</style>
+</head>
+
+<body class="relative">
+
+<!-- ============================================================
+     NAVIGATION — floating glass pill, centered
+     ============================================================ -->
+<nav id="navbar" class="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500">
+  <div class="glass-strong rounded-full px-2 py-2 flex items-center gap-1 shadow-2xl shadow-ink/50">
+    <a href="#home"      class="nav-link hidden md:flex items-center px-5 py-2 text-sm text-mist hover:text-cream transition-colors rounded-full" data-section="home">Home</a>
+    <a href="#about"     class="nav-link hidden md:flex items-center px-5 py-2 text-sm text-mist hover:text-cream transition-colors rounded-full" data-section="about">About</a>
+    <a href="#skills"    class="nav-link hidden md:flex items-center px-5 py-2 text-sm text-mist hover:text-cream transition-colors rounded-full" data-section="skills">Skills</a>
+    <a href="#journey"   class="nav-link hidden md:flex items-center px-5 py-2 text-sm text-mist hover:text-cream transition-colors rounded-full" data-section="journey">Journey</a>
+    <a href="#projects"  class="nav-link hidden md:flex items-center px-5 py-2 text-sm text-mist hover:text-cream transition-colors rounded-full" data-section="projects">Projects</a>
+    <a href="#contact"   class="nav-link hidden md:flex items-center px-5 py-2 text-sm text-mist hover:text-cream transition-colors rounded-full" data-section="contact">Contact</a>
+
+    <!-- Mobile hamburger -->
+    <button id="menu-toggle" class="md:hidden w-11 h-11 flex items-center justify-center text-cream rounded-full" aria-label="Toggle menu">
+      <svg id="menu-icon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+      <svg id="close-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M6 6l12 12M6 18L18 6"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu overlay -->
+<div id="mobile-menu" class="mobile-menu fixed inset-0 z-40 bg-ink/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-7 md:hidden">
+  <a href="#home"     class="mobile-menu-item mobile-link font-display text-4xl text-cream">Home</a>
+  <a href="#about"    class="mobile-menu-item mobile-link font-display text-4xl text-cream">About</a>
+  <a href="#skills"   class="mobile-menu-item mobile-link font-display text-4xl text-cream">Skills</a>
+  <a href="#journey"  class="mobile-menu-item mobile-link font-display text-4xl text-cream">Journey</a>
+  <a href="#projects" class="mobile-menu-item mobile-link font-display text-4xl text-cream">Projects</a>
+  <a href="#contact"  class="mobile-menu-item mobile-link font-display text-4xl text-cream">Contact</a>
+</div>
+
+<main>
+
+<!-- ============================================================
+     HERO — asymmetric 7/5 split, mixed typography
+     ============================================================ -->
+<section id="home" class="relative min-h-screen flex items-center px-6 lg:px-12 pt-28 pb-16 overflow-hidden">
+  <!-- Background orbs -->
+  <div class="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-slate-blue/10 blur-[140px] pointer-events-none"></div>
+  <div class="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-depth/40 blur-[120px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 relative z-10">
+
+    <!-- Left: headline + description -->
+    <div class="lg:col-span-7 flex flex-col justify-center">
+      <div class="font-mono text-xs text-mist/50 tracking-[0.2em] uppercase mb-8 flex items-center gap-3 reveal">
+        <span class="w-10 h-px bg-mist/40"></span>
+        <span>Portfolio · 2025</span>
+      </div>
+
+      <h1 class="font-display text-6xl sm:text-7xl md:text-7xl lg:text-8xl text-cream leading-[0.92] mb-8 tracking-tight reveal reveal-d1">
+        Hello, I'm<br>
+        <span class="italic font-light">Mohammed</span><span class="text-mist/40">.</span>
+      </h1>
+
+      <p class="text-lg md:text-xl text-mist mb-6 max-w-xl reveal reveal-d2">
+        Web Developer <span class="text-cream/30 mx-1">&</span> Computer and Control Engineer
+      </p>
+
+      <p class="text-base md:text-lg text-mist/70 mb-10 max-w-xl leading-relaxed reveal reveal-d2">
+        I build modern websites, applications, and digital solutions — combining software development with engineering precision to create systems that are efficient, considered, and built to last.
+      </p>
+
+      <div class="flex flex-wrap gap-3 reveal reveal-d3">
+        <a href="#projects" class="nav-scroll group inline-flex items-center gap-3 bg-cream text-ink px-7 py-3.5 rounded-full text-sm font-medium hover:bg-cream/90 transition-all duration-300 hover:gap-4">
+          View My Work
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+        <a href="#contact" class="nav-scroll inline-flex items-center gap-3 glass text-cream px-7 py-3.5 rounded-full text-sm font-medium hover:bg-cream/10 transition-all duration-300">
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: metadata column — three small editorial cards -->
+    <div class="lg:col-span-5 flex flex-col justify-center gap-5">
+      <!-- Status -->
+      <div class="glass-strong rounded-2xl p-6 float-slow reveal reveal-d1">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="relative flex h-2 w-2">
+            <span class="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400/60"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </span>
+          <span class="font-mono text-[10px] text-mist/60 uppercase tracking-[0.2em]">Available for work</span>
+        </div>
+        <p class="text-cream/90 text-sm leading-relaxed">
+          Currently accepting freelance projects and full-time opportunities.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="glass rounded-2xl p-5 reveal reveal-d2">
+          <div class="font-mono text-[10px] text-mist/50 mb-3 uppercase tracking-[0.15em]">Focus</div>
+          <div class="font-display text-2xl text-cream leading-tight">Full-stack</div>
+          <div class="text-xs text-mist/60 mt-1">Web Applications</div>
+        </div>
+        <div class="glass rounded-2xl p-5 reveal reveal-d3">
+          <div class="font-mono text-[10px] text-mist/50 mb-3 uppercase tracking-[0.15em]">Based</div>
+          <div class="font-display text-2xl text-cream leading-tight">Remote</div>
+          <div class="text-xs text-mist/60 mt-1">Worldwide</div>
+        </div>
+      </div>
+
+      <!-- Code snippet -->
+      <div class="glass rounded-2xl p-5 font-mono text-xs leading-relaxed float-slower reveal reveal-d3">
+        <div class="flex gap-1.5 mb-4">
+          <span class="w-2 h-2 rounded-full bg-cream/15"></span>
+          <span class="w-2 h-2 rounded-full bg-cream/15"></span>
+          <span class="w-2 h-2 rounded-full bg-cream/15"></span>
+          <span class="ml-2 text-mist/40 text-[10px]">stack.ts</span>
+        </div>
+        <div class="text-mist/40">// current stack</div>
+        <div class="mt-1.5"><span class="text-mist/60">const</span> <span class="text-cream">stack</span> <span class="text-mist/60">=</span> <span class="text-mist/60">{</span></div>
+        <div class="pl-4"><span class="text-mist/80">frontend</span><span class="text-mist/60">:</span> <span class="text-cream/90">'React, Tailwind'</span><span class="text-mist/60">,</span></div>
+        <div class="pl-4"><span class="text-mist/80">backend</span><span class="text-mist/60">:</span> <span class="text-cream/90">'Node, PHP, SQL'</span><span class="text-mist/60">,</span></div>
+        <div class="pl-4"><span class="text-mist/80">engineering</span><span class="text-mist/60">:</span> <span class="text-cream/90">'Control Systems'</span><span class="text-mist/60">,</span></div>
+        <div><span class="text-mist/60">}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-mist/40 hidden md:flex">
+    <span class="font-mono text-[10px] uppercase tracking-[0.2em]">Scroll</span>
+    <div class="w-px h-10 bg-gradient-to-b from-mist/40 to-transparent"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT — portrait left, editorial text right
+     ============================================================ -->
+<section id="about" class="relative min-h-screen py-24 md:py-32 px-6 lg:px-12 overflow-hidden">
+  <div class="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full bg-slate-blue/8 blur-[140px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+
+    <!-- Section header — number + title + rule -->
+    <div class="flex items-baseline gap-6 mb-16 md:mb-20 reveal">
+      <span class="font-mono text-xs text-mist/40 tracking-[0.2em]">01</span>
+      <h2 class="font-display text-4xl md:text-5xl text-cream">About</h2>
+      <div class="flex-1 h-px bg-mist/10 mt-6"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+      <!-- Portrait -->
+      <div class="lg:col-span-5 reveal">
+        <div class="relative aspect-[4/5] rounded-2xl overflow-hidden glass group max-w-md mx-auto lg:max-w-none">
+          <img src="https://picsum.photos/seed/mohammed-engineer-portrait/600/750" alt="Mohammed — portrait" class="w-full h-full object-cover opacity-80 group-hover:opacity-95 group-hover:scale-105 transition-all duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent"></div>
+          <div class="absolute inset-0 bg-ink/20"></div>
+
+          <!-- Floating availability badge -->
+          <div class="absolute top-6 left-6 glass-strong rounded-full px-4 py-2">
+            <div class="font-mono text-[10px] text-mist/80 uppercase tracking-[0.15em] flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Available
+            </div>
+          </div>
+
+          <!-- Name plate -->
+          <div class="absolute bottom-6 left-6 right-6">
+            <div class="font-mono text-xs text-mist/60 mb-1 uppercase tracking-[0.15em]">Engineer · Developer</div>
+            <div class="font-display text-3xl text-cream">Mohammed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio + contact grid -->
+      <div class="lg:col-span-7 reveal reveal-d1">
+        <p class="font-display text-2xl md:text-3xl text-cream leading-snug mb-10 italic font-light">
+          "I combine software development skills with engineering knowledge to create efficient and modern digital solutions."
+        </p>
+
+        <div class="space-y-5 text-mist/75 leading-relaxed mb-12">
+          <p>
+            My name is Mohammed. I am a <span class="text-cream">Web Developer</span> and <span class="text-cream">Computer and Control Engineer</span>. My work sits at the intersection of two disciplines — the precision of engineering and the craft of building for the web.
+          </p>
+          <p>
+            Whether it's a full-stack application, a frontend interface, or a control system integration, I approach each project with the same principle: understand the problem deeply, then build the simplest solution that fully solves it.
+          </p>
+        </div>
+
+        <!-- Contact info — hairline grid, not rounded cards -->
+        <div class="grid grid-cols-2 gap-px bg-mist/10 rounded-2xl overflow-hidden">
+          <div class="bg-ink p-5">
+            <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] mb-2">Location</div>
+            <div class="text-cream text-sm">Remote · Worldwide</div>
+          </div>
+          <div class="bg-ink p-5">
+            <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] mb-2">Email</div>
+            <a href="mailto:hello@mohammed.dev" class="text-cream text-sm hover:text-mist transition">hello@mohammed.dev</a>
+          </div>
+          <div class="bg-ink p-5">
+            <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] mb-2">Status</div>
+            <div class="text-cream text-sm flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Available for hire
+            </div>
+          </div>
+          <div class="bg-ink p-5">
+            <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] mb-2">Discipline</div>
+            <div class="text-cream text-sm">Web · Engineering</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SKILLS — three categories with unequal grids (5 / 3 / 2)
+     ============================================================ -->
+<section id="skills" class="relative min-h-screen py-24 md:py-32 px-6 lg:px-12 overflow-hidden bg-depth">
+  <div class="absolute top-1/3 -left-32 w-[500px] h-[500px] rounded-full bg-ink/60 blur-[120px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+
+    <div class="flex items-baseline gap-6 mb-16 md:mb-20 reveal">
+      <span class="font-mono text-xs text-mist/40 tracking-[0.2em]">02</span>
+      <h2 class="font-display text-4xl md:text-5xl text-cream">Skills</h2>
+      <div class="flex-1 h-px bg-mist/10 mt-6"></div>
+    </div>
+
+    <!-- Frontend -->
+    <div class="mb-14 reveal">
+      <div class="flex items-baseline gap-4 mb-6 flex-wrap">
+        <span class="font-mono text-xs text-mist/40">01</span>
+        <h3 class="font-display text-lg text-cream/90 italic">Frontend</h3>
+        <div class="text-xs text-mist/40 ml-2">— Interfaces & experiences</div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <!-- HTML -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 32 32">
+              <rect x="4" y="4" width="24" height="24" rx="1"/>
+              <rect x="9" y="9" width="14" height="14" rx="0.5"/>
+              <rect x="13" y="13" width="6" height="6" rx="0.5"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">01</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">HTML</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Semantic structure and accessible markup</p>
+        </div>
+        <!-- CSS -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" viewBox="0 0 32 32">
+              <path d="M6 8h20M8 14h16M10 20h12M12 26h8"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">02</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">CSS</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Modern layout, animation, responsive design</p>
+        </div>
+        <!-- JavaScript -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 32 32">
+              <path d="M12 8l-4 8 4 8M20 8l4 8-4 8M14 22l4-12"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">03</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">JavaScript</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Interactive client-side logic and DOM</p>
+        </div>
+        <!-- Tailwind -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" viewBox="0 0 32 32">
+              <path d="M4 12c4-4 8-4 12 0s8 4 12 0M4 20c4-4 8-4 12 0s8 4 12 0"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">04</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">Tailwind CSS</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Utility-first rapid UI development</p>
+        </div>
+        <!-- React -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="2" fill="currentColor"/>
+              <ellipse cx="16" cy="16" rx="12" ry="5"/>
+              <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(60 16 16)"/>
+              <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(120 16 16)"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">05</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">React</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Building modern interactive interfaces</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backend -->
+    <div class="mb-14 reveal">
+      <div class="flex items-baseline gap-4 mb-6 flex-wrap">
+        <span class="font-mono text-xs text-mist/40">02</span>
+        <h3 class="font-display text-lg text-cream/90 italic">Backend</h3>
+        <div class="text-xs text-mist/40 ml-2">— Systems & data</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- PHP -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 32 32">
+              <rect x="5" y="8" width="22" height="7" rx="1"/>
+              <rect x="5" y="17" width="22" height="7" rx="1"/>
+              <circle cx="10" cy="11.5" r="0.6" fill="currentColor"/>
+              <circle cx="10" cy="20.5" r="0.6" fill="currentColor"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">06</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">PHP</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Creating backend systems and application logic</p>
+        </div>
+        <!-- Node.js -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round" viewBox="0 0 32 32">
+              <path d="M16 3l11 6.5v13L16 29 5 22.5v-13L16 3z"/>
+              <path d="M11 19c0 2 2 3 5 3s4-1 4-3-2-2-4-2.5-5-1-5-3 2-3 4-3 4 1 4 3"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">07</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">Node.js</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">JavaScript runtime for scalable backend services</p>
+        </div>
+        <!-- SQL -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 32 32">
+              <ellipse cx="16" cy="7" rx="10" ry="3"/>
+              <path d="M6 7v18c0 1.66 4.5 3 10 3s10-1.34 10-3V7"/>
+              <path d="M6 14c0 1.66 4.5 3 10 3s10-1.34 10-3"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">08</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">SQL</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Managing structured data efficiently</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Engineering -->
+    <div class="reveal">
+      <div class="flex items-baseline gap-4 mb-6 flex-wrap">
+        <span class="font-mono text-xs text-mist/40">03</span>
+        <h3 class="font-display text-lg text-cream/90 italic">Engineering</h3>
+        <div class="text-xs text-mist/40 ml-2">— Hardware & systems</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- Computer Engineering -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 32 32">
+              <rect x="10" y="10" width="12" height="12" rx="1"/>
+              <path d="M14 4v4M18 4v4M14 24v4M18 24v4M4 14h4M4 18h4M24 14h4M24 18h4"/>
+              <rect x="14" y="14" width="4" height="4"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">09</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">Computer Engineering</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Hardware-software integration and system design</p>
+        </div>
+        <!-- Control Systems -->
+        <div class="skill-card glass rounded-2xl p-5">
+          <div class="flex items-start justify-between mb-6">
+            <svg class="skill-icon w-7 h-7 text-mist/80" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="10"/>
+              <path d="M16 6v4M16 22v4M6 16h4M22 16h4"/>
+              <circle cx="16" cy="16" r="2" fill="currentColor"/>
+            </svg>
+            <span class="font-mono text-[10px] text-mist/30">10</span>
+          </div>
+          <h4 class="text-cream font-medium mb-1.5">Control Systems</h4>
+          <p class="text-xs text-mist/60 leading-relaxed">Designing feedback loops and automation systems</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     JOURNEY — vertical timeline on a lighter slate background
+     ============================================================ -->
+<section id="journey" class="relative min-h-screen py-24 md:py-32 px-6 lg:px-12 overflow-hidden bg-slate-blue">
+  <div class="absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full bg-ink/30 blur-[120px] pointer-events-none"></div>
+
+  <div class="max-w-5xl mx-auto relative z-10">
+
+    <div class="flex items-baseline gap-6 mb-16 md:mb-20 reveal">
+      <span class="font-mono text-xs text-cream/40 tracking-[0.2em]">03</span>
+      <h2 class="font-display text-4xl md:text-5xl text-cream">My Journey</h2>
+      <div class="flex-1 h-px bg-cream/15 mt-6"></div>
+    </div>
+
+    <div class="relative pl-8 md:pl-0">
+      <!-- Vertical line -->
+      <div class="absolute left-2 md:left-[140px] top-2 bottom-2 w-px bg-gradient-to-b from-cream/30 via-cream/15 to-transparent"></div>
+
+      <div class="space-y-12 md:space-y-16">
+
+        <!-- 2024 -->
+        <div class="relative grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6 md:gap-16 reveal">
+          <div class="md:text-right md:pt-1">
+            <div class="font-display text-3xl md:text-4xl text-cream">2024</div>
+            <div class="font-mono text-[10px] text-cream/50 uppercase tracking-[0.15em] mt-1">Beginning</div>
+          </div>
+          <div class="relative">
+            <div class="absolute -left-[28px] md:-left-[20px] top-3 w-3 h-3 rounded-full bg-cream ring-4 ring-slate-blue"></div>
+            <div class="glass rounded-2xl p-6 hover:bg-cream/[0.06] transition">
+              <h4 class="text-cream font-medium mb-2">Started building professional websites</h4>
+              <p class="text-sm text-cream/70 leading-relaxed">
+                Began with HTML, CSS, and JavaScript — learned the fundamentals of modern web development, responsive design, and clean code practices.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2025 -->
+        <div class="relative grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6 md:gap-16 reveal">
+          <div class="md:text-right md:pt-1">
+            <div class="font-display text-3xl md:text-4xl text-cream">2025</div>
+            <div class="font-mono text-[10px] text-cream/50 uppercase tracking-[0.15em] mt-1">Growth</div>
+          </div>
+          <div class="relative">
+            <div class="absolute -left-[28px] md:-left-[20px] top-3 w-3 h-3 rounded-full bg-cream ring-4 ring-slate-blue"></div>
+            <div class="glass rounded-2xl p-6 hover:bg-cream/[0.06] transition">
+              <h4 class="text-cream font-medium mb-2">Developed full-stack applications</h4>
+              <p class="text-sm text-cream/70 leading-relaxed">
+                Expanded into backend development with PHP, Node.js, and SQL. Built complete web applications end-to-end, integrating databases, authentication, and dynamic interfaces.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Now -->
+        <div class="relative grid grid-cols-1 md:grid-cols-[120px_1fr] gap-6 md:gap-16 reveal">
+          <div class="md:text-right md:pt-1">
+            <div class="font-display text-3xl md:text-4xl text-cream italic">Now</div>
+            <div class="font-mono text-[10px] text-emerald-300 uppercase tracking-[0.15em] mt-1 flex items-center gap-1.5 md:justify-end">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+              Active
+            </div>
+          </div>
+          <div class="relative">
+            <div class="absolute -left-[28px] md:-left-[20px] top-3 w-3 h-3 rounded-full bg-emerald-300 ring-4 ring-slate-blue"></div>
+            <div class="glass-strong rounded-2xl p-6">
+              <h4 class="text-cream font-medium mb-2">Building digital solutions and improving skills</h4>
+              <p class="text-sm text-cream/70 leading-relaxed">
+                Combining software development with engineering knowledge to deliver efficient, modern systems. Continuously learning and refining both code and craft.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROJECTS — alternating editorial layout, not a 4-up grid
+     ============================================================ -->
+<section id="projects" class="relative min-h-screen py-24 md:py-32 px-6 lg:px-12 overflow-hidden bg-depth">
+  <div class="absolute top-1/2 -right-32 w-[500px] h-[500px] rounded-full bg-ink/60 blur-[120px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+
+    <div class="flex items-baseline gap-6 mb-16 md:mb-20 reveal">
+      <span class="font-mono text-xs text-mist/40 tracking-[0.2em]">04</span>
+      <h2 class="font-display text-4xl md:text-5xl text-cream">Selected Work</h2>
+      <div class="flex-1 h-px bg-mist/10 mt-6"></div>
+    </div>
+
+    <div class="space-y-20 md:space-y-28">
+
+      <!-- Project 1 — image left -->
+      <article class="project-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center reveal">
+        <div class="lg:col-span-7">
+          <a href="projects.html" class="block aspect-[16/10] rounded-2xl overflow-hidden glass">
+            <img src="https://picsum.photos/seed/company-website-mohammed/800/500" alt="Company Website" class="project-image w-full h-full object-cover opacity-90">
+          </a>
+        </div>
+        <div class="lg:col-span-5">
+          <div class="font-mono text-xs text-mist/40 mb-4 flex items-center gap-3">
+            <span>01 / Web</span>
+            <span class="w-8 h-px bg-mist/20"></span>
+            <span>2025</span>
+          </div>
+          <h3 class="font-display text-3xl md:text-4xl text-cream mb-4">Company Website</h3>
+          <p class="text-mist/70 mb-6 leading-relaxed">
+            A modern corporate website with content management, contact systems, and analytics integration. Designed for performance, accessibility, and easy content updates.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-8">
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">HTML</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">CSS</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">JavaScript</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">PHP</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">SQL</span>
+          </div>
+          <a href="projects.html" class="inline-flex items-center gap-2 text-cream hover:gap-3 transition-all">
+            View case study
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- Project 2 — image right -->
+      <article class="project-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center reveal">
+        <div class="lg:col-span-7 lg:order-2">
+          <a href="projects.html" class="block aspect-[16/10] rounded-2xl overflow-hidden glass">
+            <img src="https://picsum.photos/seed/medical-events-platform/800/500" alt="Medical Events Website" class="project-image w-full h-full object-cover opacity-90">
+          </a>
+        </div>
+        <div class="lg:col-span-5 lg:order-1">
+          <div class="font-mono text-xs text-mist/40 mb-4 flex items-center gap-3">
+            <span>02 / Full-stack</span>
+            <span class="w-8 h-px bg-mist/20"></span>
+            <span>2025</span>
+          </div>
+          <h3 class="font-display text-3xl md:text-4xl text-cream mb-4">Medical Events Website</h3>
+          <p class="text-mist/70 mb-6 leading-relaxed">
+            A platform for medical conferences and events — featuring registration, scheduling, speaker profiles, and admin management. Built with both frontend and backend systems.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-8">
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">Frontend</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">Backend</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">Database</span>
+          </div>
+          <a href="projects.html" class="inline-flex items-center gap-2 text-cream hover:gap-3 transition-all">
+            View case study
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- Project 3 — image left -->
+      <article class="project-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center reveal">
+        <div class="lg:col-span-7">
+          <a href="projects.html" class="block aspect-[16/10] rounded-2xl overflow-hidden glass">
+            <img src="https://picsum.photos/seed/android-dev-portfolio/800/500" alt="Android Developer Portfolio" class="project-image w-full h-full object-cover opacity-90">
+          </a>
+        </div>
+        <div class="lg:col-span-5">
+          <div class="font-mono text-xs text-mist/40 mb-4 flex items-center gap-3">
+            <span>03 / Frontend</span>
+            <span class="w-8 h-px bg-mist/20"></span>
+            <span>2024</span>
+          </div>
+          <h3 class="font-display text-3xl md:text-4xl text-cream mb-4">Android Developer Portfolio</h3>
+          <p class="text-mist/70 mb-6 leading-relaxed">
+            A personal portfolio website for an Android developer — focused on clean typography, smooth scrolling, and a project showcase that highlights app work.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-8">
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">HTML</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">CSS</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">JavaScript</span>
+          </div>
+          <a href="projects.html" class="inline-flex items-center gap-2 text-cream hover:gap-3 transition-all">
+            View case study
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- Project 4 — image right -->
+      <article class="project-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center reveal">
+        <div class="lg:col-span-7 lg:order-2">
+          <a href="projects.html" class="block aspect-[16/10] rounded-2xl overflow-hidden glass">
+            <img src="https://picsum.photos/seed/ecommerce-shop-mohammed/800/500" alt="E-commerce Website" class="project-image w-full h-full object-cover opacity-90">
+          </a>
+        </div>
+        <div class="lg:col-span-5 lg:order-1">
+          <div class="font-mono text-xs text-mist/40 mb-4 flex items-center gap-3">
+            <span>04 / Full-stack</span>
+            <span class="w-8 h-px bg-mist/20"></span>
+            <span>2025</span>
+          </div>
+          <h3 class="font-display text-3xl md:text-4xl text-cream mb-4">E-commerce Website</h3>
+          <p class="text-mist/70 mb-6 leading-relaxed">
+            A complete online store with product catalog, cart, checkout, and admin dashboard. Built with PHP backend, SQL database, and dynamic JavaScript interfaces.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-8">
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">PHP</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">SQL</span>
+            <span class="font-mono text-xs px-3 py-1.5 glass rounded-full text-mist/80">JavaScript</span>
+          </div>
+          <a href="projects.html" class="inline-flex items-center gap-2 text-cream hover:gap-3 transition-all">
+            View case study
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- View all -->
+    <div class="text-center mt-20 md:mt-24 reveal">
+      <a href="projects.html" class="inline-flex items-center gap-3 glass-strong px-8 py-4 rounded-full text-cream hover:bg-cream/10 transition-all duration-300 group">
+        <span>View All Projects</span>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT — split layout, contact methods + glass form
+     ============================================================ -->
+<section id="contact" class="relative min-h-screen py-24 md:py-32 px-6 lg:px-12 flex items-center overflow-hidden">
+  <div class="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-slate-blue/8 blur-[140px] pointer-events-none"></div>
+  <div class="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-depth/40 blur-[120px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto w-full relative z-10">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+      <!-- Left: heading + contact methods -->
+      <div class="reveal">
+        <div class="font-mono text-xs text-mist/40 tracking-[0.2em] mb-6">05 / CONTACT</div>
+        <h2 class="font-display text-5xl md:text-6xl lg:text-7xl text-cream mb-8 leading-[0.95]">
+          Let's Work<br>
+          <span class="italic font-light">Together</span><span class="text-mist/40">.</span>
+        </h2>
+        <p class="text-mist/70 mb-12 max-w-md leading-relaxed text-lg">
+          Have a project idea? Feel free to contact me. I'm always open to discussing new opportunities and interesting challenges.
+        </p>
+
+        <!-- Contact methods -->
+        <div class="space-y-3">
+          <a href="mailto:hello@mohammed.dev" class="flex items-center gap-4 p-4 glass rounded-2xl hover:bg-cream/5 transition group">
+            <div class="w-11 h-11 rounded-full glass-strong flex items-center justify-center group-hover:bg-cream/10 transition shrink-0">
+              <svg class="w-5 h-5 text-cream" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em]">Email</div>
+              <div class="text-cream truncate">hello@mohammed.dev</div>
+            </div>
+            <svg class="w-4 h-4 ml-auto text-mist/40 group-hover:text-cream group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+
+          <a href="https://linkedin.com" target="_blank" rel="noopener" class="flex items-center gap-4 p-4 glass rounded-2xl hover:bg-cream/5 transition group">
+            <div class="w-11 h-11 rounded-full glass-strong flex items-center justify-center group-hover:bg-cream/10 transition shrink-0">
+              <svg class="w-5 h-5 text-cream" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em]">LinkedIn</div>
+              <div class="text-cream truncate">/in/mohammed</div>
+            </div>
+            <svg class="w-4 h-4 ml-auto text-mist/40 group-hover:text-cream group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+
+          <a href="https://github.com" target="_blank" rel="noopener" class="flex items-center gap-4 p-4 glass rounded-2xl hover:bg-cream/5 transition group">
+            <div class="w-11 h-11 rounded-full glass-strong flex items-center justify-center group-hover:bg-cream/10 transition shrink-0">
+              <svg class="w-5 h-5 text-cream" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em]">GitHub</div>
+              <div class="text-cream truncate">@mohammed</div>
+            </div>
+            <svg class="w-4 h-4 ml-auto text-mist/40 group-hover:text-cream group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="reveal reveal-d1">
+        <form id="contact-form" class="glass-strong rounded-3xl p-7 md:p-9 space-y-5" novalidate>
+          <div>
+            <label for="name" class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] block mb-2">Name <span class="text-cream/60">*</span></label>
+            <input type="text" id="name" name="name" required class="form-field" placeholder="Your name" autocomplete="name">
+            <p class="text-xs text-red-400/70 mt-1.5 hidden" data-error="name">Please enter your name.</p>
+          </div>
+
+          <div>
+            <label for="email" class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] block mb-2">Email <span class="text-cream/60">*</span></label>
+            <input type="email" id="email" name="email" required class="form-field" placeholder="you@email.com" autocomplete="email">
+            <p class="text-xs text-red-400/70 mt-1.5 hidden" data-error="email">Please enter a valid email.</p>
+          </div>
+
+          <div>
+            <label for="phone" class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] block mb-2">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-field" placeholder="Optional" autocomplete="tel">
+          </div>
+
+          <div>
+            <label for="message" class="font-mono text-[10px] text-mist/50 uppercase tracking-[0.15em] block mb-2">Message <span class="text-cream/60">*</span></label>
+            <textarea id="message" name="message" rows="3" required class="form-field resize-none" placeholder="Tell me about your project..."></textarea>
+            <p class="text-xs text-red-400/70 mt-1.5 hidden" data-error="message">Please enter a message (at least 10 characters).</p>
+          </div>
+
+          <button type="submit" class="w-full bg-cream text-ink py-4 rounded-xl font-medium hover:bg-cream/90 transition-all duration-300 flex items-center justify-center gap-2 group">
+            <span>Send Message</span>
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+
+          <p id="form-success" class="text-emerald-400 text-sm text-center hidden pt-2">Thanks! Your message has been sent. I'll be in touch soon.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="border-t border-mist/10 py-10 px-6 lg:px-12 relative z-10">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <a href="#home" class="font-display text-2xl text-cream hover:text-mist transition">M.</a>
+    <div class="text-xs text-mist/50 text-center order-last md:order-none">
+      Designed and Built by Mohammed · © 2025
+    </div>
+    <div class="flex gap-2">
+      <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub" class="w-10 h-10 glass rounded-full flex items-center justify-center text-mist hover:text-cream hover:bg-cream/5 transition">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/>
+        </svg>
+      </a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" class="w-10 h-10 glass rounded-full flex items-center justify-center text-mist hover:text-cream hover:bg-cream/5 transition">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+        </svg>
+      </a>
+      <a href="mailto:hello@mohammed.dev" aria-label="Email" class="w-10 h-10 glass rounded-full flex items-center justify-center text-mist hover:text-cream hover:bg-cream/5 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top button -->
+<button id="back-to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-40 w-11 h-11 glass-strong rounded-full flex items-center justify-center text-cream opacity-0 pointer-events-none transition-all duration-300 hover:bg-cream/10">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+  </svg>
+</button>
+
+<!-- ============================================================
+     JAVASCRIPT — interactions
+     ============================================================ -->
+<script>
+  // ---- Elements ----
+  const navbar = document.getElementById('navbar');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section[id]');
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  const backToTop = document.getElementById('back-to-top');
+
+  // ---- Mobile menu toggle ----
+  function toggleMenu(open) {
+    const isOpen = open !== undefined ? open : !mobileMenu.classList.contains('open');
+    mobileMenu.classList.toggle('open', isOpen);
+    menuIcon.classList.toggle('hidden', isOpen);
+    closeIcon.classList.toggle('hidden', !isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+  menuToggle.addEventListener('click', () => toggleMenu());
+
+  // Close mobile menu when a link is clicked
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => toggleMenu(false));
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+      toggleMenu(false);
+    }
+  });
+
+  // ---- Smooth scroll with navbar offset ----
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href === '#' || href.length < 2) return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        const offset = 90;
+        const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ---- Active nav state via IntersectionObserver ----
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.dataset.section === id);
+        });
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+
+  sections.forEach(section => sectionObserver.observe(section));
+
+  // ---- Back-to-top visibility ----
+  function handleScroll() {
+    if (window.scrollY > window.innerHeight * 0.8) {
+      backToTop.classList.remove('opacity-0', 'pointer-events-none');
+      backToTop.classList.add('opacity-100');
+    } else {
+      backToTop.classList.add('opacity-0', 'pointer-events-none');
+      backToTop.classList.remove('opacity-100');
+    }
+
+    // Subtle navbar shrink on scroll
+    if (window.scrollY > 40) {
+      navbar.style.top = '0.5rem';
+    } else {
+      navbar.style.top = '';
+    }
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ---- Reveal on scroll ----
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ---- Form validation ----
+  const form = document.getElementById('contact-form');
+  const successMsg = document.getElementById('form-success');
+
+  function showError(field, msg) {
+    const errorEl = form.querySelector(`[data-error="${field}"]`);
+    const inputEl = form.querySelector(`#${field}`);
+    if (errorEl) {
+      if (msg) errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+    }
+    if (inputEl) inputEl.classList.add('error');
+  }
+  function clearError(field) {
+    const errorEl = form.querySelector(`[data-error="${field}"]`);
+    const inputEl = form.querySelector(`#${field}`);
+    if (errorEl) errorEl.classList.add('hidden');
+    if (inputEl) inputEl.classList.remove('error');
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let valid = true;
+
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+
+    // Reset
+    ['name', 'email', 'message'].forEach(clearError);
+
+    if (name.length < 2) {
+      showError('name', 'Please enter your name.');
+      valid = false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showError('email', 'Please enter a valid email.');
+      valid = false;
+    }
+    if (message.length < 10) {
+      showError('message', 'Please enter a message (at least 10 characters).');
+      valid = false;
+    }
+
+    if (valid) {
+      successMsg.classList.remove('hidden');
+      form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+      setTimeout(() => {
+        form.reset();
+        successMsg.classList.add('hidden');
+        form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = false);
+      }, 4000);
+    }
+  });
+
+  // Real-time error clearing
+  form.querySelectorAll('.form-field').forEach(field => {
+    field.addEventListener('input', () => {
+      if (field.name) clearError(field.name);
+    });
+  });
+
+  // Initial state
+  handleScroll();
+</script>
+
+</body>
+</html>
