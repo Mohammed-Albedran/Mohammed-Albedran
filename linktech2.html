@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkTech Iraq · سوق التقنية الثلاثي</title>
+
+<!-- Google Fonts: Cairo -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        b2b: { bg:'#141414', card:'#202020', cardHover:'#282828', border:'#333333' },
+        brand: { DEFAULT:'#ff5722', hover:'#e64a19', light:'rgba(255,87,34,0.1)', glow:'rgba(255,87,34,0.35)' },
+        b2c: { green:'#00a65a', greenHover:'#008d4c', bg:'#f9f9f9', border:'#e5e7eb', text:'#111111' },
+        console: { bg:'#0d0d0d', card:'#1a1a1a', border:'#2a2a2a' }
+      },
+      fontFamily: { cairo: ['Cairo','sans-serif'] },
+      boxShadow: {
+        'soft': '0 2px 8px rgba(0,0,0,0.08)',
+        'card': '0 4px 24px rgba(0,0,0,0.25)',
+        'glow': '0 0 40px rgba(255,87,34,0.25)'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  body { font-family:'Cairo',sans-serif; }
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#444;border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:#555}
+  .b2c-active ::-webkit-scrollbar-thumb{background:#ccc}
+
+  /* B2B ambient background */
+  .b2b-bg{
+    background:
+      radial-gradient(circle at 15% -10%, rgba(255,87,34,0.10) 0%, transparent 45%),
+      radial-gradient(circle at 85% 110%, rgba(255,87,34,0.06) 0%, transparent 45%),
+      #141414;
+  }
+  .glass{
+    background:rgba(32,32,32,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  .glass-light{
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+
+  .view{display:none}
+  .view.active{display:block;animation:fadeUp .45s cubic-bezier(.16,1,.3,1)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  .glow-orange{box-shadow:0 0 30px rgba(255,87,34,0.35), 0 0 60px rgba(255,87,34,0.12)}
+  .glow-green{box-shadow:0 0 30px rgba(0,166,90,0.30), 0 0 60px rgba(0,166,90,0.10)}
+
+  .bid-entry{animation:slideIn .35s cubic-bezier(.16,1,.3,1)}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+  .pulse-dot{animation:pulseDot 1.6s ease-in-out infinite}
+  @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+
+  .float-card{animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  .tier-active{border-color:#ff5722!important;box-shadow:0 0 0 1px #ff5722, 0 8px 24px rgba(255,87,34,0.25)!important;background:rgba(255,87,34,0.05)!important}
+
+  *:focus-visible{outline:2px solid #ff5722;outline-offset:2px;border-radius:6px}
+
+  .progress-bar{background:linear-gradient(90deg,#ff5722,#ff8a65);background-size:200% 100%;animation:shimmer 2s linear infinite}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  .skeleton-img{
+    background:linear-gradient(135deg,#2a2a2a 0%,#3a3a3a 50%,#2a2a2a 100%);
+    background-size:200% 200%;animation:sk 3s ease infinite;
+  }
+  @keyframes sk{0%,100%{background-position:0 0}50%{background-position:100% 100%}}
+
+  [dir="ltr"] .flip{transform:scaleX(-1)}
+</style>
+</head>
+
+<body class="font-cairo bg-b2b-bg text-gray-200 min-h-screen overflow-x-hidden">
+
+<!-- =================== B2B HEADER =================== -->
+<header id="header-b2b" class="sticky top-0 z-40 glass border-b border-b2b-border">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <!-- Logo -->
+    <a href="#" onclick="navigate('view-home','b2b');return false" class="flex items-center gap-2.5 shrink-0">
+      <div class="w-9 h-9 rounded-lg bg-brand flex items-center justify-center shadow-glow">
+        <i class="fa-solid fa-link text-white text-sm"></i>
+      </div>
+      <div class="leading-tight">
+        <div class="font-extrabold text-white text-base">LinkTech</div>
+        <div class="text-[10px] text-gray-500 -mt-0.5" data-key="iraq">العراق</div>
+      </div>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-1 text-sm">
+      <button onclick="navigate('view-home','b2b')" class="nav-link px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition" data-key="nav_home">الرئيسية</button>
+      <button onclick="navigate('view-catalog','b2b')" class="nav-link px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition" data-key="nav_market">السوق</button>
+      <button onclick="navigate('view-auction','b2b')" class="nav-link px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition" data-key="nav_auction">المزادات الحية</button>
+      <button onclick="navigate('view-reverse','b2b')" class="nav-link px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition" data-key="nav_reverse">المزاد العكسي</button>
+      <button onclick="navigate('view-supplier','b2b')" class="nav-link px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition" data-key="nav_suppliers">الموردون</button>
+      <button onclick="navigate('view-console','console')" class="nav-link px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition" data-key="nav_console">الكونسول</button>
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-2">
+      <!-- Search -->
+      <div class="hidden md:flex relative">
+        <input type="text" data-i18n-ph="ph_search" placeholder="ابحث عن منتجات أو موردين..." class="w-56 lg:w-64 bg-b2b-card border border-b2b-border rounded-lg py-2 pr-9 pl-3 text-sm placeholder-gray-500 focus:border-brand focus:outline-none transition">
+        <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+      </div>
+
+      <!-- Lang -->
+      <button onclick="toggleLang()" class="h-9 px-3 rounded-lg bg-b2b-card border border-b2b-border text-sm hover:border-brand transition flex items-center gap-1.5">
+        <i class="fa-solid fa-globe text-gray-400 text-xs"></i>
+        <span id="lang-label">EN</span>
+      </button>
+
+      <!-- B2C Switch -->
+      <button onclick="navigate('view-shop','b2c')" class="hidden sm:flex h-9 px-3 rounded-lg bg-b2c-green/15 border border-b2c-green/30 text-b2c-green text-sm hover:bg-b2c-green/25 transition items-center gap-1.5" data-key="switch_b2c">B2C</button>
+
+      <!-- Login -->
+      <button onclick="openModal('modal-login')" class="h-9 px-4 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition" data-key="login">دخول</button>
+
+      <!-- Mobile menu btn -->
+      <button onclick="toggleMobileMenu()" class="lg:hidden h-9 w-9 rounded-lg bg-b2b-card border border-b2b-border flex items-center justify-center">
+        <i class="fa-solid fa-bars text-gray-300"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- =================== B2C HEADER =================== -->
+<header id="header-b2c" class="hidden sticky top-0 z-40 glass-light border-b border-b2c-border">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <a href="#" onclick="navigate('view-shop','b2c');return false" class="flex items-center gap-2.5 shrink-0">
+      <div class="w-9 h-9 rounded-lg bg-b2c-green flex items-center justify-center">
+        <i class="fa-solid fa-link text-white text-sm"></i>
+      </div>
+      <div class="leading-tight">
+        <div class="font-extrabold text-b2c-text text-base">LinkTech</div>
+        <div class="text-[10px] text-gray-500 -mt-0.5" data-key="store_local">متجر محلي</div>
+      </div>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-1 text-sm">
+      <button onclick="navigate('view-shop','b2c')" class="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition" data-key="nav_shop">تسوق</button>
+      <button onclick="navigate('view-store','b2c')" class="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition" data-key="nav_stores">المتاجر</button>
+      <button class="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition" data-key="nav_categories">الفئات</button>
+      <button class="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition" data-key="nav_offers">العروض</button>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden md:flex relative">
+        <input type="text" data-i18n-ph="ph_search_shop" placeholder="ابحث في المتاجر المحلية..." class="w-56 lg:w-64 bg-white border border-b2c-border rounded-lg py-2 pr-9 pl-3 text-sm placeholder-gray-400 focus:border-b2c-green focus:outline-none transition">
+        <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+      </div>
+
+      <button onclick="toggleLang()" class="h-9 px-3 rounded-lg bg-white border border-b2c-border text-sm hover:border-b2c-green transition flex items-center gap-1.5">
+        <i class="fa-solid fa-globe text-gray-500 text-xs"></i>
+        <span id="lang-label-2">EN</span>
+      </button>
+
+      <button onclick="navigate('view-home','b2b')" class="hidden sm:flex h-9 px-3 rounded-lg bg-brand/10 border border-brand/30 text-brand text-sm hover:bg-brand/20 transition items-center gap-1.5" data-key="switch_b2b">B2B</button>
+
+      <!-- Cart -->
+      <button onclick="openCart()" class="relative h-9 w-9 rounded-lg bg-white border border-b2c-border flex items-center justify-center hover:border-b2c-green transition">
+        <i class="fa-solid fa-bag-shopping text-gray-700 text-sm"></i>
+        <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-b2c-green text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+      </button>
+
+      <button onclick="openModal('modal-login')" class="h-9 px-4 rounded-lg bg-b2c-green hover:bg-b2c-greenHover text-white text-sm font-semibold transition" data-key="login">دخول</button>
+
+      <button onclick="toggleMobileMenu()" class="lg:hidden h-9 w-9 rounded-lg bg-white border border-b2c-border flex items-center justify-center">
+        <i class="fa-solid fa-bars text-gray-700"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- =================== CONSOLE HEADER =================== -->
+<header id="header-console" class="hidden sticky top-0 z-40 glass border-b border-console-border">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <button onclick="navigate('view-home','b2b')" class="w-9 h-9 rounded-lg bg-b2b-card border border-b2b-border flex items-center justify-center hover:border-brand transition">
+        <i class="fa-solid fa-arrow-right text-gray-300 text-sm flip"></i>
+      </button>
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-lg bg-brand flex items-center justify-center">
+          <i class="fa-solid fa-link text-white text-sm"></i>
+        </div>
+        <div class="leading-tight">
+          <div class="font-extrabold text-white text-base" data-key="console_title">كونسول التاجر</div>
+          <div class="text-[10px] text-gray-500 -mt-0.5">LinkTech Iraq</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="toggleLang()" class="h-9 px-3 rounded-lg bg-b2b-card border border-b2b-border text-sm hover:border-brand transition flex items-center gap-1.5">
+        <i class="fa-solid fa-globe text-gray-400 text-xs"></i>
+        <span id="lang-label-3">EN</span>
+      </button>
+      <div class="hidden md:flex items-center gap-2 bg-b2b-card border border-b2b-border rounded-lg pr-2 pl-3 py-1.5">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white text-xs font-bold">أم</div>
+        <div class="leading-tight">
+          <div class="text-xs text-white font-semibold">أحمد الموسوي</div>
+          <div class="text-[10px] text-gray-500" data-key="merchant_baghdad">تاجر · بغداد</div>
+        </div>
+      </div>
+      <button onclick="toggleMobileMenu()" class="lg:hidden h-9 w-9 rounded-lg bg-b2b-card border border-b2b-border flex items-center justify-center">
+        <i class="fa-solid fa-bars text-gray-300"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- =================== MOBILE MENU =================== -->
+<div id="mobile-menu" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-black/60" onclick="toggleMobileMenu()"></div>
+  <div class="absolute top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-b2b-card border-l border-b2b-border p-6 overflow-y-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center"><i class="fa-solid fa-link text-white text-xs"></i></div>
+        <span class="font-bold text-white">LinkTech</span>
+      </div>
+      <button onclick="toggleMobileMenu()" class="w-8 h-8 rounded-lg bg-b2b-bg flex items-center justify-center"><i class="fa-solid fa-xmark text-gray-400"></i></button>
+    </div>
+    <nav class="space-y-1 text-sm" id="mobile-nav">
+      <button onclick="navigate('view-home','b2b');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/5 flex items-center gap-3"><i class="fa-solid fa-house w-5 text-gray-500"></i><span data-key="nav_home">الرئيسية</span></button>
+      <button onclick="navigate('view-catalog','b2b');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/5 flex items-center gap-3"><i class="fa-solid fa-store w-5 text-gray-500"></i><span data-key="nav_market">السوق</span></button>
+      <button onclick="navigate('view-auction','b2b');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/5 flex items-center gap-3"><i class="fa-solid fa-gavel w-5 text-gray-500"></i><span data-key="nav_auction">المزادات الحية</span></button>
+      <button onclick="navigate('view-reverse','b2b');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/5 flex items-center gap-3"><i class="fa-solid fa-arrows-rotate w-5 text-gray-500"></i><span data-key="nav_reverse">المزاد العكسي</span></button>
+      <button onclick="navigate('view-supplier','b2b');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/5 flex items-center gap-3"><i class="fa-solid fa-building w-5 text-gray-500"></i><span data-key="nav_suppliers">الموردون</span></button>
+      <button onclick="navigate('view-console','console');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-gray-300 hover:bg-white/5 flex items-center gap-3"><i class="fa-solid fa-gauge w-5 text-gray-500"></i><span data-key="nav_console">الكونسول</span></button>
+      <div class="h-px bg-b2b-border my-3"></div>
+      <button onclick="navigate('view-shop','b2c');toggleMobileMenu()" class="w-full text-right px-3 py-2.5 rounded-lg text-b2c-green hover:bg-b2c-green/10 flex items-center gap-3"><i class="fa-solid fa-bag-shopping w-5"></i><span data-key="switch_b2c">الانتقال إلى B2C</span></button>
+    </nav>
+  </div>
+</div>
+
+<!-- =================== MAIN VIEWS =================== -->
+<main>
+
+<!-- ============ VIEW 1: B2B HOME ============ -->
+<section id="view-home" class="view active">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-10 lg:py-16">
+
+    <!-- Hero -->
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-16">
+      <!-- Left -->
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-light border border-brand/30 text-brand text-xs font-semibold mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand pulse-dot"></span>
+          <span data-key="hero_badge">سوق B2B مباشر • بلا وسطاء مجهولين</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5">
+          <span data-key="hero_h1_l1">تقنية الجملة،</span>
+          <span class="block text-brand" data-key="hero_h1_l2">من المورد إلى متجرك</span>
+          <span data-key="hero_h1_l3">مباشرة</span>
+        </h1>
+
+        <p class="text-gray-400 text-base lg:text-lg leading-relaxed mb-8 max-w-xl" data-key="hero_desc">
+          منصة عراقية تربط التجار بموردين دوليين موثوقين من أوروبا والإمارات. مزادات حية، مزادات عكسية للاستيراد، ومدفوعات Escrow محمية — كل شيء بعملية شفافة واحدة.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mb-8">
+          <button onclick="navigate('view-catalog','b2b')" class="px-6 py-3.5 rounded-xl bg-brand hover:bg-brand-hover text-white font-semibold transition shadow-glow flex items-center gap-2">
+            <i class="fa-solid fa-store"></i>
+            <span data-key="browse_market">تصفح السوق</span>
+          </button>
+          <button onclick="navigate('view-auction','b2b')" class="px-6 py-3.5 rounded-xl bg-b2b-card border border-b2b-border hover:border-brand text-white font-semibold transition flex items-center gap-2">
+            <i class="fa-solid fa-gavel"></i>
+            <span data-key="live_auctions">المزادات الحية</span>
+          </button>
+        </div>
+
+        <!-- Live badge -->
+        <div class="inline-flex items-center gap-2 text-sm text-gray-400">
+          <span class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></span>
+          <span><b class="text-white">12</b> <span data-key="live_now">حي الآن</span></span>
+          <span class="mx-2 text-gray-700">•</span>
+          <i class="fa-solid fa-shield-halved text-brand text-xs"></i>
+          <span data-key="escrow_protected">محمي بـ Escrow</span>
+        </div>
+      </div>
+
+      <!-- Right - Floating Cards -->
+      <div class="relative h-[400px] sm:h-[480px] hidden md:block">
+        <!-- Background gradient blob -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-brand/20 blur-3xl"></div>
+
+        <!-- Wholesale Card -->
+        <div class="float-card absolute top-0 right-0 w-72 glass border border-b2b-border rounded-2xl p-5 shadow-card cursor-pointer hover:border-brand/50 transition" onclick="navigate('view-catalog','b2b')">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-brand/15 flex items-center justify-center">
+              <i class="fa-solid fa-cube text-brand text-xl"></i>
+            </div>
+            <span class="text-[10px] text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full font-semibold" data-key="active">نشط</span>
+          </div>
+          <h3 class="text-white font-bold mb-1" data-key="wholesale_buy">شراء الجملة</h3>
+          <p class="text-xs text-gray-400 mb-3" data-key="wholesale_desc">أسعار متدرجة حسب الكمية من موردين موثوقين</p>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-gray-500" data-key="from">يبدأ من</span>
+            <span class="text-brand font-bold text-base">$255 <span class="text-xs text-gray-500">/ وحدة</span></span>
+          </div>
+        </div>
+
+        <!-- Auction Card -->
+        <div class="float-card absolute bottom-0 left-0 w-72 glass border border-brand/40 rounded-2xl p-5 shadow-glow cursor-pointer hover:border-brand transition" style="animation-delay:-3s" onclick="navigate('view-auction','b2b')">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-brand flex items-center justify-center shadow-glow">
+              <i class="fa-solid fa-gavel text-white text-xl"></i>
+            </div>
+            <span class="text-[10px] text-white bg-brand px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+              <span class="w-1 h-1 rounded-full bg-white pulse-dot"></span>
+              <span data-key="live_caps">حي</span>
+            </span>
+          </div>
+          <h3 class="text-white font-bold mb-1" data-key="live_auction_room">غرفة المزاد الحي</h3>
+          <p class="text-xs text-gray-400 mb-3" data-key="auction_desc">دفعة واحدة، أعلى مزايد يفوز بكل الكمية</p>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-gray-500" data-key="current_bid_label">المزايدة الحالية</span>
+            <span class="text-brand font-bold text-base">$8,400</span>
+          </div>
+        </div>
+
+        <!-- Stats Mini Card -->
+        <div class="float-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 glass border border-b2b-border rounded-2xl p-4 shadow-card" style="animation-delay:-1.5s">
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-shield-halved text-b2c-green"></i>
+            <span class="text-xs text-gray-400" data-key="escrow_active">Escrow نشط</span>
+          </div>
+          <div class="text-2xl font-extrabold text-white mb-1">$41,800</div>
+          <div class="text-[10px] text-gray-500" data-key="in_transit">قيد الشحن الآن</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+      <div class="glass border border-b2b-border rounded-2xl p-5 hover:border-brand/40 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center group-hover:bg-brand/20 transition">
+            <i class="fa-solid fa-building text-brand"></i>
+          </div>
+          <i class="fa-solid fa-arrow-up text-green-400 text-xs"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-white mb-1">+30</div>
+        <div class="text-xs text-gray-400" data-key="stat_suppliers">مورد موثّق KYB</div>
+      </div>
+
+      <div class="glass border border-b2b-border rounded-2xl p-5 hover:border-brand/40 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center group-hover:bg-brand/20 transition">
+            <i class="fa-solid fa-users text-brand"></i>
+          </div>
+          <i class="fa-solid fa-arrow-up text-green-400 text-xs"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-white mb-1">+200</div>
+        <div class="text-xs text-gray-400" data-key="stat_merchants">تاجر عراقي مسجل</div>
+      </div>
+
+      <div class="glass border border-b2b-border rounded-2xl p-5 hover:border-brand/40 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center group-hover:bg-brand/20 transition">
+            <i class="fa-solid fa-dollar-sign text-brand"></i>
+          </div>
+          <i class="fa-solid fa-arrow-up text-green-400 text-xs"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-white mb-1">$2M</div>
+        <div class="text-xs text-gray-400" data-key="stat_volume">حجم تداول مستهدف</div>
+      </div>
+
+      <div class="glass border border-b2b-border rounded-2xl p-5 hover:border-brand/40 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center group-hover:bg-brand/20 transition">
+            <i class="fa-solid fa-clock text-brand"></i>
+          </div>
+          <i class="fa-solid fa-arrow-up text-green-400 text-xs"></i>
+        </div>
+        <div class="text-3xl font-extrabold text-white mb-1">3-7</div>
+        <div class="text-xs text-gray-400" data-key="stat_days">أيام تسوية الدفع</div>
+      </div>
+    </div>
+
+    <!-- Feature Bar -->
+    <div class="glass border border-b2b-border rounded-2xl p-6 lg:p-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-lock text-brand"></i>
+          </div>
+          <div>
+            <div class="text-white font-semibold text-sm mb-1" data-key="feat_lock">قفل السعر 48 ساعة</div>
+            <div class="text-xs text-gray-500" data-key="feat_lock_desc">ثبات السعر طيلة المزايدة</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-ship text-brand"></i>
+          </div>
+          <div>
+            <div class="text-white font-semibold text-sm mb-1" data-key="feat_ship">الشحن والتخليص</div>
+            <div class="text-xs text-gray-500" data-key="feat_ship_desc">دعم لوجستي حتى بغداد</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-shield-halved text-brand"></i>
+          </div>
+          <div>
+            <div class="text-white font-semibold text-sm mb-1" data-key="feat_escrow">حماية Escrow</div>
+            <div class="text-xs text-gray-500" data-key="feat_escrow_desc">الدفع يُطلق بعد الفحص</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-certificate text-brand"></i>
+          </div>
+          <div>
+            <div class="text-white font-semibold text-sm mb-1" data-key="feat_kyb">توثيق KYB</div>
+            <div class="text-xs text-gray-500" data-key="feat_kyb_desc">كل مورد يمر بالتحقق</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 2: REVERSE AUCTION ============ -->
+<section id="view-reverse" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-8">
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs text-gray-500 mb-6">
+      <button onclick="navigate('view-home','b2b')" class="hover:text-brand" data-key="nav_home">الرئيسية</button>
+      <i class="fa-solid fa-chevron-left flip text-[10px]"></i>
+      <span data-key="nav_reverse">المزاد العكسي</span>
+      <i class="fa-solid fa-chevron-left flip text-[10px]"></i>
+      <span class="text-gray-300" data-key="reverse_auction_detail">تفاصيل الطلب</span>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Main Content -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Header -->
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand text-white" data-key="reverse">عكسي</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-b2c-green pulse-dot"></span><span data-key="receiving_offers">استقبال العروض</span></span>
+              </div>
+              <h1 class="text-xl lg:text-2xl font-extrabold text-white mb-1">100× MacBook Air M1</h1>
+              <p class="text-sm text-gray-400" data-key="grade_a_refurb">متجدد درجة A · 8GB · 256GB</p>
+            </div>
+            <div class="text-left">
+              <div class="text-xs text-gray-500 mb-1" data-key="target_price">السعر المستهدف</div>
+              <div class="text-2xl font-extrabold text-brand">$480<span class="text-sm text-gray-500">/ وحدة</span></div>
+              <div class="text-xs text-gray-500 mt-1" data-key="budget_ceiling">سقف الميزانية: $50,000</div>
+            </div>
+          </div>
+
+          <!-- Countdown -->
+          <div class="bg-b2b-bg border border-b2b-border rounded-xl p-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs text-gray-400 flex items-center gap-2"><i class="fa-solid fa-hourglass-half text-brand"></i> <span data-key="time_remaining">الوقت المتبقي لاستقبال العروض</span></span>
+              <span class="text-xs text-gray-500" data-key="closes_in">يُغلق خلال</span>
+            </div>
+            <div class="flex items-center gap-3 justify-center lg:justify-start">
+              <div class="text-center"><div class="text-3xl font-extrabold text-white tabular-nums" id="rev-timer-h">47</div><div class="text-[10px] text-gray-500" data-key="hours">ساعة</div></div>
+              <div class="text-3xl font-extrabold text-brand">:</div>
+              <div class="text-center"><div class="text-3xl font-extrabold text-white tabular-nums" id="rev-timer-m">23</div><div class="text-[10px] text-gray-500" data-key="minutes">دقيقة</div></div>
+              <div class="text-3xl font-extrabold text-brand">:</div>
+              <div class="text-center"><div class="text-3xl font-extrabold text-white tabular-nums" id="rev-timer-s">11</div><div class="text-[10px] text-gray-500" data-key="seconds">ثانية</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specs Panel -->
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <h3 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-list-check text-brand"></i> <span data-key="req_specs">المواصفات المطلوبة</span></h3>
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <div class="bg-b2b-bg border border-b2b-border rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="spec_model">الموديل</div>
+              <div class="text-white font-semibold">MacBook Air M1 13"</div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="spec_condition">الCondition المقبول</div>
+              <div class="text-white font-semibold" data-key="grade_a">متجدد درجة A</div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="spec_destination">الوجهة</div>
+              <div class="text-white font-semibold flex items-center gap-2">🇮🇶 <span data-key="baghdad">بغداد، العراق</span></div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="spec_shipping">الشحن</div>
+              <div class="text-white font-semibold" data-key="dhl_express">DHL Express · 5-11 يوم</div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="spec_quantity">الكمية</div>
+              <div class="text-white font-semibold">100 وحدة</div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="spec_payment">الدفع</div>
+              <div class="text-white font-semibold">Escrow · USD</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <h3 class="text-white font-bold mb-5 flex items-center gap-2"><i class="fa-solid fa-timeline text-brand"></i> <span data-key="auction_progress">مسار الطلب</span></h3>
+          <div class="relative">
+            <div class="absolute top-4 right-0 left-0 h-0.5 bg-b2b-border"></div>
+            <div class="absolute top-4 right-0 h-0.5 bg-brand transition-all" style="width:55%"></div>
+            <div class="grid grid-cols-4 gap-2 relative">
+              <div class="text-center">
+                <div class="w-8 h-8 mx-auto rounded-full bg-brand flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                <div class="text-[11px] text-gray-300 mt-2 font-semibold" data-key="step_publish">نشر الطلب</div>
+              </div>
+              <div class="text-center">
+                <div class="w-8 h-8 mx-auto rounded-full bg-brand flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></div>
+                <div class="text-[11px] text-gray-300 mt-2 font-semibold" data-key="step_invite">دعوة الموردين</div>
+              </div>
+              <div class="text-center">
+                <div class="w-8 h-8 mx-auto rounded-full bg-brand flex items-center justify-center text-white text-xs ring-4 ring-brand/20 pulse-dot"><i class="fa-solid fa-gavel"></i></div>
+                <div class="text-[11px] text-brand mt-2 font-bold" data-key="step_receive">استقبال العروض</div>
+              </div>
+              <div class="text-center">
+                <div class="w-8 h-8 mx-auto rounded-full bg-b2b-border flex items-center justify-center text-gray-600 text-xs"><i class="fa-solid fa-trophy"></i></div>
+                <div class="text-[11px] text-gray-600 mt-2 font-semibold" data-key="step_select">اختيار الفائز</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar - Offers -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-white font-bold flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-brand"></i> <span data-key="received_offers">العروض المستلمة</span></h3>
+          <span class="px-2 py-0.5 rounded-full bg-brand/15 text-brand text-xs font-bold">5</span>
+        </div>
+
+        <!-- Best Offer -->
+        <div class="glass border-2 border-brand rounded-2xl p-5 shadow-glow relative">
+          <div class="absolute -top-2 right-4 px-2 py-0.5 bg-brand text-white text-[10px] font-bold rounded-full" data-key="best_offer">أفضل عرض</div>
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white font-bold text-sm">EC</div>
+              <div>
+                <div class="text-white font-bold text-sm">EuroCycle GmbH</div>
+                <div class="text-xs text-gray-500 flex items-center gap-1">🇩🇪 <span data-key="germany">ألمانيا</span> · <i class="fa-solid fa-shield-check text-b2c-green text-[10px]"></i> KYB 4.8</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+            <div class="bg-b2b-bg rounded-lg p-2">
+              <div class="text-gray-500" data-key="unit_price">سعر الوحدة</div>
+              <div class="text-white font-bold text-base">$455</div>
+              <div class="text-b2c-green text-[10px]">-5% <span data-key="below_target">تحت المستهدف</span></div>
+            </div>
+            <div class="bg-b2b-bg rounded-lg p-2">
+              <div class="text-gray-500" data-key="shipping_time">وقت الشحن</div>
+              <div class="text-white font-bold text-base">11 <span class="text-xs">يوم</span></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mb-3 pb-3 border-b border-b2b-border">
+            <span class="text-xs text-gray-400" data-key="total">الإجمالي</span>
+            <span class="text-brand font-extrabold text-lg">$45,500</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="showToast('تم تسجيل طلب ترسية الطلب. سيتم الانتقال لإجراءات العقد.', 'success')" class="px-3 py-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition" data-key="award_order">ترسية الطلب</button>
+            <button onclick="navigate('view-supplier','b2b')" class="px-3 py-2 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white text-xs font-semibold transition" data-key="view_details">عرض التفاصيل</button>
+          </div>
+        </div>
+
+        <!-- Other Offers -->
+        <div class="glass border border-b2b-border rounded-2xl p-4 hover:border-b2b-border transition">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-b2b-card flex items-center justify-center text-gray-300 font-bold text-xs">TR</div>
+              <div>
+                <div class="text-white font-semibold text-sm">TechReclaim FZE</div>
+                <div class="text-[11px] text-gray-500">🇦🇪 <span data-key="uae">الإمارات</span> · KYB 4.6</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-400">$472 <span class="text-xs">/ وحدة</span></span>
+            <span class="text-white font-bold">$47,200</span>
+          </div>
+        </div>
+
+        <div class="glass border border-b2b-border rounded-2xl p-4">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-b2b-card flex items-center justify-center text-gray-300 font-bold text-xs">PB</div>
+              <div>
+                <div class="text-white font-semibold text-sm">PixelBar Ltd</div>
+                <div class="text-[11px] text-gray-500">🇬🇧 <span data-key="uk">بريطانيا</span> · KYB 4.5</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-400">$479 <span class="text-xs">/ وحدة</span></span>
+            <span class="text-white font-bold">$47,900</span>
+          </div>
+        </div>
+
+        <div class="glass border border-b2b-border rounded-2xl p-4">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-b2b-card flex items-center justify-center text-gray-300 font-bold text-xs">NL</div>
+              <div>
+                <div class="text-white font-semibold text-sm">NordicTech AB</div>
+                <div class="text-[11px] text-gray-500">🇸🇪 <span data-key="sweden">السويد</span> · KYB 4.4</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-400">$488 <span class="text-xs">/ وحدة</span></span>
+            <span class="text-white font-bold">$48,800</span>
+          </div>
+        </div>
+
+        <div class="glass border border-b2b-border rounded-2xl p-4">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-b2b-card flex items-center justify-center text-gray-300 font-bold text-xs">RT</div>
+              <div>
+                <div class="text-white font-semibold text-sm">RigaTrade OÜ</div>
+                <div class="text-[11px] text-gray-500">🇱🇻 <span data-key="latvia">لاتفيا</span> · KYB 4.2</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-400">$495 <span class="text-xs">/ وحدة</span></span>
+            <span class="text-white font-bold">$49,500</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 3: LIVE AUCTION ROOM ============ -->
+<section id="view-auction" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-8">
+    <div class="flex items-center gap-2 text-xs text-gray-500 mb-6">
+      <button onclick="navigate('view-home','b2b')" class="hover:text-brand" data-key="nav_home">الرئيسية</button>
+      <i class="fa-solid fa-chevron-left flip text-[10px]"></i>
+      <span data-key="nav_auction">المزادات الحية</span>
+      <i class="fa-solid fa-chevron-left flip text-[10px]"></i>
+      <span class="text-gray-300" data-key="auction_room">غرفة المزاد</span>
+    </div>
+
+    <div class="grid lg:grid-cols-[350px_1fr] gap-6">
+      <!-- Left Panel: Bidding -->
+      <div class="space-y-4">
+        <!-- Timer -->
+        <div class="glass border border-b2b-border rounded-2xl p-5">
+          <div class="flex items-center gap-2 text-xs text-gray-400 mb-3">
+            <span class="w-2 h-2 rounded-full bg-brand pulse-dot"></span>
+            <span data-key="ends_in">ينتهي خلال</span>
+          </div>
+          <div class="flex items-center gap-2 justify-center">
+            <div class="text-center bg-b2b-bg rounded-lg py-2 px-3 flex-1">
+              <div class="text-2xl font-extrabold text-white tabular-nums" id="auction-timer-h">05</div>
+              <div class="text-[10px] text-gray-500" data-key="hours">ساعة</div>
+            </div>
+            <div class="text-2xl font-extrabold text-brand">:</div>
+            <div class="text-center bg-b2b-bg rounded-lg py-2 px-3 flex-1">
+              <div class="text-2xl font-extrabold text-white tabular-nums" id="auction-timer-m">42</div>
+              <div class="text-[10px] text-gray-500" data-key="minutes">دقيقة</div>
+            </div>
+            <div class="text-2xl font-extrabold text-brand">:</div>
+            <div class="text-center bg-b2b-bg rounded-lg py-2 px-3 flex-1">
+              <div class="text-2xl font-extrabold text-white tabular-nums" id="auction-timer-s">18</div>
+              <div class="text-[10px] text-gray-500" data-key="seconds">ثانية</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Bid -->
+        <div class="glass border border-brand/40 rounded-2xl p-5 shadow-glow">
+          <div class="text-xs text-gray-400 mb-1" data-key="current_bid">المزايدة الحالية</div>
+          <div class="text-3xl font-extrabold text-brand mb-3">$<span id="auction-current-bid">8,400</span></div>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <div class="bg-b2b-bg rounded-lg py-2">
+              <div class="text-gray-500" data-key="unit_price">الوحدة</div>
+              <div class="text-white font-bold">$84</div>
+            </div>
+            <div class="bg-b2b-bg rounded-lg py-2">
+              <div class="text-gray-500" data-key="bidders">المزايدين</div>
+              <div class="text-white font-bold" id="auction-bidders">9</div>
+            </div>
+            <div class="bg-b2b-bg rounded-lg py-2">
+              <div class="text-gray-500" data-key="bids_count">المزايدات</div>
+              <div class="text-white font-bold" id="auction-bid-count">23</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Bids -->
+        <div class="glass border border-b2b-border rounded-2xl p-5">
+          <div class="text-xs text-gray-400 mb-3" data-key="quick_bid">مزايدة سريعة</div>
+          <div class="grid grid-cols-3 gap-2 mb-3">
+            <button onclick="placeBid(100)" class="py-3 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white font-bold transition">+$100</button>
+            <button onclick="placeBid(250)" class="py-3 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white font-bold transition">+$250</button>
+            <button onclick="placeBid(500)" class="py-3 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white font-bold transition">+$500</button>
+          </div>
+          <button onclick="placeBid(100)" class="w-full py-3.5 rounded-lg bg-brand hover:bg-brand-hover text-white font-bold transition shadow-glow flex items-center justify-center gap-2">
+            <i class="fa-solid fa-gavel"></i>
+            <span data-key="place_bid">ضع مزايدتك</span>
+          </button>
+          <div class="text-[10px] text-gray-500 mt-2 text-center" data-key="min_bid_notice">الحد الأدنى للمزايدة التالية: $8,500</div>
+        </div>
+
+        <!-- Bid Log -->
+        <div class="glass border border-b2b-border rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs text-gray-400 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-brand"></i> <span data-key="bid_log">سجل المزايدات</span></div>
+            <span class="text-[10px] text-b2c-green flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-b2c-green pulse-dot"></span> <span data-key="live">مباشر</span></span>
+          </div>
+          <div id="bid-log" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <div class="bid-entry flex items-center justify-between p-2 rounded-lg bg-brand/10 border border-brand/30">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-brand flex items-center justify-center text-white text-[10px] font-bold">م</div>
+                <div>
+                  <div class="text-xs text-white font-semibold">متجر المنصور</div>
+                  <div class="text-[10px] text-gray-500">قبل 12 ثانية</div>
+                </div>
+              </div>
+              <div class="text-brand font-bold text-sm">$8,400</div>
+            </div>
+            <div class="bid-entry flex items-center justify-between p-2 rounded-lg bg-b2b-bg">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-b2b-card flex items-center justify-center text-gray-300 text-[10px] font-bold">ع</div>
+                <div>
+                  <div class="text-xs text-gray-300 font-semibold">تقنية البصرة</div>
+                  <div class="text-[10px] text-gray-500">قبل 47 ثانية</div>
+                </div>
+              </div>
+              <div class="text-white font-bold text-sm">$8,300</div>
+            </div>
+            <div class="bid-entry flex items-center justify-between p-2 rounded-lg bg-b2b-bg">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-b2b-card flex items-center justify-center text-gray-300 text-[10px] font-bold">ر</div>
+                <div>
+                  <div class="text-xs text-gray-300 font-semibold">الرافدين للإلكترونيات</div>
+                  <div class="text-[10px] text-gray-500">قبل 1 دقيقة</div>
+                </div>
+              </div>
+              <div class="text-white font-bold text-sm">$8,200</div>
+            </div>
+            <div class="bid-entry flex items-center justify-between p-2 rounded-lg bg-b2b-bg">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-b2b-card flex items-center justify-center text-gray-300 text-[10px] font-bold">م</div>
+                <div>
+                  <div class="text-xs text-gray-300 font-semibold">متجر المنصور</div>
+                  <div class="text-[10px] text-gray-500">قبل 2 دقيقة</div>
+                </div>
+              </div>
+              <div class="text-white font-bold text-sm">$8,100</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Product Details -->
+      <div class="space-y-4">
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand text-white flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-white pulse-dot"></span> <span data-key="live_auction_label">مزاد حي</span></span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green" data-key="lot">دفعة 100 وحدة</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2b-card border border-b2b-border text-gray-300" data-key="grade_a">متجدد درجة A</span>
+          </div>
+
+          <!-- Product Image Placeholder -->
+          <div class="h-64 sm:h-80 skeleton-img rounded-2xl mb-5 flex items-center justify-center relative overflow-hidden">
+            <i class="fa-solid fa-laptop text-7xl text-gray-700"></i>
+            <div class="absolute top-4 right-4 px-3 py-1 rounded-full bg-black/50 backdrop-blur text-white text-xs flex items-center gap-2">
+              <i class="fa-solid fa-eye text-b2c-green"></i>
+              <span>34 <span data-key="watching">يشاهد</span></span>
+            </div>
+          </div>
+
+          <h1 class="text-2xl font-extrabold text-white mb-2">Lenovo ThinkPad X1 Carbon Gen 9</h1>
+          <p class="text-gray-400 text-sm mb-5">i7-1165G7 · 16GB RAM · 512GB SSD · 14" QHD · 🇩🇪 <span data-key="germany">ألمانيا</span></p>
+
+          <!-- Auction Flow -->
+          <div class="bg-b2b-bg rounded-xl p-4 mb-5">
+            <div class="text-xs text-gray-400 mb-3 flex items-center gap-2"><i class="fa-solid fa-route text-brand"></i> <span data-key="auction_flow">مسار المزاد</span></div>
+            <div class="grid grid-cols-4 gap-2 text-center">
+              <div>
+                <div class="w-8 h-8 mx-auto rounded-full bg-brand flex items-center justify-center text-white text-xs mb-1 ring-4 ring-brand/20"><i class="fa-solid fa-gavel"></i></div>
+                <div class="text-[10px] text-brand font-semibold" data-key="flow_live">مزايدة حية</div>
+              </div>
+              <div>
+                <div class="w-8 h-8 mx-auto rounded-full bg-b2b-card border border-b2b-border flex items-center justify-center text-gray-500 text-xs mb-1"><i class="fa-solid fa-trophy"></i></div>
+                <div class="text-[10px] text-gray-500" data-key="flow_winner">اختيار الفائز</div>
+              </div>
+              <div>
+                <div class="w-8 h-8 mx-auto rounded-full bg-b2b-card border border-b2b-border flex items-center justify-center text-gray-500 text-xs mb-1"><i class="fa-solid fa-file-signature"></i></div>
+                <div class="text-[10px] text-gray-500" data-key="flow_contract">عقد ودفع</div>
+              </div>
+              <div>
+                <div class="w-8 h-8 mx-auto rounded-full bg-b2b-card border border-b2b-border flex items-center justify-center text-gray-500 text-xs mb-1"><i class="fa-solid fa-truck"></i></div>
+                <div class="text-[10px] text-gray-500" data-key="flow_ship">شحن</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specs Grid -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-b2b-bg border border-b2b-border rounded-xl p-3 text-center">
+              <i class="fa-solid fa-boxes-stacked text-brand mb-2"></i>
+              <div class="text-[10px] text-gray-500" data-key="lot_contents">محتويات الدفعة</div>
+              <div class="text-white font-bold text-sm">100 وحدة</div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-xl p-3 text-center">
+              <i class="fa-solid fa-memory text-brand mb-2"></i>
+              <div class="text-[10px] text-gray-500" data-key="memory_storage">الذاكرة والتخزين</div>
+              <div class="text-white font-bold text-sm">16GB / 512GB</div>
+            </div>
+            <div class="bg-b2b-bg border border-b2b-border rounded-xl p-3 text-center">
+              <i class="fa-solid fa-certificate text-brand mb-2"></i>
+              <div class="text-[10px] text-gray-500" data-key="condition">الحالة</div>
+              <div class="text-white font-bold text-sm" data-key="grade_a_short">درجة A</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 4: CATALOG ============ -->
+<section id="view-catalog" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-8">
+    <!-- Header -->
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl lg:text-3xl font-extrabold text-white mb-1" data-key="laptops_catalog">كتالوج اللابتوبات</h1>
+        <p class="text-sm text-gray-400" data-key="catalog_desc">أسعار جملة متدرجة من موردين موثوقين · Escrow محمي</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="openFilterDrawer()" class="lg:hidden h-10 px-4 rounded-lg bg-b2b-card border border-b2b-border text-sm text-white flex items-center gap-2">
+          <i class="fa-solid fa-sliders"></i> <span data-key="filters">فلترة</span>
+        </button>
+        <div class="relative">
+          <select id="sort-select" onchange="sortProducts()" class="h-10 pl-9 pr-3 rounded-lg bg-b2b-card border border-b2b-border text-sm text-white appearance-none cursor-pointer focus:border-brand focus:outline-none">
+            <option value="featured" data-key="sort_featured">مميز</option>
+            <option value="price-asc" data-key="sort_price_asc">السعر: الأقل أولاً</option>
+            <option value="price-desc" data-key="sort_price_desc">السعر: الأعلى أولاً</option>
+          </select>
+          <i class="fa-solid fa-chevron-down absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[260px_1fr] gap-6">
+      <!-- Sidebar Filters -->
+      <aside class="hidden lg:block">
+        <div class="glass border border-b2b-border rounded-2xl p-5 sticky top-24" id="filters-sidebar">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-white font-bold flex items-center gap-2"><i class="fa-solid fa-sliders text-brand"></i> <span data-key="filters">فلترة</span></h3>
+            <button onclick="clearAllFilters()" class="text-xs text-gray-500 hover:text-brand" data-key="clear_all">مسح الكل</button>
+          </div>
+
+          <!-- Condition -->
+          <div class="mb-5 pb-5 border-b border-b2b-border">
+            <div class="text-xs font-bold text-gray-300 mb-3" data-key="condition">الحالة</div>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center justify-between cursor-pointer group">
+                <div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="condition" value="new"><span class="text-gray-400 group-hover:text-white" data-key="cond_new">جديد</span></div>
+                <span class="text-xs text-gray-600">142</span>
+              </label>
+              <label class="flex items-center justify-between cursor-pointer group">
+                <div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="condition" value="refA" checked><span class="text-gray-400 group-hover:text-white" data-key="cond_refA">متجدد درجة A</span></div>
+                <span class="text-xs text-gray-600">87</span>
+              </label>
+              <label class="flex items-center justify-between cursor-pointer group">
+                <div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="condition" value="refB"><span class="text-gray-400 group-hover:text-white" data-key="cond_refB">متجدد درجة B</span></div>
+                <span class="text-xs text-gray-600">34</span>
+              </label>
+              <label class="flex items-center justify-between cursor-pointer group">
+                <div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="condition" value="parts"><span class="text-gray-400 group-hover:text-white" data-key="cond_parts">قطع غيار</span></div>
+                <span class="text-xs text-gray-600">12</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Price Range -->
+          <div class="mb-5 pb-5 border-b border-b2b-border">
+            <div class="text-xs font-bold text-gray-300 mb-3" data-key="price_range">نطاق السعر ($)</div>
+            <div class="flex items-center gap-2">
+              <input type="number" value="100" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2 px-3 text-sm text-white focus:border-brand focus:outline-none">
+              <span class="text-gray-600">—</span>
+              <input type="number" value="900" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2 px-3 text-sm text-white focus:border-brand focus:outline-none">
+            </div>
+          </div>
+
+          <!-- MOQ -->
+          <div class="mb-5 pb-5 border-b border-b2b-border">
+            <div class="text-xs font-bold text-gray-300 mb-3" data-key="moq">الحد الأدنى للطلب</div>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center gap-2 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="moq" value="10" checked><span class="text-gray-400 group-hover:text-white" data-key="moq_10">حتى 10 وحدات</span></label>
+              <label class="flex items-center gap-2 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="moq" value="50"><span class="text-gray-400 group-hover:text-white" data-key="moq_50">10-50 وحدة</span></label>
+              <label class="flex items-center gap-2 cursor-pointer group"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="moq" value="100"><span class="text-gray-400 group-hover:text-white" data-key="moq_100">50-100 وحدة</span></label>
+            </div>
+          </div>
+
+          <!-- Brand -->
+          <div>
+            <div class="text-xs font-bold text-gray-300 mb-3" data-key="brand">العلامة التجارية</div>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center justify-between cursor-pointer group"><div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="brand" value="lenovo"><span class="text-gray-400 group-hover:text-white">Lenovo</span></div><span class="text-xs text-gray-600">68</span></label>
+              <label class="flex items-center justify-between cursor-pointer group"><div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="brand" value="dell"><span class="text-gray-400 group-hover:text-white">Dell</span></div><span class="text-xs text-gray-600">52</span></label>
+              <label class="flex items-center justify-between cursor-pointer group"><div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="brand" value="hp"><span class="text-gray-400 group-hover:text-white">HP</span></div><span class="text-xs text-gray-600">44</span></label>
+              <label class="flex items-center justify-between cursor-pointer group"><div class="flex items-center gap-2"><input type="checkbox" class="filter-checkbox accent-brand" data-filter="brand" value="apple"><span class="text-gray-400 group-hover:text-white">Apple</span></div><span class="text-xs text-gray-600">23</span></label>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main: Products -->
+      <div>
+        <!-- Active Filter Chips -->
+        <div id="filter-chips" class="flex flex-wrap items-center gap-2 mb-5">
+          <span class="text-xs text-gray-500" data-key="active_filters">الفلاتر النشطة:</span>
+          <div class="chip flex items-center gap-2 px-3 py-1 rounded-full bg-brand/15 border border-brand/30 text-brand text-xs font-semibold" data-chip="refA">
+            <span data-key="cond_refA">متجدد درجة A</span>
+            <button onclick="removeFilter(this, 'refA')" class="hover:text-white"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+          </div>
+          <div class="chip flex items-center gap-2 px-3 py-1 rounded-full bg-brand/15 border border-brand/30 text-brand text-xs font-semibold" data-chip="10">
+            <span data-key="moq_10">حتى 10 وحدات</span>
+            <button onclick="removeFilter(this, '10')" class="hover:text-white"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+          </div>
+          <button onclick="clearAllFilters()" class="text-xs text-gray-500 hover:text-brand underline" data-key="clear_all">مسح الكل</button>
+        </div>
+
+        <!-- Search -->
+        <div class="relative mb-5">
+          <input type="text" id="catalog-search" oninput="filterProducts()" data-i18n-ph="ph_search_catalog" placeholder="ابحث في الكتالوج..." class="w-full bg-b2b-card border border-b2b-border rounded-xl py-3 pr-11 pl-4 text-sm text-white placeholder-gray-500 focus:border-brand focus:outline-none transition">
+          <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="product-grid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <!-- Products rendered by JS -->
+        </div>
+
+        <div class="mt-8 flex items-center justify-center gap-2">
+          <button class="w-10 h-10 rounded-lg bg-b2b-card border border-b2b-border text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-right flip"></i></button>
+          <button class="w-10 h-10 rounded-lg bg-brand text-white font-bold">1</button>
+          <button class="w-10 h-10 rounded-lg bg-b2b-card border border-b2b-border text-gray-300 hover:text-white">2</button>
+          <button class="w-10 h-10 rounded-lg bg-b2b-card border border-b2b-border text-gray-300 hover:text-white">3</button>
+          <button class="w-10 h-10 rounded-lg bg-b2b-card border border-b2b-border text-gray-400 hover:text-white"><i class="fa-solid fa-chevron-left flip"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 5: PRODUCT DETAIL ============ -->
+<section id="view-product" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-8">
+    <button onclick="navigate('view-catalog','b2b')" class="flex items-center gap-2 text-sm text-gray-400 hover:text-brand mb-6 transition">
+      <i class="fa-solid fa-arrow-right flip"></i>
+      <span data-key="back_to_catalog">العودة للكتالوج</span>
+    </button>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Main -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green flex items-center gap-1"><i class="fa-solid fa-check-circle"></i> <span data-key="deals_done">صفقات منجزة</span></span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2b-card border border-b2b-border text-gray-300" data-key="grade_a">متجدد درجة A</span>
+          </div>
+
+          <!-- Gallery -->
+          <div class="grid sm:grid-cols-[1fr_80px] gap-4 mb-6">
+            <div class="h-72 skeleton-img rounded-2xl flex items-center justify-center">
+              <i class="fa-solid fa-laptop text-8xl text-gray-700"></i>
+            </div>
+            <div class="flex sm:flex-col gap-2">
+              <div class="w-20 h-20 skeleton-img rounded-lg border-2 border-brand flex items-center justify-center cursor-pointer"><i class="fa-solid fa-laptop text-2xl text-gray-600"></i></div>
+              <div class="w-20 h-20 skeleton-img rounded-lg flex items-center justify-center cursor-pointer"><i class="fa-solid fa-keyboard text-2xl text-gray-700"></i></div>
+              <div class="w-20 h-20 skeleton-img rounded-lg flex items-center justify-center cursor-pointer"><i class="fa-solid fa-microchip text-2xl text-gray-700"></i></div>
+            </div>
+          </div>
+
+          <h1 class="text-2xl lg:text-3xl font-extrabold text-white mb-2">HP EliteBook 840 G8</h1>
+          <p class="text-gray-400 mb-6">i7-1165G7 · 16GB RAM · 512GB NVMe · 14" FHD · 🇩🇪 <span data-key="germany">ألمانيا</span></p>
+
+          <!-- Tier Pricing Calculator -->
+          <div class="bg-b2b-bg border border-b2b-border rounded-2xl p-5">
+            <h3 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-calculator text-brand"></i> <span data-key="tier_pricing">حاسبة الأسعار المتدرجة</span></h3>
+
+            <div class="grid sm:grid-cols-3 gap-3 mb-5">
+              <div class="tier-card border-2 border-b2b-border rounded-xl p-4 cursor-pointer transition" onclick="setTier(1)">
+                <div class="text-xs text-gray-500 mb-1" data-key="tier_1_qty">10-49 وحدة</div>
+                <div class="text-2xl font-extrabold text-white mb-1">$310</div>
+                <div class="text-[10px] text-gray-500" data-key="per_unit">/ للوحدة</div>
+                <div class="text-[10px] text-gray-600 mt-2" data-key="save_0">وفّر 0%</div>
+              </div>
+              <div class="tier-card border-2 border-b2b-border rounded-xl p-4 cursor-pointer transition" onclick="setTier(2)">
+                <div class="text-xs text-gray-500 mb-1" data-key="tier_2_qty">50-99 وحدة</div>
+                <div class="text-2xl font-extrabold text-white mb-1">$288</div>
+                <div class="text-[10px] text-gray-500" data-key="per_unit">/ للوحدة</div>
+                <div class="text-[10px] text-b2c-green mt-2" data-key="save_7">وفّر 7%</div>
+              </div>
+              <div class="tier-card border-2 border-b2b-border rounded-xl p-4 cursor-pointer transition" onclick="setTier(3)">
+                <div class="text-xs text-gray-500 mb-1" data-key="tier_3_qty">100+ وحدة</div>
+                <div class="text-2xl font-extrabold text-white mb-1">$265</div>
+                <div class="text-[10px] text-gray-500" data-key="per_unit">/ للوحدة</div>
+                <div class="text-[10px] text-b2c-green font-bold mt-2" data-key="save_14">وفّر 14% · الأفضل</div>
+              </div>
+            </div>
+
+            <!-- Quantity Input -->
+            <div class="flex flex-wrap items-center gap-4 mb-5 pb-5 border-b border-b2b-border">
+              <div>
+                <div class="text-xs text-gray-500 mb-2" data-key="quantity">الكمية المطلوبة</div>
+                <div class="flex items-center gap-2">
+                  <button onclick="changeQty(-1)" class="w-10 h-10 rounded-lg bg-b2b-card border border-b2b-border text-white hover:border-brand transition">−</button>
+                  <input type="number" id="qty-input" value="10" min="10" oninput="calculateTotal()" class="w-20 h-10 text-center bg-b2b-card border border-b2b-border rounded-lg text-white font-bold focus:border-brand focus:outline-none">
+                  <button onclick="changeQty(1)" class="w-10 h-10 rounded-lg bg-b2b-card border border-b2b-border text-white hover:border-brand transition">+</button>
+                </div>
+              </div>
+              <div class="flex-1 min-w-[200px]">
+                <div class="text-xs text-gray-500 mb-2" data-key="estimated_total">الإجمالي التقديري</div>
+                <div class="text-3xl font-extrabold text-brand">$<span id="total-price">3,100</span></div>
+                <div class="text-xs text-gray-500 mt-1" data-key="est_shipping">+ شحن تقديري: $340 (DHL · 7 أيام)</div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid sm:grid-cols-3 gap-2">
+              <button onclick="openModal('modal-quote')" class="py-3 rounded-lg bg-brand hover:bg-brand-hover text-white font-semibold transition flex items-center justify-center gap-2"><i class="fa-solid fa-tag"></i> <span data-key="request_quote">اطلب عرض سعر</span></button>
+              <button onclick="openModal('modal-contact')" class="py-3 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white font-semibold transition flex items-center justify-center gap-2"><i class="fa-solid fa-comments"></i> <span data-key="contact_supplier">تواصل مع المورد</span></button>
+              <button onclick="showToast('تمت الإضافة إلى السلة', 'success')" class="py-3 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white font-semibold transition flex items-center justify-center gap-2"><i class="fa-solid fa-cart-plus"></i> <span data-key="add_to_cart">أضف للسلة</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specs Table -->
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <h3 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-microchip text-brand"></i> <span data-key="full_specs">المواصفات الكاملة</span></h3>
+          <div class="grid sm:grid-cols-2 gap-x-6 gap-y-0">
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_processor">المعالج</span><span class="text-white font-semibold">Intel i7-1165G7</span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_memory">الذاكرة</span><span class="text-white font-semibold">16GB DDR4</span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_storage">التخزين</span><span class="text-white font-semibold">512GB NVMe SSD</span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_display">الشاشة</span><span class="text-white font-semibold">14" FHD IPS</span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_condition2">الحالة</span><span class="text-white font-semibold" data-key="grade_a">متجدد درجة A</span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_origin">المنشأ</span><span class="text-white font-semibold">🇩🇪 <span data-key="germany">ألمانيا</span></span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_warranty">الضمان</span><span class="text-white font-semibold">12 شهر</span></div>
+            <div class="flex items-center justify-between py-3 border-b border-b2b-border text-sm"><span class="text-gray-500" data-key="spec_battery">البطارية</span><span class="text-white font-semibold">≥ 80% صحة</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar: Supplier -->
+      <div class="space-y-4">
+        <div class="glass border border-b2b-border rounded-2xl p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white font-extrabold text-lg">TS</div>
+            <div class="flex-1">
+              <div class="flex items-center gap-1.5">
+                <h4 class="text-white font-bold">TechSource GmbH</h4>
+                <i class="fa-solid fa-shield-check text-b2c-green text-xs"></i>
+              </div>
+              <div class="text-xs text-gray-500 flex items-center gap-1">🇩🇪 <span data-key="germany">ألمانيا</span> · <span data-key="member_since">عضو منذ 2022</span></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-b2b-bg rounded-lg p-3 text-center">
+              <div class="text-2xl font-extrabold text-white">4.8★</div>
+              <div class="text-[10px] text-gray-500" data-key="rating">التقييم</div>
+            </div>
+            <div class="bg-b2b-bg rounded-lg p-3 text-center">
+              <div class="text-2xl font-extrabold text-white">340</div>
+              <div class="text-[10px] text-gray-500" data-key="deals_completed">صفقة منجزة</div>
+            </div>
+          </div>
+
+          <div class="space-y-2 text-sm mb-4">
+            <div class="flex items-center justify-between"><span class="text-gray-400" data-key="response_rate">معدل الرد</span><span class="text-white font-semibold">98%</span></div>
+            <div class="flex items-center justify-between"><span class="text-gray-400" data-key="on_time">الالتزام بالموعد</span><span class="text-white font-semibold">96%</span></div>
+            <div class="flex items-center justify-between"><span class="text-gray-400" data-key="quality_score">جودة المنتج</span><span class="text-white font-semibold">99%</span></div>
+          </div>
+
+          <button onclick="navigate('view-supplier','b2b')" class="w-full py-2.5 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white text-sm font-semibold transition mb-2" data-key="view_profile">عرض الملف الكامل</button>
+        </div>
+
+        <div class="glass border border-b2b-border rounded-2xl p-5">
+          <h4 class="text-white font-bold mb-3 text-sm" data-key="quick_info">معلومات سريعة</h4>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center gap-2 text-gray-400"><i class="fa-solid fa-boxes-stacked text-brand w-5"></i> <span data-key="moq_label">MOQ: 10 وحدات</span></div>
+            <div class="flex items-center gap-2 text-gray-400"><i class="fa-solid fa-truck text-brand w-5"></i> <span data-key="shipping_label">شحن: 5-9 أيام</span></div>
+            <div class="flex items-center gap-2 text-gray-400"><i class="fa-solid fa-shield-halved text-brand w-5"></i> <span data-key="escrow_label">Escrow محمي</span></div>
+            <div class="flex items-center gap-2 text-gray-400"><i class="fa-solid fa-warehouse text-brand w-5"></i> <span data-key="availability_label">متوفر: 540 وحدة</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 6: SUPPLIER PROFILE ============ -->
+<section id="view-supplier" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-8">
+    <!-- Header -->
+    <div class="glass border border-b2b-border rounded-2xl p-6 mb-6">
+      <div class="flex flex-wrap items-start gap-6">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white font-extrabold text-2xl shrink-0">TS</div>
+        <div class="flex-1 min-w-[250px]">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <h1 class="text-2xl font-extrabold text-white">TechSource GmbH</h1>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green flex items-center gap-1"><i class="fa-solid fa-shield-check"></i> <span data-key="kyb_verified">KYB موثّق</span></span>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-400 mb-3">
+            <span class="flex items-center gap-1">🇩🇪 <span data-key="berlin">برلين، ألمانيا</span></span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-calendar text-brand text-xs"></i> <span data-key="joined">انضم في يناير 2022</span></span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-tag text-brand text-xs"></i> <span data-key="tags">لابتوبات · شاشات · إكسسوارات</span></span>
+          </div>
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-1.5">
+              <div class="text-2xl font-extrabold text-white">4.8</div>
+              <div class="text-xs text-gray-500">
+                <div class="text-brand">★★★★★</div>
+                <div>(124 <span data-key="reviews">مراجعة</span>)</div>
+              </div>
+            </div>
+            <div class="h-8 w-px bg-b2b-border"></div>
+            <div>
+              <div class="text-2xl font-extrabold text-white">340</div>
+              <div class="text-xs text-gray-500" data-key="deals_completed">صفقة منجزة</div>
+            </div>
+            <div class="h-8 w-px bg-b2b-border"></div>
+            <div>
+              <div class="text-2xl font-extrabold text-b2c-green">98%</div>
+              <div class="text-xs text-gray-500" data-key="response_rate">معدل الرد</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button onclick="openModal('modal-contact')" class="px-5 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition flex items-center gap-2"><i class="fa-solid fa-comments"></i> <span data-key="contact_supplier">تواصل مع المورد</span></button>
+          <button onclick="navigate('view-catalog','b2b')" class="px-5 py-2.5 rounded-lg bg-b2b-card border border-b2b-border hover:border-brand text-white text-sm font-semibold transition flex items-center gap-2"><i class="fa-solid fa-box"></i> <span data-key="view_products">عرض المنتجات (24)</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Main -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- About -->
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <h3 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-circle-info text-brand"></i> <span data-key="about_company">عن الشركة</span></h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4" data-key="about_desc">
+            TechSource GmbH شركة ألمانية متخصصة في إعادة تأهيل وتوزيع معدات تكنولوجيا المعلومات للمؤسسات. نمتلك سلسلة توريد شفافة بالكامل ونوفر شهادات أصلية لكل وحدة. نخدم أكثر من 50 دولة بأسعار جملة تنافسية مع ضمانات صارمة على الجودة.
+          </p>
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <div class="bg-b2b-bg rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="legal_name">الاسم القانوني</div>
+              <div class="text-white font-semibold">TechSource GmbH</div>
+            </div>
+            <div class="bg-b2b-bg rounded-lg p-3">
+              <div class="text-xs text-gray-500 mb-1" data-key="inventory_cap">سعة المخزون</div>
+              <div class="text-white font-semibold">15,000 وحدة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="glass border border-b2b-border rounded-2xl p-6">
+          <h3 class="text-white font-bold mb-5 flex items-center gap-2"><i class="fa-solid fa-star text-brand"></i> <span data-key="reviews_title">التقييمات والمراجعات</span></h3>
+
+          <div class="grid sm:grid-cols-[200px_1fr] gap-6 mb-6 pb-6 border-b border-b2b-border">
+            <div class="text-center">
+              <div class="text-5xl font-extrabold text-white mb-1">4.8</div>
+              <div class="text-brand text-lg mb-1">★★★★★</div>
+              <div class="text-xs text-gray-500">124 <span data-key="reviews">مراجعة</span></div>
+            </div>
+            <div class="space-y-1.5 text-xs">
+              <div class="flex items-center gap-2"><span class="w-3 text-gray-400">5</span><i class="fa-solid fa-star text-brand text-[10px]"></i><div class="flex-1 h-2 bg-b2b-bg rounded-full overflow-hidden"><div class="h-full bg-brand" style="width:78%"></div></div><span class="w-8 text-gray-500">97</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 text-gray-400">4</span><i class="fa-solid fa-star text-brand text-[10px]"></i><div class="flex-1 h-2 bg-b2b-bg rounded-full overflow-hidden"><div class="h-full bg-brand" style="width:15%"></div></div><span class="w-8 text-gray-500">19</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 text-gray-400">3</span><i class="fa-solid fa-star text-brand text-[10px]"></i><div class="flex-1 h-2 bg-b2b-bg rounded-full overflow-hidden"><div class="h-full bg-brand" style="width:5%"></div></div><span class="w-8 text-gray-500">6</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 text-gray-400">2</span><i class="fa-solid fa-star text-brand text-[10px]"></i><div class="flex-1 h-2 bg-b2b-bg rounded-full overflow-hidden"><div class="h-full bg-brand" style="width:1%"></div></div><span class="w-8 text-gray-500">2</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 text-gray-400">1</span><i class="fa-solid fa-star text-brand text-[10px]"></i><div class="flex-1 h-2 bg-b2b-bg rounded-full overflow-hidden"><div class="h-full bg-brand" style="width:0%"></div></div><span class="w-8 text-gray-500">0</span></div>
+            </div>
+          </div>
+
+          <!-- Individual Reviews -->
+          <div class="space-y-4">
+            <div class="bg-b2b-bg rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand font-bold text-xs">م</div>
+                  <div>
+                    <div class="text-white text-sm font-semibold">متجر المنصور</div>
+                    <div class="text-brand text-[10px]">★★★★★</div>
+                  </div>
+                </div>
+                <div class="text-[10px] text-gray-500" data-key="days_ago">قبل 3 أيام</div>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed" data-key="review_1">وصلت الطلب في الوقت المحدد، الجودة ممتازة والوحدات مطابقة للوصف. تعامل احترافي وسأكرر الشراء بالتأكيد.</p>
+            </div>
+            <div class="bg-b2b-bg rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-b2c-green/20 flex items-center justify-center text-b2c-green font-bold text-xs">ع</div>
+                  <div>
+                    <div class="text-white text-sm font-semibold">تقنية البصرة</div>
+                    <div class="text-brand text-[10px]">★★★★★</div>
+                  </div>
+                </div>
+                <div class="text-[10px] text-gray-500" data-key="week_ago">قبل أسبوع</div>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed" data-key="review_2">المورد التزم بكل التفاصيل، التوثيق الكامل متوفر وEscrow أطلق الدفع بسلاسة بعد الفحص. تجربة B2B نموذجية.</p>
+            </div>
+            <div class="bg-b2b-bg rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand font-bold text-xs">ر</div>
+                  <div>
+                    <div class="text-white text-sm font-semibold">الرافدين للإلكترونيات</div>
+                    <div class="text-brand text-[10px]">★★★★☆</div>
+                  </div>
+                </div>
+                <div class="text-[10px] text-gray-500" data-key="weeks_ago">قبل 3 أسابيع</div>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed" data-key="review_3">جودة جيدة جداً، تأخر الشحن يومين فقط لكن التغليف ممتاز. الأسعار تنافسية مقارنة بالموردين الآخرين.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar: KYB -->
+      <div class="space-y-4">
+        <div class="glass border border-b2c-green/30 rounded-2xl p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-b2c-green/15 flex items-center justify-center"><i class="fa-solid fa-shield-check text-b2c-green"></i></div>
+            <div>
+              <h4 class="text-white font-bold text-sm" data-key="kyb_panel">توثيق KYB</h4>
+              <div class="text-xs text-b2c-green" data-key="fully_verified">موثّق بالكامل</div>
+            </div>
+          </div>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-b2c-green"></i> <span class="text-gray-300" data-key="kyb_1">التسجيل التجاري</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-b2c-green"></i> <span class="text-gray-300" data-key="kyb_2">التحقق من هوية المالك</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-b2c-green"></i> <span class="text-gray-300" data-key="kyb_3">حساب بنكي مؤسسي</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-b2c-green"></i> <span class="text-gray-300" data-key="kyb_4">عنوان فعلي مؤكد</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-b2c-green"></i> <span class="text-gray-300" data-key="kyb_5">سجل أداء نظيف</span></div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-b2b-border text-[10px] text-gray-500" data-key="verified_date">آخر تحقق: 15 أكتوبر 2024</div>
+        </div>
+
+        <div class="glass border border-b2b-border rounded-2xl p-5">
+          <h4 class="text-white font-bold mb-3 text-sm" data-key="response_time">أزمنة الرد</h4>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center justify-between"><span class="text-gray-400" data-key="rt_quote">عرض السعر</span><span class="text-white font-semibold">&lt; 2 ساعة</span></div>
+            <div class="flex items-center justify-between"><span class="text-gray-400" data-key="rt_msg">الرسائل</span><span class="text-white font-semibold">&lt; 30 دقيقة</span></div>
+            <div class="flex items-center justify-between"><span class="text-gray-400" data-key="rt_ship">تجهيز الشحن</span><span class="text-white font-semibold">1-2 يوم</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 7: CONSOLE DASHBOARD ============ -->
+<section id="view-console" class="view">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="hidden lg:flex w-64 shrink-0 bg-console-card border-l border-console-border flex-col fixed inset-y-0 right-0 pt-20 z-30">
+      <div class="flex-1 overflow-y-auto p-4">
+        <!-- User -->
+        <div class="flex items-center gap-3 p-3 bg-b2b-bg rounded-xl mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white font-bold">أم</div>
+          <div class="leading-tight">
+            <div class="text-white text-sm font-bold">أحمد الموسوي</div>
+            <div class="text-[10px] text-gray-500" data-key="dual_role">دور مزدوج · مستورد وبائع</div>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="space-y-1 text-sm">
+          <div class="text-[10px] text-gray-600 font-bold uppercase px-3 mb-2" data-key="menu_overview">عام</div>
+          <button onclick="navigate('view-console','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand text-white font-semibold" data-view="view-console">
+            <i class="fa-solid fa-gauge w-5"></i><span data-key="overview">نظرة عامة</span>
+          </button>
+
+          <div class="text-[10px] text-gray-600 font-bold uppercase px-3 mb-2 mt-4" data-key="menu_b2b">استيراد B2B</div>
+          <button onclick="navigate('view-reverse','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition" data-view="view-reverse">
+            <i class="fa-solid fa-arrows-rotate w-5"></i><span data-key="rev_auctions">المزادات العكسية</span>
+            <span class="mr-auto px-1.5 py-0.5 rounded-full bg-brand/15 text-brand text-[10px] font-bold">2</span>
+          </button>
+          <button onclick="navigate('view-bids','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition" data-view="view-bids">
+            <i class="fa-solid fa-gavel w-5"></i><span data-key="live_bids">المزايدات الحية</span>
+            <span class="mr-auto px-1.5 py-0.5 rounded-full bg-brand/15 text-brand text-[10px] font-bold">4</span>
+          </button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition">
+            <i class="fa-solid fa-box w-5"></i><span data-key="import_orders">طلبات الاستيراد</span>
+            <span class="mr-auto px-1.5 py-0.5 rounded-full bg-b2b-border text-gray-400 text-[10px] font-bold">8</span>
+          </button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition">
+            <i class="fa-solid fa-shield-halved w-5"></i><span data-key="escrow_payments">مدفوعات Escrow</span>
+            <span class="mr-auto px-1.5 py-0.5 rounded-full bg-b2c-green/15 text-b2c-green text-[10px] font-bold">3</span>
+          </button>
+
+          <div class="text-[10px] text-gray-600 font-bold uppercase px-3 mb-2 mt-4" data-key="menu_b2c">بيع B2C محلي</div>
+          <button onclick="navigate('view-store','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition">
+            <i class="fa-solid fa-store w-5"></i><span data-key="my_store">متجري</span>
+          </button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition">
+            <i class="fa-solid fa-bag-shopping w-5"></i><span data-key="local_orders">الطلبات المحلية</span>
+            <span class="mr-auto px-1.5 py-0.5 rounded-full bg-b2c-green/15 text-b2c-green text-[10px] font-bold">12</span>
+          </button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition">
+            <i class="fa-solid fa-people-carry-box w-5"></i><span data-key="pickup_queue">طابور الاستلام</span>
+            <span class="mr-auto px-1.5 py-0.5 rounded-full bg-brand/15 text-brand text-[10px] font-bold">5</span>
+          </button>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="flex-1 lg:mr-64 pt-20">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6 py-8">
+        <!-- Welcome -->
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-2xl lg:text-3xl font-extrabold text-white mb-1"><span data-key="welcome">مرحباً،</span> أحمد 👋</h1>
+            <p class="text-sm text-gray-400" data-key="dual_role_desc">دورك المزدوج: تستورد من الخارج (B2B) وتبيع محلياً (B2C)</p>
+          </div>
+          <button onclick="navigate('view-reverse','console')" class="px-5 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition flex items-center gap-2"><i class="fa-solid fa-plus"></i> <span data-key="import_request">طلب استيراد</span></button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-console-card border border-console-border rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-lg bg-b2c-green/15 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up text-b2c-green"></i></div>
+              <span class="text-[10px] text-b2c-green bg-b2c-green/10 px-2 py-0.5 rounded-full">+12%</span>
+            </div>
+            <div class="text-xs text-gray-500 mb-1" data-key="monthly_sales">مبيعات الشهر (IQD)</div>
+            <div class="text-2xl font-extrabold text-white">18.4M</div>
+          </div>
+          <div class="bg-console-card border border-console-border rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-lg bg-brand/15 flex items-center justify-center"><i class="fa-solid fa-ship text-brand"></i></div>
+              <span class="text-[10px] text-brand bg-brand/10 px-2 py-0.5 rounded-full" data-key="in_transit_caps">قيد الشحن</span>
+            </div>
+            <div class="text-xs text-gray-500 mb-1" data-key="imports_transit">استيرادات قيد الطريق</div>
+            <div class="text-2xl font-extrabold text-white">$41,800</div>
+          </div>
+          <div class="bg-console-card border border-console-border rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-lg bg-brand/15 flex items-center justify-center"><i class="fa-solid fa-people-carry-box text-brand"></i></div>
+              <span class="text-[10px] text-brand bg-brand/10 px-2 py-0.5 rounded-full" data-key="pickup_caps">استلام</span>
+            </div>
+            <div class="text-xs text-gray-500 mb-1" data-key="pending_pickups">طلبات بانتظار الاستلام</div>
+            <div class="text-2xl font-extrabold text-white">5</div>
+          </div>
+          <div class="bg-console-card border border-console-border rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-lg bg-brand/15 flex items-center justify-center"><i class="fa-solid fa-arrows-rotate text-brand"></i></div>
+              <span class="text-[10px] text-brand bg-brand/10 px-2 py-0.5 rounded-full" data-key="active_caps">نشط</span>
+            </div>
+            <div class="text-xs text-gray-500 mb-1" data-key="active_rev_auctions">مزادات عكسية نشطة</div>
+            <div class="text-2xl font-extrabold text-white">2</div>
+          </div>
+        </div>
+
+        <!-- Activity Boxes -->
+        <div class="grid lg:grid-cols-2 gap-6">
+          <!-- Import Activity -->
+          <div class="bg-console-card border border-console-border rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-white font-bold flex items-center gap-2"><i class="fa-solid fa-globe text-brand"></i> <span data-key="import_activity">نشاط الاستيراد (USD)</span></h3>
+              <span class="text-xs text-gray-500" data-key="view_all">عرض الكل</span>
+            </div>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-laptop text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">100× MacBook Air M1</div>
+                    <div class="text-[10px] text-gray-500">EuroCycle GmbH · 🇩🇪</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">$45,500</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-brand/15 text-brand" data-key="awaiting_award">بانتظار الترسية</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-laptop text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">50× ThinkPad X1</div>
+                    <div class="text-[10px] text-gray-500">TechSource GmbH · 🇩🇪</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">$14,400</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400" data-key="in_transit_caps">قيد الشحن</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-display text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">30× Dell U2723QE</div>
+                    <div class="text-[10px] text-gray-500">NordicTech AB · 🇸🇪</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">$11,700</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400" data-key="customs">التخليص الجمركي</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-keyboard text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">200× Logitech MX Keys</div>
+                    <div class="text-[10px] text-gray-500">PixelBar Ltd · 🇬🇧</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">$7,800</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-b2c-green/15 text-b2c-green" data-key="delivered">تم التسليم</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Local Orders -->
+          <div class="bg-console-card border border-console-border rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-white font-bold flex items-center gap-2"><i class="fa-solid fa-store text-b2c-green"></i> <span data-key="local_orders_activity">الطلبات المحلية (IQD)</span></h3>
+              <span class="text-xs text-gray-500" data-key="view_all">عرض الكل</span>
+            </div>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-mobile-screen text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">iPhone 13</div>
+                    <div class="text-[10px] text-gray-500" data-key="customer_salem">سالم ك.</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">650,000 د.ع</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-b2c-green/15 text-b2c-green" data-key="ready_pickup">جاهز للاستلام</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-laptop text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">HP EliteBook 840</div>
+                    <div class="text-[10px] text-gray-500" data-key="customer_hassan">حسن م.</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">850,000 د.ع</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-brand/15 text-brand" data-key="new_order">طلب جديد</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-headphones text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">AirPods Pro 2</div>
+                    <div class="text-[10px] text-gray-500" data-key="customer_zainab">زينب ع.</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">280,000 د.ع</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400" data-key="processing">قيد التجهيز</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-b2b-bg rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-b2b-card flex items-center justify-center"><i class="fa-solid fa-tablet-screen-button text-gray-400 text-xs"></i></div>
+                  <div>
+                    <div class="text-white font-semibold text-xs">iPad Air 5</div>
+                    <div class="text-[10px] text-gray-500" data-key="customer_omar">عمر ح.</div>
+                  </div>
+                </div>
+                <div class="text-left">
+                  <div class="text-white font-bold text-xs">920,000 د.ع</div>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-b2c-green/15 text-b2c-green" data-key="ready_pickup">جاهز للاستلام</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 8: CONSOLE BIDS ============ -->
+<section id="view-bids" class="view">
+  <div class="flex min-h-screen">
+    <aside class="hidden lg:flex w-64 shrink-0 bg-console-card border-l border-console-border flex-col fixed inset-y-0 right-0 pt-20 z-30">
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="flex items-center gap-3 p-3 bg-b2b-bg rounded-xl mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white font-bold">أم</div>
+          <div class="leading-tight">
+            <div class="text-white text-sm font-bold">أحمد الموسوي</div>
+            <div class="text-[10px] text-gray-500" data-key="dual_role">دور مزدوج · مستورد وبائع</div>
+          </div>
+        </div>
+        <nav class="space-y-1 text-sm">
+          <div class="text-[10px] text-gray-600 font-bold uppercase px-3 mb-2" data-key="menu_overview">عام</div>
+          <button onclick="navigate('view-console','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-gauge w-5"></i><span data-key="overview">نظرة عامة</span></button>
+          <div class="text-[10px] text-gray-600 font-bold uppercase px-3 mb-2 mt-4" data-key="menu_b2b">استيراد B2B</div>
+          <button onclick="navigate('view-reverse','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-arrows-rotate w-5"></i><span data-key="rev_auctions">المزادات العكسية</span><span class="mr-auto px-1.5 py-0.5 rounded-full bg-brand/15 text-brand text-[10px] font-bold">2</span></button>
+          <button onclick="navigate('view-bids','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand text-white font-semibold"><i class="fa-solid fa-gavel w-5"></i><span data-key="live_bids">المزايدات الحية</span><span class="mr-auto px-1.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-bold">4</span></button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-box w-5"></i><span data-key="import_orders">طلبات الاستيراد</span><span class="mr-auto px-1.5 py-0.5 rounded-full bg-b2b-border text-gray-400 text-[10px] font-bold">8</span></button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-shield-halved w-5"></i><span data-key="escrow_payments">مدفوعات Escrow</span><span class="mr-auto px-1.5 py-0.5 rounded-full bg-b2c-green/15 text-b2c-green text-[10px] font-bold">3</span></button>
+          <div class="text-[10px] text-gray-600 font-bold uppercase px-3 mb-2 mt-4" data-key="menu_b2c">بيع B2C محلي</div>
+          <button onclick="navigate('view-store','console')" class="console-nav w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-store w-5"></i><span data-key="my_store">متجري</span></button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-bag-shopping w-5"></i><span data-key="local_orders">الطلبات المحلية</span><span class="mr-auto px-1.5 py-0.5 rounded-full bg-b2c-green/15 text-b2c-green text-[10px] font-bold">12</span></button>
+          <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition"><i class="fa-solid fa-people-carry-box w-5"></i><span data-key="pickup_queue">طابور الاستلام</span><span class="mr-auto px-1.5 py-0.5 rounded-full bg-brand/15 text-brand text-[10px] font-bold">5</span></button>
+        </nav>
+      </div>
+    </aside>
+
+    <div class="flex-1 lg:mr-64 pt-20">
+      <div class="max-w-[1200px] mx-auto px-4 sm:px-6 py-8">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-2xl lg:text-3xl font-extrabold text-white mb-1"><span data-key="my_bids">مزايداتي الحية</span></h1>
+            <p class="text-sm text-gray-400" data-key="bids_summary">لديك 4 مزايدات نشطة و 3 مدفوعات Escrow قيد المعالجة</p>
+          </div>
+          <button onclick="navigate('view-auction','console')" class="px-5 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition flex items-center gap-2"><i class="fa-solid fa-gavel"></i> <span data-key="browse_auctions">تصفح المزادات</span></button>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-console-card border border-console-border rounded-2xl p-4">
+            <div class="text-xs text-gray-500 mb-1" data-key="total_purchases">إجمالي المشتريات</div>
+            <div class="text-xl font-extrabold text-white">$184,000</div>
+          </div>
+          <div class="bg-console-card border border-console-border rounded-2xl p-4">
+            <div class="text-xs text-gray-500 mb-1" data-key="completed_orders">طلبات منجزة</div>
+            <div class="text-xl font-extrabold text-white">12 <span class="text-xs text-b2c-green">+3</span></div>
+          </div>
+          <div class="bg-console-card border border-console-border rounded-2xl p-4">
+            <div class="text-xs text-gray-500 mb-1" data-key="escrow_held">Escrow محجوز</div>
+            <div class="text-xl font-extrabold text-white">$41,800</div>
+          </div>
+          <div class="bg-console-card border border-console-border rounded-2xl p-4">
+            <div class="text-xs text-gray-500 mb-1" data-key="active_bids_count">مزايدات نشطة</div>
+            <div class="text-xl font-extrabold text-brand">4</div>
+          </div>
+        </div>
+
+        <!-- Bids Table -->
+        <div class="bg-console-card border border-console-border rounded-2xl overflow-hidden mb-6">
+          <div class="p-5 border-b border-console-border">
+            <h3 class="text-white font-bold flex items-center gap-2"><i class="fa-solid fa-gavel text-brand"></i> <span data-key="active_bids_table">المزايدات النشطة</span></h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-b2b-bg text-gray-500 text-xs">
+                <tr>
+                  <th class="text-right p-4 font-semibold" data-key="th_product">المنتج</th>
+                  <th class="text-right p-4 font-semibold" data-key="th_supplier">المورد</th>
+                  <th class="text-right p-4 font-semibold" data-key="th_bid">مزايدتي</th>
+                  <th class="text-right p-4 font-semibold" data-key="th_status">الحالة</th>
+                  <th class="text-right p-4 font-semibold" data-key="th_time">الوقت المتبقي</th>
+                  <th class="text-right p-4 font-semibold" data-key="th_action">إجراء</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-console-border">
+                <tr class="hover:bg-b2b-bg transition">
+                  <td class="p-4"><div class="text-white font-semibold">100× ThinkPad X1</div><div class="text-[10px] text-gray-500">Lenovo</div></td>
+                  <td class="p-4"><div class="text-gray-300">TechSource GmbH</div><div class="text-[10px] text-gray-500">🇩🇪 ألمانيا</div></td>
+                  <td class="p-4 text-white font-bold">$8,400</td>
+                  <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green" data-key="highest">الأعلى</span></td>
+                  <td class="p-4 text-gray-300">5:42:18</td>
+                  <td class="p-4"><button onclick="navigate('view-auction','console')" class="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold" data-key="view">عرض</button></td>
+                </tr>
+                <tr class="hover:bg-b2b-bg transition bg-red-500/5">
+                  <td class="p-4"><div class="text-white font-semibold">50× Dell Latitude 7420</div><div class="text-[10px] text-gray-500">Dell</div></td>
+                  <td class="p-4"><div class="text-gray-300">PixelBar Ltd</div><div class="text-[10px] text-gray-500">🇬🇧 بريطانيا</div></td>
+                  <td class="p-4 text-white font-bold">$6,200</td>
+                  <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold bg-red-500/15 text-red-400" data-key="outbid">تم التفوق عليك</span></td>
+                  <td class="p-4 text-gray-300">2:14:33</td>
+                  <td class="p-4"><button onclick="navigate('view-auction','console')" class="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold" data-key="bid_again">عادة المزايدة</button></td>
+                </tr>
+                <tr class="hover:bg-b2b-bg transition">
+                  <td class="p-4"><div class="text-white font-semibold">200× Logitech MX</div><div class="text-[10px] text-gray-500">Logitech</div></td>
+                  <td class="p-4"><div class="text-gray-300">NordicTech AB</div><div class="text-[10px] text-gray-500">🇸🇪 السويد</div></td>
+                  <td class="p-4 text-white font-bold">$3,800</td>
+                  <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green" data-key="highest">الأعلى</span></td>
+                  <td class="p-4 text-gray-300">11:23:07</td>
+                  <td class="p-4"><button onclick="navigate('view-auction','console')" class="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold" data-key="view">عرض</button></td>
+                </tr>
+                <tr class="hover:bg-b2b-bg transition bg-red-500/5">
+                  <td class="p-4"><div class="text-white font-semibold">30× Dell U2723QE</div><div class="text-[10px] text-gray-500">Dell</div></td>
+                  <td class="p-4"><div class="text-gray-300">TechReclaim FZE</div><div class="text-[10px] text-gray-500">🇦🇪 الإمارات</div></td>
+                  <td class="p-4 text-white font-bold">$11,200</td>
+                  <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold bg-red-500/15 text-red-400" data-key="outbid">تم التفوق عليك</span></td>
+                  <td class="p-4 text-gray-300">0:48:51</td>
+                  <td class="p-4"><button onclick="navigate('view-auction','console')" class="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold" data-key="bid_again">عادة المزايدة</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Escrow Section -->
+        <div class="bg-console-card border border-b2b-border rounded-2xl p-5">
+          <h3 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-b2c-green"></i> <span data-key="escrow_in_progress">مدفوعات Escrow قيد المعالجة</span></h3>
+          <div class="bg-b2b-bg rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-lg bg-b2c-green/15 flex items-center justify-center"><i class="fa-solid fa-shield-halved text-b2c-green text-lg"></i></div>
+              <div>
+                <div class="text-white font-semibold">50× ThinkPad X1 Carbon</div>
+                <div class="text-xs text-gray-500" data-key="escrow_held_safe">$41,800 محجوزة بأمان حتى تأكيد الاستلام</div>
+              </div>
+            </div>
+            <div class="text-left">
+              <div class="text-2xl font-extrabold text-b2c-green">$41,800</div>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-yellow-500/15 text-yellow-400" data-key="in_transit_caps">قيد الشحن</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 9: B2C SHOP HOME ============ -->
+<section id="view-shop" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 lg:py-10">
+    <!-- Hero -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-l from-b2c-green via-emerald-600 to-emerald-800 p-8 lg:p-14 mb-8 text-white">
+      <div class="absolute top-0 left-0 w-72 h-72 bg-white/10 rounded-full blur-3xl -translate-x-1/3 -translate-y-1/3"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-emerald-400/20 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+      <div class="relative max-w-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur text-xs font-semibold mb-5">
+          <i class="fa-solid fa-tag text-[10px]"></i>
+          <span data-key="b2c_badge">أجهزة أصلية قريبة من أسعار الجملة</span>
+        </div>
+        <h1 class="text-3xl lg:text-5xl font-extrabold leading-tight mb-4">
+          <span data-key="b2c_h1_l1">تقنية أصلية،</span>
+          <span class="block text-emerald-200" data-key="b2c_h1_l2">من تاجر موثّق قربك</span>
+        </h1>
+        <p class="text-white/80 text-base lg:text-lg mb-6" data-key="b2c_desc">
+          تسوق من متاجر عراقية موثقة. استلام في نفس اليوم من المتجر أو توصيل لباب البيت — كل ذلك بالدينار العراقي.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="navigate('view-store','b2c')" class="px-6 py-3 rounded-xl bg-white text-b2c-green hover:bg-emerald-50 font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span data-key="shop_now">تسوق الآن</span>
+          </button>
+          <button class="px-6 py-3 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur text-white font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-store"></i>
+            <span data-key="browse_stores">تصفح المتاجر</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-8">
+      <button onclick="navigate('view-store','b2c')" class="bg-white border border-b2c-border rounded-2xl p-4 hover:border-b2c-green hover:shadow-soft transition text-center group">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-b2c-green/10 flex items-center justify-center mb-2 group-hover:bg-b2c-green/20 transition"><i class="fa-solid fa-laptop text-b2c-green text-xl"></i></div>
+        <div class="text-xs font-semibold text-b2c-text" data-key="cat_laptops">لابتوبات</div>
+      </button>
+      <button onclick="navigate('view-store','b2c')" class="bg-white border border-b2c-border rounded-2xl p-4 hover:border-b2c-green hover:shadow-soft transition text-center group">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-b2c-green/10 flex items-center justify-center mb-2 group-hover:bg-b2c-green/20 transition"><i class="fa-solid fa-mobile-screen text-b2c-green text-xl"></i></div>
+        <div class="text-xs font-semibold text-b2c-text" data-key="cat_phones">هواتف</div>
+      </button>
+      <button class="bg-white border border-b2c-border rounded-2xl p-4 hover:border-b2c-green hover:shadow-soft transition text-center group">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-b2c-green/10 flex items-center justify-center mb-2 group-hover:bg-b2c-green/20 transition"><i class="fa-solid fa-headphones text-b2c-green text-xl"></i></div>
+        <div class="text-xs font-semibold text-b2c-text" data-key="cat_headphones">سماعات</div>
+      </button>
+      <button class="bg-white border border-b2c-border rounded-2xl p-4 hover:border-b2c-green hover:shadow-soft transition text-center group">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-b2c-green/10 flex items-center justify-center mb-2 group-hover:bg-b2c-green/20 transition"><i class="fa-solid fa-display text-b2c-green text-xl"></i></div>
+        <div class="text-xs font-semibold text-b2c-text" data-key="cat_monitors">شاشات</div>
+      </button>
+      <button class="bg-white border border-b2c-border rounded-2xl p-4 hover:border-b2c-green hover:shadow-soft transition text-center group">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-b2c-green/10 flex items-center justify-center mb-2 group-hover:bg-b2c-green/20 transition"><i class="fa-solid fa-tablet-screen-button text-b2c-green text-xl"></i></div>
+        <div class="text-xs font-semibold text-b2c-text" data-key="cat_tablets">تابلت</div>
+      </button>
+      <button class="bg-white border border-b2c-border rounded-2xl p-4 hover:border-b2c-green hover:shadow-soft transition text-center group">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-b2c-green/10 flex items-center justify-center mb-2 group-hover:bg-b2c-green/20 transition"><i class="fa-solid fa-watch text-b2c-green text-xl"></i></div>
+        <div class="text-xs font-semibold text-b2c-text" data-key="cat_watches">ساعات ذكية</div>
+      </button>
+    </div>
+
+    <!-- Featured Stores -->
+    <h2 class="text-xl lg:text-2xl font-extrabold text-b2c-text mb-4 flex items-center gap-2"><i class="fa-solid fa-store text-b2c-green"></i> <span data-key="featured_stores">متاجر مميزة بالقرب منك</span></h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div onclick="navigate('view-store','b2c')" class="bg-white border border-b2c-border rounded-2xl p-5 hover:shadow-soft transition cursor-pointer">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-b2c-green to-emerald-700 flex items-center justify-center text-white font-extrabold">م</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-1.5"><h4 class="font-bold text-b2c-text">متجر المنصور للتقنية</h4><i class="fa-solid fa-shield-check text-b2c-green text-xs"></i></div>
+            <div class="text-xs text-gray-500">المنصور، بغداد · 2.3 كم</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-1"><span class="text-b2c-green font-bold">4.8</span><i class="fa-solid fa-star text-b2c-green text-[10px]"></i><span class="text-gray-500">(124)</span></div>
+          <span class="text-gray-500" data-key="response_15min">يرد خلال 15 دقيقة</span>
+        </div>
+      </div>
+      <div onclick="navigate('view-store','b2c')" class="bg-white border border-b2c-border rounded-2xl p-5 hover:shadow-soft transition cursor-pointer">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-brand-hover flex items-center justify-center text-white font-extrabold">ر</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-1.5"><h4 class="font-bold text-b2c-text">الرافدين للإلكترونيات</h4><i class="fa-solid fa-shield-check text-b2c-green text-xs"></i></div>
+            <div class="text-xs text-gray-500">الكاظمية، بغداد · 5.1 كم</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-1"><span class="text-b2c-green font-bold">4.6</span><i class="fa-solid fa-star text-b2c-green text-[10px]"></i><span class="text-gray-500">(89)</span></div>
+          <span class="text-gray-500" data-key="response_30min">يرد خلال 30 دقيقة</span>
+        </div>
+      </div>
+      <div onclick="navigate('view-store','b2c')" class="bg-white border border-b2c-border rounded-2xl p-5 hover:shadow-soft transition cursor-pointer">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center text-white font-extrabold">ب</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-1.5"><h4 class="font-bold text-b2c-text">تقنية البصرة</h4><i class="fa-solid fa-shield-check text-b2c-green text-xs"></i></div>
+            <div class="text-xs text-gray-500">البصرة · 412 كم</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-1"><span class="text-b2c-green font-bold">4.9</span><i class="fa-solid fa-star text-b2c-green text-[10px]"></i><span class="text-gray-500">(67)</span></div>
+          <span class="text-gray-500" data-key="response_10min">يرد خلال 10 دقائق</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 10: B2C STORE PROFILE ============ -->
+<section id="view-store" class="view">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 lg:py-10">
+    <!-- Store Header -->
+    <div class="bg-white border border-b2c-border rounded-3xl p-6 lg:p-8 mb-6">
+      <div class="flex flex-wrap items-start gap-6">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-b2c-green to-emerald-700 flex items-center justify-center text-white font-extrabold text-2xl shrink-0">م</div>
+        <div class="flex-1 min-w-[250px]">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <h1 class="text-2xl lg:text-3xl font-extrabold text-b2c-text">متجر المنصور للتقنية</h1>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green flex items-center gap-1"><i class="fa-solid fa-shield-check"></i> <span data-key="verified_merchant">تاجر موثّق</span></span>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-3">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-location-dot text-b2c-green text-xs"></i> <span data-key="mansour_baghdad">المنصور، بغداد</span></span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-b2c-green text-xs"></i> <span data-key="hours_9_10">يومياً 9 صباحاً - 10 مساءً</span></span>
+          </div>
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-1.5">
+              <div class="text-2xl font-extrabold text-b2c-text">4.8</div>
+              <div class="text-xs text-gray-500">
+                <div class="text-b2c-green">★★★★★</div>
+                <div>(124 <span data-key="reviews">مراجعة</span>)</div>
+              </div>
+            </div>
+            <div class="h-8 w-px bg-b2c-border"></div>
+            <div>
+              <div class="text-2xl font-extrabold text-b2c-text">15 <span class="text-sm text-gray-500" data-key="min_short">د</span></div>
+              <div class="text-xs text-gray-500" data-key="response_time_label">وقت الرد</div>
+            </div>
+            <div class="h-8 w-px bg-b2c-border"></div>
+            <div>
+              <div class="text-2xl font-extrabold text-b2c-text">340</div>
+              <div class="text-xs text-gray-500" data-key="sales">مبيعات</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button onclick="showToast('تمت متابعة المتجر', 'success')" class="px-5 py-2.5 rounded-lg bg-b2c-green hover:bg-b2c-greenHover text-white text-sm font-semibold transition flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> <span data-key="follow_store">متابعة المتجر</span></button>
+          <button onclick="showToast('فتح واتساب: +964 770 123 4567', 'success')" class="px-5 py-2.5 rounded-lg bg-white border border-b2c-border hover:border-b2c-green text-b2c-text text-sm font-semibold transition flex items-center gap-2"><i class="fa-brands fa-whatsapp text-b2c-green"></i> <span data-key="whatsapp">واتساب</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="flex items-center gap-2 mb-5 overflow-x-auto pb-2">
+      <button class="store-tab px-4 py-2 rounded-lg bg-b2c-green text-white text-sm font-semibold whitespace-nowrap" data-tab="all" data-key="tab_all">الكل</button>
+      <button class="store-tab px-4 py-2 rounded-lg bg-white border border-b2c-border text-b2c-text text-sm font-semibold whitespace-nowrap hover:border-b2c-green" data-tab="laptops" data-key="tab_laptops">لابتوبات</button>
+      <button class="store-tab px-4 py-2 rounded-lg bg-white border border-b2c-border text-b2c-text text-sm font-semibold whitespace-nowrap hover:border-b2c-green" data-tab="phones" data-key="tab_phones">هواتف</button>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="store-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== MODALS =================== -->
+<!-- Login -->
+<div id="modal-login" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-login')"></div>
+  <div class="relative bg-b2b-card border border-b2b-border rounded-2xl p-6 w-full max-w-md shadow-card">
+    <button onclick="closeModal('modal-login')" class="absolute top-4 left-4 w-8 h-8 rounded-lg bg-b2b-bg hover:bg-b2b-cardHover flex items-center justify-center"><i class="fa-solid fa-xmark text-gray-400"></i></button>
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 rounded-xl bg-brand flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-link text-white text-xl"></i></div>
+      <h3 class="text-white font-bold text-xl mb-1" data-key="login_title">تسجيل الدخول</h3>
+      <p class="text-sm text-gray-400" data-key="login_desc">ادخل بياناتك للوصول إلى السوق</p>
+    </div>
+    <form onsubmit="event.preventDefault(); closeModal('modal-login'); showToast('تم تسجيل الدخول بنجاح', 'success')" class="space-y-3">
+      <div>
+        <label class="text-xs text-gray-400 mb-1 block" data-key="email">البريد الإلكتروني</label>
+        <input type="email" required data-i18n-ph="ph_email" placeholder="you@example.com" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      </div>
+      <div>
+        <label class="text-xs text-gray-400 mb-1 block" data-key="password">كلمة المرور</label>
+        <input type="password" required data-i18n-ph="ph_password" placeholder="••••••••" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      </div>
+      <button type="submit" class="w-full py-3 rounded-lg bg-brand hover:bg-brand-hover text-white font-semibold transition" data-key="login_btn">دخول</button>
+    </form>
+    <div class="text-center text-xs text-gray-500 mt-4">
+      <span data-key="no_account">ليس لديك حساب؟</span>
+      <button onclick="closeModal('modal-login'); openModal('modal-register')" class="text-brand hover:underline" data-key="register_link">سجّل الآن</button>
+    </div>
+  </div>
+</div>
+
+<!-- Register -->
+<div id="modal-register" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-register')"></div>
+  <div class="relative bg-b2b-card border border-b2b-border rounded-2xl p-6 w-full max-w-md shadow-card max-h-[90vh] overflow-y-auto">
+    <button onclick="closeModal('modal-register')" class="absolute top-4 left-4 w-8 h-8 rounded-lg bg-b2b-bg hover:bg-b2b-cardHover flex items-center justify-center"><i class="fa-solid fa-xmark text-gray-400"></i></button>
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 rounded-xl bg-brand flex items-center justify-center mx-auto mb-3"><i class="fa-solid fa-user-plus text-white text-xl"></i></div>
+      <h3 class="text-white font-bold text-xl mb-1" data-key="register_title">إنشاء حساب تاجر</h3>
+      <p class="text-sm text-gray-400" data-key="register_desc">انضم إلى LinkTech كتاجر عراقي</p>
+    </div>
+    <form onsubmit="event.preventDefault(); closeModal('modal-register'); showToast('تم إنشاء الحساب بنجاح', 'success')" class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <input type="text" required data-i18n-ph="ph_firstname" placeholder="الاسم الأول" class="bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+        <input type="text" required data-i18n-ph="ph_lastname" placeholder="الاسم الأخير" class="bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      </div>
+      <input type="email" required data-i18n-ph="ph_email" placeholder="البريد الإلكتروني" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      <input type="text" required data-i18n-ph="ph_company" placeholder="اسم الشركة / المتجر" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      <input type="password" required data-i18n-ph="ph_password" placeholder="كلمة المرور" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      <button type="submit" class="w-full py-3 rounded-lg bg-brand hover:bg-brand-hover text-white font-semibold transition" data-key="register_btn">إنشاء الحساب</button>
+    </form>
+  </div>
+</div>
+
+<!-- Request Quote -->
+<div id="modal-quote" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-quote')"></div>
+  <div class="relative bg-b2b-card border border-b2b-border rounded-2xl p-6 w-full max-w-md shadow-card max-h-[90vh] overflow-y-auto">
+    <button onclick="closeModal('modal-quote')" class="absolute top-4 left-4 w-8 h-8 rounded-lg bg-b2b-bg hover:bg-b2b-cardHover flex items-center justify-center"><i class="fa-solid fa-xmark text-gray-400"></i></button>
+    <h3 class="text-white font-bold text-xl mb-1" data-key="quote_title">طلب عرض سعر نهائي</h3>
+    <p class="text-sm text-gray-400 mb-5" data-key="quote_desc">HP EliteBook 840 G8 · TechSource GmbH</p>
+    <form onsubmit="event.preventDefault(); closeModal('modal-quote'); showToast('تم إرسال طلب عرض السعر للمورد', 'success')" class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block" data-key="quantity">الكمية</label>
+          <input type="number" value="10" min="10" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block" data-key="target_price">السعر المستهدف</label>
+          <input type="text" data-i18n-ph="ph_target_price" placeholder="$280" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs text-gray-400 mb-1 block" data-key="notes">ملاحظات للمورد</label>
+        <textarea rows="3" data-i18n-ph="ph_notes" placeholder="أي تفاصيل إضافية عن طلبك..." class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none resize-none"></textarea>
+      </div>
+      <button type="submit" class="w-full py-3 rounded-lg bg-brand hover:bg-brand-hover text-white font-semibold transition" data-key="send_quote">إرسال الطلب</button>
+    </form>
+  </div>
+</div>
+
+<!-- Contact Supplier -->
+<div id="modal-contact" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal('modal-contact')"></div>
+  <div class="relative bg-b2b-card border border-b2b-border rounded-2xl p-6 w-full max-w-md shadow-card">
+    <button onclick="closeModal('modal-contact')" class="absolute top-4 left-4 w-8 h-8 rounded-lg bg-b2b-bg hover:bg-b2b-cardHover flex items-center justify-center"><i class="fa-solid fa-xmark text-gray-400"></i></button>
+    <h3 class="text-white font-bold text-xl mb-1" data-key="contact_title">تواصل مع المورد</h3>
+    <p class="text-sm text-gray-400 mb-5" data-key="contact_desc">رسالتك ستصل لـ TechSource GmbH</p>
+    <form onsubmit="event.preventDefault(); closeModal('modal-contact'); showToast('تم إرسال رسالتك للمورد', 'success')" class="space-y-3">
+      <input type="text" required data-i18n-ph="ph_subject" placeholder="الموضوع" class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none">
+      <textarea rows="4" required data-i18n-ph="ph_message" placeholder="اكتب رسالتك هنا..." class="w-full bg-b2b-bg border border-b2b-border rounded-lg py-2.5 px-3 text-sm text-white focus:border-brand focus:outline-none resize-none"></textarea>
+      <button type="submit" class="w-full py-3 rounded-lg bg-brand hover:bg-brand-hover text-white font-semibold transition" data-key="send_message">إرسال الرسالة</button>
+    </form>
+  </div>
+</div>
+
+<!-- Cart Drawer (B2C) -->
+<div id="cart-drawer" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-black/60" onclick="closeCart()"></div>
+  <div class="absolute top-0 left-0 bottom-0 w-96 max-w-[90vw] bg-white shadow-2xl flex flex-col">
+    <div class="p-5 border-b border-b2c-border flex items-center justify-between">
+      <h3 class="font-bold text-b2c-text flex items-center gap-2"><i class="fa-solid fa-bag-shopping text-b2c-green"></i> <span data-key="cart_title">سلة التسوق</span></h3>
+      <button onclick="closeCart()" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center"><i class="fa-solid fa-xmark text-gray-600"></i></button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-3">
+      <div class="text-center text-gray-400 py-10" id="cart-empty">
+        <i class="fa-solid fa-bag-shopping text-5xl text-gray-300 mb-3"></i>
+        <p class="text-sm" data-key="cart_empty">سلتك فارغة</p>
+      </div>
+    </div>
+    <div class="p-5 border-t border-b2c-border">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-gray-600 text-sm" data-key="cart_total">الإجمالي</span>
+        <span id="cart-total" class="text-xl font-extrabold text-b2c-text">0 <span class="text-sm">د.ع</span></span>
+      </div>
+      <button onclick="showToast('تجربة فقط: اكتمال الطلب', 'success'); closeCart(); clearCart()" class="w-full py-3 rounded-lg bg-b2c-green hover:bg-b2c-greenHover text-white font-semibold transition" data-key="checkout">إتمام الطلب</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-5 py-3 rounded-xl shadow-2xl font-semibold text-sm flex items-center gap-2"></div>
+
+<!-- =================== JAVASCRIPT =================== -->
+<script>
+/* ============================================
+   STATE
+============================================ */
+let currentLang = 'ar';
+let currentMode = 'b2b';
+let cart = [];
+
+const auctionState = {
+  currentBid: 8400,
+  bidCount: 23,
+  bidders: 9,
+  timeLeft: 5 * 3600 + 42 * 60 + 18,
+};
+const reverseTimer = { h: 47, m: 23, s: 11 };
+
+/* ============================================
+   TRANSLATIONS (key samples)
+============================================ */
+const translations = {
+  ar: {
+    iraq: 'العراق',
+    nav_home: 'الرئيسية', nav_market: 'السوق', nav_auction: 'المزادات الحية',
+    nav_reverse: 'المزاد العكسي', nav_suppliers: 'الموردون', nav_console: 'الكونسول',
+    nav_shop: 'تسوق', nav_stores: 'المتاجر', nav_categories: 'الفئات', nav_offers: 'العروض',
+    switch_b2c: 'B2C', switch_b2b: 'B2B', login: 'دخول',
+    hero_badge: 'سوق B2B مباشر • بلا وسطاء مجهولين',
+    hero_h1_l1: 'تقنية الجملة،', hero_h1_l2: 'من المورد إلى متجرك', hero_h1_l3: 'مباشرة',
+    hero_desc: 'منصة عراقية تربط التجار بموردين دوليين موثوقين من أوروبا والإمارات. مزادات حية، مزادات عكسية للاستيراد، ومدفوعات Escrow محمية — كل شيء بعملية شفافة واحدة.',
+    browse_market: 'تصفح السوق', live_auctions: 'المزادات الحية', live_now: 'حي الآن',
+    escrow_protected: 'محمي بـ Escrow',
+    wholesale_buy: 'شراء الجملة', wholesale_desc: 'أسعار متدرجة حسب الكمية من موردين موثوقين',
+    from: 'يبدأ من', live_auction_room: 'غرفة المزاد الحي', auction_desc: 'دفعة واحدة، أعلى مزايد يفوز بكل الكمية',
+    current_bid_label: 'المزايدة الحالية',
+    stat_suppliers: 'مورد موثّق KYB', stat_merchants: 'تاجر عراقي مسجل',
+    stat_volume: 'حجم تداول مستهدف', stat_days: 'أيام تسوية الدفع',
+    feat_lock: 'قفل السعر 48 ساعة', feat_lock_desc: 'ثبات السعر طيلة المزايدة',
+    feat_ship: 'الشحن والتخليص', feat_ship_desc: 'دعم لوجستي حتى بغداد',
+    feat_escrow: 'حماية Escrow', feat_escrow_desc: 'الدفع يُطلق بعد الفحص',
+    feat_kyb: 'توثيق KYB', feat_kyb_desc: 'كل مورد يمر بالتحقق',
+    // ... (more keys truncated for brevity - defaults already in HTML)
+  },
+  en: {
+    iraq: 'Iraq',
+    nav_home: 'Home', nav_market: 'Marketplace', nav_auction: 'Live Auctions',
+    nav_reverse: 'Reverse Auction', nav_suppliers: 'Suppliers', nav_console: 'Console',
+    nav_shop: 'Shop', nav_stores: 'Stores', nav_categories: 'Categories', nav_offers: 'Offers',
+    switch_b2c: 'B2C', switch_b2b: 'B2B', login: 'Login',
+    hero_badge: 'Direct B2B marketplace • No anonymous middlemen',
+    hero_h1_l1: 'Wholesale tech,', hero_h1_l2: 'from supplier to your store', hero_h1_l3: 'directly',
+    hero_desc: 'An Iraqi platform connecting merchants with verified international suppliers from Europe and the UAE. Live auctions, reverse auctions for imports, and Escrow-protected payments — all in one transparent process.',
+    browse_market: 'Browse Marketplace', live_auctions: 'Live Auctions', live_now: 'live now',
+    escrow_protected: 'Escrow protected',
+    wholesale_buy: 'Wholesale Buying', wholesale_desc: 'Tiered pricing by quantity from verified suppliers',
+    from: 'from', live_auction_room: 'Live Auction Room', auction_desc: 'One lot, highest bidder wins all',
+    current_bid_label: 'Current Bid',
+    stat_suppliers: 'KYB Verified Suppliers', stat_merchants: 'Registered Iraqi Merchants',
+    stat_volume: 'Target Trading Volume', stat_days: 'Days Payment Settlement',
+    feat_lock: '48h Price Lock', feat_lock_desc: 'Price stability throughout bidding',
+    feat_ship: 'Shipping & Customs', feat_ship_desc: 'Logistics support to Baghdad',
+    feat_escrow: 'Escrow Protection', feat_escrow_desc: 'Funds released after inspection',
+    feat_kyb: 'KYB Verification', feat_kyb_desc: 'Every supplier verified',
+    store_local: 'Local Store',
+    console_title: 'Trader Console', merchant_baghdad: 'Merchant · Baghdad',
+    ph_search: 'Search products or suppliers...', ph_search_shop: 'Search local stores...',
+    ph_search_catalog: 'Search catalog...', ph_email: 'you@example.com',
+    ph_password: '••••••••', ph_firstname: 'First name', ph_lastname: 'Last name',
+    ph_company: 'Company / Store name', ph_target_price: '$280',
+    ph_notes: 'Any additional details about your order...', ph_subject: 'Subject',
+    ph_message: 'Write your message here...',
+    login_title: 'Sign In', login_desc: 'Enter your credentials to access the marketplace',
+    login_btn: 'Sign In', no_account: "Don't have an account?", register_link: 'Register now',
+    register_title: 'Create Merchant Account', register_desc: 'Join LinkTech as an Iraqi merchant',
+    register_btn: 'Create Account',
+    quote_title: 'Request Final Quote', quote_desc: 'HP EliteBook 840 G8 · TechSource GmbH',
+    send_quote: 'Send Request', contact_title: 'Contact Supplier',
+    contact_desc: 'Your message will reach TechSource GmbH', send_message: 'Send Message',
+    cart_title: 'Shopping Cart', cart_empty: 'Your cart is empty',
+    cart_total: 'Total', checkout: 'Checkout',
+    // Nav keys
+    reverse_auction_detail: 'Request Details', receiving_offers: 'Receiving Offers',
+    target_price: 'Target Price', budget_ceiling: 'Budget ceiling: $50,000',
+    time_remaining: 'Time remaining to receive offers', closes_in: 'Closes in',
+    hours: 'hrs', minutes: 'min', seconds: 'sec',
+    req_specs: 'Required Specifications', spec_model: 'Model', spec_condition: 'Accepted Condition',
+    grade_a: 'Refurbished Grade A', spec_destination: 'Destination', baghdad: 'Baghdad, Iraq',
+    spec_shipping: 'Shipping', dhl_express: 'DHL Express · 5-11 days',
+    spec_quantity: 'Quantity', spec_payment: 'Payment',
+    auction_progress: 'Request Progress', step_publish: 'Publish Request',
+    step_invite: 'Invite Suppliers', step_receive: 'Receive Offers', step_select: 'Select Winner',
+    received_offers: 'Received Offers', best_offer: 'Best Offer',
+    germany: 'Germany', uae: 'UAE', uk: 'UK', sweden: 'Sweden', latvia: 'Latvia',
+    unit_price: 'Unit Price', shipping_time: 'Shipping Time', total: 'Total',
+    award_order: 'Award Order', view_details: 'View Details',
+    auction_room: 'Auction Room', ends_in: 'Ends in', current_bid: 'Current Bid',
+    bidders: 'Bidders', bids_count: 'Bids', quick_bid: 'Quick Bid',
+    place_bid: 'Place Bid', min_bid_notice: 'Next minimum bid: $8,500',
+    bid_log: 'Bid Log', live: 'Live', live_caps: 'LIVE',
+    live_auction_label: 'Live Auction', lot: 'Lot of 100 units', watching: 'watching',
+    auction_flow: 'Auction Flow', flow_live: 'Live Bidding', flow_winner: 'Winner Selection',
+    flow_contract: 'Contract & Payment', flow_ship: 'Shipping',
+    lot_contents: 'Lot Contents', memory_storage: 'Memory & Storage', condition: 'Condition',
+    grade_a_short: 'Grade A',
+    laptops_catalog: 'Laptops Catalog', catalog_desc: 'Tiered wholesale pricing from verified suppliers · Escrow protected',
+    filters: 'Filters', clear_all: 'Clear All',
+    cond_new: 'New', cond_refA: 'Refurbished Grade A', cond_refB: 'Refurbished Grade B', cond_parts: 'Parts-only',
+    price_range: 'Price Range ($)', moq: 'Minimum Order', moq_10: 'Up to 10 units', moq_50: '10-50 units', moq_100: '50-100 units',
+    brand: 'Brand', active_filters: 'Active filters:',
+    sort_featured: 'Featured', sort_price_asc: 'Price: Low to High', sort_price_desc: 'Price: High to Low',
+    back_to_catalog: 'Back to Catalog', deals_done: 'Deals Done',
+    tier_pricing: 'Tiered Pricing Calculator', tier_1_qty: '10-49 units', tier_2_qty: '50-99 units', tier_3_qty: '100+ units',
+    per_unit: '/ per unit', save_0: 'Save 0%', save_7: 'Save 7%', save_14: 'Save 14% · Best',
+    quantity: 'Quantity', estimated_total: 'Estimated Total', est_shipping: '+ Estimated shipping: $340 (DHL · 7 days)',
+    request_quote: 'Request Quote', contact_supplier: 'Contact Supplier', add_to_cart: 'Add to Cart',
+    full_specs: 'Full Specifications', spec_processor: 'Processor', spec_memory: 'Memory',
+    spec_storage: 'Storage', spec_display: 'Display', spec_condition2: 'Condition',
+    spec_origin: 'Origin', spec_warranty: 'Warranty', spec_battery: 'Battery',
+    rating: 'Rating', deals_completed: 'Deals Completed', response_rate: 'Response Rate',
+    on_time: 'On-time Rate', quality_score: 'Quality Score', view_profile: 'View Full Profile',
+    quick_info: 'Quick Info', moq_label: 'MOQ: 10 units', shipping_label: 'Shipping: 5-9 days',
+    escrow_label: 'Escrow protected', availability_label: 'Available: 540 units',
+    kyb_verified: 'KYB Verified', berlin: 'Berlin, Germany', joined: 'Joined Jan 2022',
+    tags: 'Laptops · Monitors · Accessories', reviews: 'reviews',
+    about_company: 'About Company', about_desc: 'TechSource GmbH is a German company specialized in refurbishing and distributing IT equipment for enterprises. We have a fully transparent supply chain and provide original certificates for every unit. We serve over 50 countries with competitive wholesale prices and strict quality guarantees.',
+    legal_name: 'Legal Name', inventory_cap: 'Inventory Capacity',
+    reviews_title: 'Ratings & Reviews', verified_date: 'Last verified: Oct 15, 2024',
+    kyb_panel: 'KYB Verification', fully_verified: 'Fully Verified',
+    kyb_1: 'Commercial Registration', kyb_2: 'Owner Identity Verification',
+    kyb_3: 'Corporate Bank Account', kyb_4: 'Physical Address Verified',
+    kyb_5: 'Clean Performance Record',
+    response_time: 'Response Times', rt_quote: 'Quote', rt_msg: 'Messages', rt_ship: 'Shipping Prep',
+    welcome: 'Welcome,', dual_role: 'Dual role · Importer & seller', dual_role_desc: 'Your dual role: import from abroad (B2B) and sell locally (B2C)',
+    import_request: 'Import Request', menu_overview: 'OVERVIEW', overview: 'Overview',
+    menu_b2b: 'B2B IMPORT', rev_auctions: 'Reverse Auctions', live_bids: 'Live Bids',
+    import_orders: 'Import Orders', escrow_payments: 'Escrow Payments',
+    menu_b2c: 'B2C LOCAL SALES', my_store: 'My Store', local_orders: 'Local Orders', pickup_queue: 'Pickup Queue',
+    monthly_sales: 'Monthly Sales (IQD)', imports_transit: 'Imports in Transit',
+    pending_pickups: 'Pending Pickups', active_rev_auctions: 'Active Reverse Auctions',
+    in_transit_caps: 'In Transit', pickup_caps: 'Pickup', active_caps: 'Active',
+    import_activity: 'Import Activity (USD)', view_all: 'View All',
+    local_orders_activity: 'Local Orders (IQD)',
+    awaiting_award: 'Awaiting Award', customs: 'Customs Clearance', delivered: 'Delivered',
+    customer_salem: 'Salem K.', customer_hassan: 'Hassan M.', customer_zainab: 'Zainab A.', customer_omar: 'Omar H.',
+    ready_pickup: 'Ready for Pickup', new_order: 'New Order', processing: 'Processing',
+    my_bids: 'My Live Bids', bids_summary: 'You have 4 active bids and 3 Escrow payments in progress',
+    browse_auctions: 'Browse Auctions', total_purchases: 'Total Purchases',
+    completed_orders: 'Completed Orders', escrow_held: 'Escrow Held', active_bids_count: 'Active Bids',
+    active_bids_table: 'Active Bids', th_product: 'Product', th_supplier: 'Supplier', th_bid: 'My Bid',
+    th_status: 'Status', th_time: 'Time Left', th_action: 'Action',
+    highest: 'Highest', outbid: 'Outbid', view: 'View', bid_again: 'Bid Again',
+    escrow_in_progress: 'Escrow Payments in Progress', escrow_held_safe: '$41,800 held safely until receipt confirmation',
+    b2c_badge: 'Original devices near wholesale prices', b2c_h1_l1: 'Original tech,',
+    b2c_h1_l2: 'from a verified merchant near you', b2c_desc: 'Shop from verified Iraqi stores. Same-day pickup or home delivery — all in Iraqi dinar.',
+    shop_now: 'Shop Now', browse_stores: 'Browse Stores',
+    cat_laptops: 'Laptops', cat_phones: 'Phones', cat_headphones: 'Headphones',
+    cat_monitors: 'Monitors', cat_tablets: 'Tablets', cat_watches: 'Smartwatches',
+    featured_stores: 'Featured Stores Near You', response_15min: 'Replies within 15 min',
+    response_30min: 'Replies within 30 min', response_10min: 'Replies within 10 min',
+    verified_merchant: 'Verified Merchant', mansour_baghdad: 'Mansour, Baghdad',
+    hours_9_10: 'Daily 9AM - 10PM', min_short: 'min', response_time_label: 'Response Time', sales: 'Sales',
+    follow_store: 'Follow Store', whatsapp: 'WhatsApp',
+    tab_all: 'All', tab_laptops: 'Laptops', tab_phones: 'Phones',
+    email: 'Email', password: 'Password', notes: 'Notes to Supplier',
+    active: 'Active', reverse: 'Reverse', live: 'Live', per_unit: '/ unit',
+    grade_a_refurb: 'Refurbished Grade A · 8GB · 256GB',
+  }
+};
+
+/* ============================================
+   PRODUCTS DATA (Catalog)
+============================================ */
+const products = [
+  {
+    id: 1, name: 'HP EliteBook 840 G8', specs: 'i7-1165G7 · 16GB · 512GB SSD',
+    condition: 'refA', conditionLabel: 'متجدد درجة A', moq: 10, availability: 540,
+    supplier: 'TechSource GmbH', country: '🇩🇪', kyb: true,
+    tiers: [{qty:'10-49', price:298}, {qty:'50-99', price:276}, {qty:'100+', price:255, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 2, name: 'Lenovo ThinkPad X1 Carbon Gen 9', specs: 'i7-1165G7 · 16GB · 512GB SSD',
+    condition: 'refA', conditionLabel: 'متجدد درجة A', moq: 10, availability: 320,
+    supplier: 'TechSource GmbH', country: '🇩🇪', kyb: true,
+    tiers: [{qty:'10-49', price:340}, {qty:'50-99', price:315}, {qty:'100+', price:289, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 3, name: 'Dell Latitude 7420', specs: 'i5-1145G7 · 8GB · 256GB SSD',
+    condition: 'refA', conditionLabel: 'متجدد درجة A', moq: 10, availability: 280,
+    supplier: 'PixelBar Ltd', country: '🇬🇧', kyb: true,
+    tiers: [{qty:'10-49', price:260}, {qty:'50-99', price:240}, {qty:'100+', price:219, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 4, name: 'MacBook Air M1', specs: 'M1 · 8GB · 256GB SSD',
+    condition: 'refA', conditionLabel: 'متجدد درجة A', moq: 5, availability: 180,
+    supplier: 'EuroCycle GmbH', country: '🇩🇪', kyb: true,
+    tiers: [{qty:'5-49', price:620}, {qty:'50-99', price:580}, {qty:'100+', price:545, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 5, name: 'HP ProBook 450 G8', specs: 'i5-1135G7 · 8GB · 256GB SSD',
+    condition: 'refB', conditionLabel: 'متجدد درجة B', moq: 10, availability: 410,
+    supplier: 'NordicTech AB', country: '🇸🇪', kyb: true,
+    tiers: [{qty:'10-49', price:210}, {qty:'50-99', price:195}, {qty:'100+', price:178, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 6, name: 'Dell OptiPlex 7090 Tower', specs: 'i7-11700 · 16GB · 512GB SSD',
+    condition: 'new', conditionLabel: 'جديد', moq: 5, availability: 95,
+    supplier: 'TechReclaim FZE', country: '🇦🇪', kyb: true,
+    tiers: [{qty:'5-49', price:540}, {qty:'50-99', price:510}, {qty:'100+', price:478, best:true}],
+    icon: 'fa-desktop'
+  },
+  {
+    id: 7, name: 'Lenovo ThinkPad T14 Gen 2', specs: 'i5-1145G7 · 16GB · 512GB SSD',
+    condition: 'refA', conditionLabel: 'متجدد درجة A', moq: 10, availability: 230,
+    supplier: 'TechSource GmbH', country: '🇩🇪', kyb: true,
+    tiers: [{qty:'10-49', price:298}, {qty:'50-99', price:275}, {qty:'100+', price:252, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 8, name: 'MacBook Pro 14" M1 Pro', specs: 'M1 Pro · 16GB · 512GB SSD',
+    condition: 'refA', conditionLabel: 'متجدد درجة A', moq: 5, availability: 65,
+    supplier: 'EuroCycle GmbH', country: '🇩🇪', kyb: true,
+    tiers: [{qty:'5-49', price:1280}, {qty:'50-99', price:1220}, {qty:'100+', price:1170, best:true}],
+    icon: 'fa-laptop'
+  },
+  {
+    id: 9, name: 'HP EliteDesk 800 G6', specs: 'i7-10700 · 16GB · 256GB SSD',
+    condition: 'refB', conditionLabel: 'متجدد درجة B', moq: 10, availability: 175,
+    supplier: 'RigaTrade OÜ', country: '🇱🇻', kyb: true,
+    tiers: [{qty:'10-49', price:320}, {qty:'50-99', price:295}, {qty:'100+', price:270, best:true}],
+    icon: 'fa-desktop'
+  },
+];
+
+/* ============================================
+   B2C STORE PRODUCTS
+============================================ */
+const storeProducts = [
+  { id: 1, name: 'iPhone 13 128GB', category: 'phones', price: 650000, oldPrice: 720000, condition: 'مستعمل ممتاز', icon: 'fa-mobile-screen', available: true, exclusive: true },
+  { id: 2, name: 'MacBook Air M1 256GB', category: 'laptops', price: 1450000, oldPrice: null, condition: 'مستعمل ممتاز', icon: 'fa-laptop', available: true, exclusive: false },
+  { id: 3, name: 'HP EliteBook 840 G8', category: 'laptops', price: 850000, oldPrice: 920000, condition: 'مستعمل ممتاز', icon: 'fa-laptop', available: true, exclusive: true },
+  { id: 4, name: 'Samsung Galaxy S22', category: 'phones', price: 580000, oldPrice: null, condition: 'مستعمل جيد جداً', icon: 'fa-mobile-screen', available: true, exclusive: false },
+  { id: 5, name: 'Dell Latitude 7420', category: 'laptops', price: 780000, oldPrice: 850000, condition: 'مستعمل ممتاز', icon: 'fa-laptop', available: true, exclusive: true },
+  { id: 6, name: 'iPad Air 5', category: 'laptops', price: 920000, oldPrice: null, condition: 'مستعمل ممتاز', icon: 'fa-tablet-screen-button', available: true, exclusive: false },
+  { id: 7, name: 'iPhone 12 Pro 256GB', category: 'phones', price: 720000, oldPrice: 790000, condition: 'مستعمل ممتاز', icon: 'fa-mobile-screen', available: true, exclusive: true },
+  { id: 8, name: 'Lenovo ThinkPad X1 Carbon', category: 'laptops', price: 1180000, oldPrice: null, condition: 'مستعمل ممتاز', icon: 'fa-laptop', available: false, exclusive: false },
+];
+
+/* ============================================
+   NAVIGATION
+============================================ */
+function navigate(viewId, mode) {
+  // Hide all views
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  // Show target
+  const target = document.getElementById(viewId);
+  if (target) target.classList.add('active');
+  // Set mode
+  if (mode) setMode(mode);
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Update active nav state
+  updateActiveNav(viewId);
+  // Render specific view content if needed
+  if (viewId === 'view-catalog') renderProducts();
+  if (viewId === 'view-store') renderStoreProducts('all');
+  if (viewId === 'view-product') {
+    // Reset tier to first
+    setTimeout(() => calculateTotal(), 50);
+  }
+}
+
+function updateActiveNav(viewId) {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('bg-white/5', 'text-white');
+    link.classList.add('text-gray-300');
+  });
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  // Toggle headers
+  document.getElementById('header-b2b').classList.toggle('hidden', mode !== 'b2b');
+  document.getElementById('header-b2c').classList.toggle('hidden', mode !== 'b2c');
+  document.getElementById('header-console').classList.toggle('hidden', mode !== 'console');
+
+  // Toggle body theme
+  if (mode === 'b2c') {
+    document.body.classList.remove('b2b-bg', 'text-gray-200');
+    document.body.classList.add('bg-b2c-bg', 'text-b2c-text', 'b2c-active');
+  } else {
+    document.body.classList.add('b2b-bg', 'text-gray-200');
+    document.body.classList.remove('bg-b2c-bg', 'text-b2c-text', 'b2c-active');
+  }
+}
+
+/* ============================================
+   LANGUAGE
+============================================ */
+function toggleLang() {
+  setLang(currentLang === 'ar' ? 'en' : 'ar');
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  // Update all data-key elements
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.dataset.key;
+    if (translations[lang] && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (translations[lang] && translations[lang][key]) {
+      el.placeholder = translations[lang][key];
+    }
+  });
+
+  // Update lang labels
+  const label = lang === 'ar' ? 'EN' : 'ع';
+  ['lang-label', 'lang-label-2', 'lang-label-3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = label;
+  });
+}
+
+/* ============================================
+   MOBILE MENU
+============================================ */
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('hidden');
+}
+
+/* ============================================
+   MODALS
+============================================ */
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+/* ============================================
+   TOAST
+============================================ */
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  const colors = {
+    success: 'bg-b2c-green text-white',
+    error: 'bg-red-500 text-white',
+    info: 'bg-b2b-card text-white border border-b2b-border',
+  };
+  const icons = {
+    success: 'fa-circle-check',
+    error: 'fa-circle-exclamation',
+    info: 'fa-circle-info',
+  };
+  toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-5 py-3 rounded-xl shadow-2xl font-semibold text-sm flex items-center gap-2 ' + colors[type];
+  toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i> ${message}`;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+/* ============================================
+   CATALOG: RENDER PRODUCTS
+============================================ */
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  if (!grid) return;
+  
+  // Get search term
+  const search = document.getElementById('catalog-search')?.value.toLowerCase() || '';
+  const filtered = products.filter(p => 
+    p.name.toLowerCase().includes(search) || 
+    p.specs.toLowerCase().includes(search) ||
+    p.supplier.toLowerCase().includes(search)
+  );
+
+  grid.innerHTML = filtered.map(p => `
+    <div onclick="navigate('view-product','b2b')" class="glass border border-b2b-border rounded-2xl overflow-hidden hover:border-brand/40 transition cursor-pointer group">
+      <!-- Image -->
+      <div class="relative h-44 skeleton-img flex items-center justify-center">
+        <i class="fa-solid ${p.icon} text-5xl text-gray-700 group-hover:scale-110 transition"></i>
+        <span class="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-bold bg-b2c-green/15 text-b2c-green">${p.conditionLabel}</span>
+        <button onclick="event.stopPropagation(); toggleFavorite(${p.id}, this)" class="absolute top-3 left-3 w-8 h-8 rounded-lg bg-black/40 backdrop-blur flex items-center justify-center text-gray-400 hover:text-brand transition">
+          <i class="fa-regular fa-heart"></i>
+        </button>
+      </div>
+      <!-- Content -->
+      <div class="p-4">
+        <h3 class="text-white font-bold text-sm mb-1 line-clamp-1">${p.name}</h3>
+        <p class="text-xs text-gray-500 mb-3">${p.specs}</p>
+        <!-- Tiered Pricing -->
+        <div class="grid grid-cols-3 gap-1 mb-3">
+          ${p.tiers.map(t => `
+            <div class="bg-b2b-bg rounded-lg p-1.5 text-center ${t.best ? 'border border-brand/40' : ''}">
+              <div class="text-[9px] text-gray-500">${t.qty}</div>
+              <div class="text-xs font-bold ${t.best ? 'text-brand' : 'text-white'}">$${t.price}</div>
+            </div>
+          `).join('')}
+        </div>
+        <!-- MOQ & Availability -->
+        <div class="flex items-center justify-between text-[10px] text-gray-500 mb-3 pb-3 border-b border-b2b-border">
+          <span>MOQ: ${p.moq}</span>
+          <span>${p.availability} <span data-key="available">متوفر</span></span>
+        </div>
+        <!-- Supplier -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs">${p.country}</span>
+            <span class="text-xs text-gray-400">${p.supplier}</span>
+            ${p.kyb ? '<i class="fa-solid fa-shield-check text-b2c-green text-[10px]"></i>' : ''}
+          </div>
+          <button onclick="event.stopPropagation(); openModal('modal-quote')" class="text-xs text-brand hover:text-brand-hover font-semibold" data-key="view_details_btn">تفاصيل ←</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProducts() { renderProducts(); }
+
+function sortProducts() {
+  const sort = document.getElementById('sort-select').value;
+  if (sort === 'price-asc') products.sort((a,b) => a.tiers[0].price - b.tiers[0].price);
+  if (sort === 'price-desc') products.sort((a,b) => b.tiers[0].price - a.tiers[0].price);
+  if (sort === 'featured') products.sort((a,b) => a.id - b.id);
+  renderProducts();
+}
+
+/* ============================================
+   FILTERS
+============================================ */
+function removeFilter(btn, value) {
+  const chip = btn.parentElement;
+  chip.remove();
+  // Uncheck corresponding checkbox
+  document.querySelectorAll(`.filter-checkbox[value="${value}"]`).forEach(cb => cb.checked = false);
+}
+
+function clearAllFilters() {
+  document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.chip').forEach(chip => chip.remove());
+}
+
+function openFilterDrawer() {
+  // Clone sidebar into a drawer for mobile (simple alert for demo)
+  showToast('استخدم الفلاتر على الشاشات الكبيرة', 'info');
+}
+
+/* ============================================
+   FAVORITES
+============================================ */
+const favorites = new Set();
+function toggleFavorite(id, btn) {
+  const icon = btn.querySelector('i');
+  if (favorites.has(id)) {
+    favorites.delete(id);
+    icon.classList.remove('fa-solid', 'text-brand');
+    icon.classList.add('fa-regular', 'text-gray-400');
+  } else {
+    favorites.add(id);
+    icon.classList.remove('fa-regular', 'text-gray-400');
+    icon.classList.add('fa-solid', 'text-brand');
+    showToast('تمت الإضافة إلى المفضلة', 'success');
+  }
+}
+
+/* ============================================
+   PRODUCT: TIER PRICING CALCULATOR
+============================================ */
+function calculateTotal() {
+  const qtyInput = document.getElementById('qty-input');
+  if (!qtyInput) return;
+  const qty = parseInt(qtyInput.value) || 0;
+  let price, tier;
+  if (qty >= 100) { price = 265; tier = 3; }
+  else if (qty >= 50) { price = 288; tier = 2; }
+  else { price = 310; tier = 1; }
+  const total = qty * price;
+  const totalEl = document.getElementById('total-price');
+  if (totalEl) totalEl.textContent = total.toLocaleString();
+  // Highlight active tier
+  document.querySelectorAll('.tier-card').forEach((card, i) => {
+    if (i + 1 === tier) card.classList.add('tier-active');
+    else card.classList.remove('tier-active');
+  });
+}
+
+function setTier(tier) {
+  const qtyInput = document.getElementById('qty-input');
+  if (!qtyInput) return;
+  if (tier === 1) qtyInput.value = 10;
+  if (tier === 2) qtyInput.value = 50;
+  if (tier === 3) qtyInput.value = 100;
+  calculateTotal();
+}
+
+function changeQty(delta) {
+  const qtyInput = document.getElementById('qty-input');
+  if (!qtyInput) return;
+  let qty = parseInt(qtyInput.value) || 10;
+  qty = Math.max(10, qty + delta * (qty >= 100 ? 10 : qty >= 50 ? 5 : 1));
+  qtyInput.value = qty;
+  calculateTotal();
+}
+
+/* ============================================
+   LIVE AUCTION ENGINE
+============================================ */
+function placeBid(amount) {
+  auctionState.currentBid += amount;
+  auctionState.bidCount += 1;
+  updateAuctionDisplay();
+  addBidLogEntry('أنت', 'الآن', auctionState.currentBid, true);
+  showToast(`تمت المزايدة بـ +$${amount}`, 'success');
+}
+
+function updateAuctionDisplay() {
+  const bidEl = document.getElementById('auction-current-bid');
+  const countEl = document.getElementById('auction-bid-count');
+  const biddersEl = document.getElementById('auction-bidders');
+  if (bidEl) bidEl.textContent = auctionState.currentBid.toLocaleString();
+  if (countEl) countEl.textContent = auctionState.bidCount;
+  if (biddersEl) biddersEl.textContent = auctionState.bidders;
+}
+
+function addBidLogEntry(name, time, amount, isYou = false) {
+  const log = document.getElementById('bid-log');
+  if (!log) return;
+  const entry = document.createElement('div');
+  entry.className = 'bid-entry flex items-center justify-between p-2 rounded-lg ' + (isYou ? 'bg-brand/20 border border-brand' : 'bg-b2b-bg');
+  const initial = name.charAt(0);
+  entry.innerHTML = `
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded-full ${isYou ? 'bg-brand' : 'bg-b2b-card'} flex items-center justify-center ${isYou ? 'text-white' : 'text-gray-300'} text-[10px] font-bold">${initial}</div>
+      <div>
+        <div class="text-xs ${isYou ? 'text-brand' : 'text-gray-300'} font-semibold">${name}</div>
+        <div class="text-[10px] text-gray-500">${time}</div>
+      </div>
+    </div>
+    <div class="${isYou ? 'text-brand' : 'text-white'} font-bold text-sm">$${amount.toLocaleString()}</div>
+  `;
+  log.insertBefore(entry, log.firstChild);
+  // Keep max 10 entries
+  while (log.children.length > 10) log.removeChild(log.lastChild);
+}
+
+/* ============================================
+   TIMERS
+============================================ */
+function startAuctionTimer() {
+  setInterval(() => {
+    if (auctionState.timeLeft > 0) {
+      auctionState.timeLeft--;
+      updateAuctionTimerDisplay();
+    }
+  }, 1000);
+}
+
+function updateAuctionTimerDisplay() {
+  const h = Math.floor(auctionState.timeLeft / 3600);
+  const m = Math.floor((auctionState.timeLeft % 3600) / 60);
+  const s = auctionState.timeLeft % 60;
+  const setEl = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(val).padStart(2, '0');
+  };
+  setEl('auction-timer-h', h);
+  setEl('auction-timer-m', m);
+  setEl('auction-timer-s', s);
+}
+
+function startReverseTimer() {
+  setInterval(() => {
+    if (reverseTimer.s > 0) reverseTimer.s--;
+    else if (reverseTimer.m > 0) { reverseTimer.m--; reverseTimer.s = 59; }
+    else if (reverseTimer.h > 0) { reverseTimer.h--; reverseTimer.m = 59; reverseTimer.s = 59; }
+    const setEl = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = String(val).padStart(2, '0');
+    };
+    setEl('rev-timer-h', reverseTimer.h);
+    setEl('rev-timer-m', reverseTimer.m);
+    setEl('rev-timer-s', reverseTimer.s);
+  }, 1000);
+}
+
+/* ============================================
+   B2C: STORE PRODUCTS
+============================================ */
+let currentStoreTab = 'all';
+
+function renderStoreProducts(tab) {
+  currentStoreTab = tab;
+  const grid = document.getElementById('store-grid');
+  if (!grid) return;
+  const filtered = tab === 'all' ? storeProducts : storeProducts.filter(p => p.category === tab);
+  grid.innerHTML = filtered.map(p => `
+    <div class="bg-white border border-b2c-border rounded-2xl overflow-hidden hover:shadow-soft transition group">
+      <div class="relative h-44 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+        <i class="fa-solid ${p.icon} text-5xl text-gray-400 group-hover:scale-110 transition"></i>
+        <span class="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-bold ${p.condition.includes('ممتاز') ? 'bg-b2c-green/15 text-b2c-green' : 'bg-yellow-500/15 text-yellow-600'}">${p.condition}</span>
+        ${p.exclusive ? '<span class="absolute top-3 left-3 px-2 py-0.5 rounded text-[10px] font-bold bg-brand text-white">عرض حصري</span>' : ''}
+        ${!p.available ? '<div class="absolute inset-0 bg-white/60 flex items-center justify-center"><span class="text-gray-500 text-sm font-semibold">غير متوفر حالياً</span></div>' : ''}
+      </div>
+      <div class="p-4">
+        <h3 class="font-bold text-b2c-text text-sm mb-1">${p.name}</h3>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg font-extrabold text-b2c-green">${p.price.toLocaleString()} <span class="text-xs">د.ع</span></span>
+          ${p.oldPrice ? `<span class="text-xs text-gray-400 line-through">${p.oldPrice.toLocaleString()}</span>` : ''}
+        </div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-[10px] text-gray-500 flex items-center gap-1"><i class="fa-solid fa-store text-b2c-green"></i> متجر المنصور</span>
+          <span class="text-[10px] text-b2c-green font-semibold">استلام اليوم</span>
+        </div>
+        <button onclick="addToCart(${p.id})" ${!p.available ? 'disabled' : ''} class="w-full py-2 rounded-lg ${p.available ? 'bg-b2c-green hover:bg-b2c-greenHover' : 'bg-gray-200 cursor-not-allowed'} text-white text-sm font-semibold transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-cart-plus"></i> <span data-key="add_to_cart">أضف للسلة</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Store tab switching
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('store-tab')) {
+    document.querySelectorAll('.store-tab').forEach(t => {
+      t.classList.remove('bg-b2c-green', 'text-white');
+      t.classList.add('bg-white', 'border', 'border-b2c-border', 'text-b2c-text');
+    });
+    e.target.classList.add('bg-b2c-green', 'text-white');
+    e.target.classList.remove('bg-white', 'border', 'border-b2c-border', 'text-b2c-text');
+    renderStoreProducts(e.target.dataset.tab);
+  }
+});
+
+/* ============================================
+   CART (B2C)
+============================================ */
+function addToCart(productId) {
+  const product = storeProducts.find(p => p.id === productId);
+  if (!product) return;
+  const existing = cart.find(item => item.id === productId);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  updateCartUI();
+  showToast('تمت الإضافة إلى السلة', 'success');
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  updateCartUI();
+}
+
+function changeCartQty(productId, delta) {
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== productId);
+  }
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  const countEl = document.getElementById('cart-count');
+  countEl.textContent = count;
+  countEl.classList.toggle('hidden', count === 0);
+
+  const itemsEl = document.getElementById('cart-items');
+  const emptyEl = document.getElementById('cart-empty');
+  const totalEl = document.getElementById('cart-total');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = '';
+    if (emptyEl) itemsEl.appendChild(emptyEl);
+    if (totalEl) totalEl.innerHTML = '0 <span class="text-sm">د.ع</span>';
+    return;
+  }
+
+  if (emptyEl) emptyEl.style.display = 'none';
+  itemsEl.innerHTML = cart.map(item => `
+    <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
+      <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center shrink-0"><i class="fa-solid ${item.icon} text-gray-500"></i></div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-bold text-b2c-text truncate">${item.name}</div>
+        <div class="text-xs text-b2c-green font-semibold">${item.price.toLocaleString()} د.ع</div>
+      </div>
+      <div class="flex items-center gap-1">
+        <button onclick="changeCartQty(${item.id}, -1)" class="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 text-b2c-text">−</button>
+        <span class="w-6 text-center text-sm font-bold text-b2c-text">${item.qty}</span>
+        <button onclick="changeCartQty(${item.id}, 1)" class="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 text-b2c-text">+</button>
+      </div>
+      <button onclick="removeFromCart(${item.id})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-xs"></i></button>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  if (totalEl) totalEl.innerHTML = `${total.toLocaleString()} <span class="text-sm">د.ع</span>`;
+}
+
+function clearCart() {
+  cart = [];
+  updateCartUI();
+}
+
+function openCart() {
+  document.getElementById('cart-drawer').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  document.getElementById('cart-drawer').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+/* ============================================
+   DROPDOWNS
+============================================ */
+document.addEventListener('click', (e) => {
+  // Close dropdowns when clicking outside
+  if (!e.target.closest('[data-dropdown]')) {
+    document.querySelectorAll('[data-dropdown-menu]').forEach(m => m.classList.add('hidden'));
+  }
+});
+
+/* ============================================
+   INITIALIZATION
+============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  setLang('ar');
+  startAuctionTimer();
+  startReverseTimer();
+  calculateTotal();
+  renderProducts();
+  renderStoreProducts('all');
+
+  // Close modals on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('[id^="modal-"]:not(.hidden)').forEach(m => m.classList.add('hidden'));
+      document.getElementById('cart-drawer')?.classList.add('hidden');
+      document.getElementById('mobile-menu')?.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Filter checkbox listeners
+  document.querySelectorAll('.filter-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+      // Visual feedback - chips handled in HTML
+      showToast(cb.checked ? 'تم تفعيل الفلتر' : 'تم إلغاء الفلتر', 'info');
+    });
+  });
+});
+</script>
+
+</body>
+</html>
