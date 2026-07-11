@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PULSE — Member Portal</title>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          sans: ['Inter', 'sans-serif'],
+        },
+        colors: {
+          ink: {
+            950: '#08080A',
+            900: '#0A0A0B',
+            850: '#0F0F12',
+            800: '#131316',
+            750: '#17171B',
+            700: '#1C1C21',
+            600: '#26262C',
+            500: '#34343C',
+            400: '#4A4A54',
+          },
+          lime: {
+            DEFAULT: '#D4FF3F',
+            400: '#E0FF66',
+            500: '#D4FF3F',
+            600: '#B8E62E',
+          },
+          ember: {
+            DEFAULT: '#FF6B35',
+            400: '#FF8A5C',
+            500: '#FF6B35',
+            600: '#E5521C',
+          }
+        },
+        boxShadow: {
+          'glow-lime': '0 0 60px -10px rgba(212, 255, 63, 0.35)',
+          'glow-ember': '0 0 60px -10px rgba(255, 107, 53, 0.35)',
+          'card': '0 1px 0 0 rgba(255,255,255,0.04) inset, 0 20px 40px -20px rgba(0,0,0,0.5)'
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+  * { -webkit-font-smoothing: antialiased; }
+  html, body { background: #08080A; color: #EDEDEF; font-family: 'Inter', sans-serif; }
+  body { overflow-x: hidden; }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0A0B; }
+  ::-webkit-scrollbar-thumb { background: #26262C; border-radius: 6px; border: 2px solid #0A0A0B; }
+  ::-webkit-scrollbar-thumb:hover { background: #34343C; }
+
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(19, 19, 22, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .glass-strong {
+    background: rgba(15, 15, 18, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Gradient text */
+  .text-gradient-lime {
+    background: linear-gradient(135deg, #D4FF3F 0%, #B8E62E 50%, #8FB821 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-fire {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8A5C 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Grid pattern */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(212, 255, 63, 0.5); }
+    70% { box-shadow: 0 0 0 18px rgba(212, 255, 63, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(212, 255, 63, 0); }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .animate-fade-up { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-fade-in { animation: fadeIn 0.6s ease both; }
+  .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-slide-right { animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+
+  /* Button effects */
+  .btn-primary {
+    background: linear-gradient(135deg, #D4FF3F 0%, #B8E62E 100%);
+    color: #0A0A0B;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px -8px rgba(212, 255, 63, 0.5);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .btn-primary:hover::after { transform: translateX(100%); }
+
+  .btn-ghost {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  /* Card hover */
+  .card-hover {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 255, 63, 0.3);
+    box-shadow: 0 20px 50px -20px rgba(212, 255, 63, 0.2);
+  }
+
+  /* Sidebar item */
+  .sidebar-item {
+    transition: all 0.25s ease;
+    position: relative;
+  }
+  .sidebar-item.active {
+    background: linear-gradient(90deg, rgba(212, 255, 63, 0.12) 0%, transparent 100%);
+    color: #D4FF3F;
+  }
+  .sidebar-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: #D4FF3F;
+    border-radius: 0 3px 3px 0;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.04); }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Toggle */
+  .toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: #26262C;
+    border-radius: 12px;
+    transition: background 0.3s ease;
+    cursor: pointer;
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .toggle-switch.on { background: #D4FF3F; }
+  .toggle-switch.on::after { transform: translateX(20px); background: #0A0A0B; }
+
+  /* Table */
+  .data-table tbody tr {
+    transition: background 0.2s ease;
+  }
+  .data-table tbody tr:hover {
+    background: rgba(255,255,255,0.025);
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Toast */
+  .toast {
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .toast.out { animation: slideInRight 0.3s reverse both; }
+
+  /* Modal */
+  .modal-backdrop { animation: fadeIn 0.25s ease both; }
+  .modal-panel { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* Before/After slider */
+  .ba-slider {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    user-select: none;
+  }
+  .ba-after {
+    position: absolute;
+    inset: 0;
+    width: 50%;
+    overflow: hidden;
+  }
+  .ba-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background: #D4FF3F;
+    transform: translateX(-50%);
+    cursor: ew-resize;
+  }
+  .ba-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #D4FF3F;
+    box-shadow: 0 0 0 6px rgba(212, 255, 63, 0.2);
+  }
+
+  /* Tooltip */
+  .has-tooltip { position: relative; }
+  .has-tooltip:hover .tooltip { opacity: 1; transform: translateY(0); }
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #0A0A0B;
+    border: 1px solid #26262C;
+    color: #EDEDEF;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 50;
+  }
+
+  /* Page transition */
+  .page-enter { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* Custom radio/checkbox */
+  .checkbox-custom {
+    width: 18px; height: 18px;
+    border: 1.5px solid #34343C;
+    border-radius: 4px;
+    background: #17171B;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .checkbox-custom.checked {
+    background: #D4FF3F;
+    border-color: #D4FF3F;
+  }
+  .checkbox-custom.checked::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #0A0A0B;
+    font-size: 10px;
+  }
+
+  /* Mobile menu transition */
+  .mobile-menu { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* Star rating */
+  .star { color: #34343C; transition: color 0.2s; cursor: pointer; }
+  .star.active { color: #D4FF3F; }
+
+  /* Command palette */
+  .cmd-item { transition: background 0.15s ease; }
+  .cmd-item.active, .cmd-item:hover { background: rgba(212, 255, 63, 0.1); color: #D4FF3F; }
+
+  /* Pillar accent line */
+  .accent-line::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: #D4FF3F;
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+
+  /* Spotlight gradient */
+  .spotlight {
+    background: radial-gradient(800px circle at 50% 0%, rgba(212, 255, 63, 0.08), transparent 70%);
+  }
+
+  /* Glow orb */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Circular progress */
+  .circ-progress { transform: rotate(-90deg); }
+  .circ-progress circle { transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+</style>
+</head>
+<body class="bg-ink-950 text-white">
+
+<!-- ============== TOAST CONTAINER ============== -->
+<div id="toastContainer" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+<!-- ============== COMMAND PALETTE ============== -->
+<div id="cmdPalette" class="fixed inset-0 z-[90] hidden items-start justify-center pt-32 bg-black/60 backdrop-blur-sm">
+  <div class="glass-strong w-full max-w-xl mx-4 rounded-2xl shadow-2xl overflow-hidden modal-panel" onclick="event.stopPropagation()">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-white/5">
+      <i class="fa-solid fa-magnifying-glass text-ink-400"></i>
+      <input id="cmdInput" type="text" placeholder="Search portal..." class="bg-transparent outline-none flex-1 text-sm placeholder:text-ink-400" />
+      <kbd class="text-[10px] px-2 py-1 bg-ink-700 rounded text-ink-400">ESC</kbd>
+    </div>
+    <div id="cmdResults" class="max-h-80 overflow-y-auto py-2"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MEMBER APP
+============================================================ -->
+<div id="memberApp" class="min-h-screen bg-ink-950">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-64 glass-strong border-r border-white/5 z-40 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0">
+    <div class="p-5 flex items-center justify-between border-b border-white/5">
+      <a href="#" onclick="navigateMember('dashboard'); return false;" class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-lime to-lime-600 flex items-center justify-center">
+          <i class="fa-solid fa-bolt text-ink-950 text-sm"></i>
+        </div>
+        <span class="font-display font-bold text-lg">PULSE<span class="text-lime">.</span></span>
+      </a>
+      <button onclick="toggleSidebar()" class="lg:hidden w-8 h-8 rounded-lg btn-ghost flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+    </div>
+
+    <div class="px-3 py-4 border-b border-white/5">
+      <div class="flex items-center gap-3 px-2 py-2 rounded-lg glass">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" class="w-9 h-9 rounded-full object-cover" />
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold truncate">Alex Morgan</div>
+          <div class="text-xs text-lime">Annual Member</div>
+        </div>
+        <i class="fa-solid fa-chevron-down text-xs text-white/40"></i>
+      </div>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto no-scrollbar py-4 px-3 space-y-0.5 text-sm" id="sidebarNav">
+      <div class="px-3 py-2 text-[10px] uppercase tracking-wider text-white/30 font-semibold">Main</div>
+      <a href="#" onclick="navigateMember('dashboard'); return false;" class="sidebar-item active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-gauge-high w-4"></i> Dashboard
+      </a>
+      <a href="#" onclick="navigateMember('profile'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-user w-4"></i> My Profile
+      </a>
+      <a href="#" onclick="navigateMember('membership'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-id-card w-4"></i> Membership
+      </a>
+      <a href="#" onclick="navigateMember('trainer'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-dumbbell w-4"></i> My Trainer
+      </a>
+
+      <div class="px-3 py-2 pt-5 text-[10px] uppercase tracking-wider text-white/30 font-semibold">Training</div>
+      <a href="#" onclick="navigateMember('workouts'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-list-check w-4"></i> Workout Program
+      </a>
+      <a href="#" onclick="navigateMember('library'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-book-atlas w-4"></i> Exercise Library
+      </a>
+      <a href="#" onclick="navigateMember('equipment'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-vault w-4"></i> Gym Equipment
+      </a>
+      <a href="#" onclick="navigateMember('classes'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-users w-4"></i> Classes
+      </a>
+
+      <div class="px-3 py-2 pt-5 text-[10px] uppercase tracking-wider text-white/30 font-semibold">Health</div>
+      <a href="#" onclick="navigateMember('nutrition'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-apple-whole w-4"></i> Nutrition Plan
+      </a>
+      <a href="#" onclick="navigateMember('supplements'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-pills w-4"></i> Supplements
+      </a>
+      <a href="#" onclick="navigateMember('progress'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-chart-line w-4"></i> Body Progress
+      </a>
+      <a href="#" onclick="navigateMember('photos'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-camera-retro w-4"></i> Progress Photos
+      </a>
+
+      <div class="px-3 py-2 pt-5 text-[10px] uppercase tracking-wider text-white/30 font-semibold">Engage</div>
+      <a href="#" onclick="navigateMember('attendance'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-calendar-check w-4"></i> Attendance
+      </a>
+      <a href="#" onclick="navigateMember('achievements'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-trophy w-4"></i> Achievements
+      </a>
+      <a href="#" onclick="navigateMember('rewards'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-gift w-4"></i> Rewards
+      </a>
+      <a href="#" onclick="navigateMember('notifications'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-bell w-4"></i> Notifications
+      </a>
+
+      <div class="px-3 py-2 pt-5 text-[10px] uppercase tracking-wider text-white/30 font-semibold">Support</div>
+      <a href="#" onclick="navigateMember('settings'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-gear w-4"></i> Settings
+      </a>
+      <a href="#" onclick="navigateMember('support'); return false;" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <i class="fa-solid fa-headset w-4"></i> Support
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-white/5">
+      <button onclick="showToast('Signed out successfully', 'success')" class="w-full btn-ghost py-2.5 rounded-lg text-sm flex items-center justify-center gap-2">
+        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- Main content -->
+  <div class="lg:ml-64 min-h-screen flex flex-col">
+
+    <!-- Topbar -->
+    <header class="sticky top-0 z-20 glass-strong border-b border-white/5 px-4 lg:px-8 py-3.5 flex items-center gap-4">
+      <button onclick="toggleSidebar()" class="lg:hidden w-9 h-9 rounded-lg btn-ghost flex items-center justify-center"><i class="fa-solid fa-bars"></i></button>
+
+      <div class="flex-1 max-w-md relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm"></i>
+        <input type="text" placeholder="Search workouts, classes..." onclick="openCmdPalette()" readonly class="w-full bg-ink-800 border border-white/5 rounded-lg pl-9 pr-12 py-2 text-sm outline-none focus:border-lime/30 cursor-pointer" />
+        <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 bg-ink-700 rounded text-white/50">⌘K</kbd>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button class="has-tooltip w-9 h-9 rounded-lg btn-ghost flex items-center justify-center relative">
+          <i class="fa-solid fa-bell text-sm"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-ember"></span>
+          <span class="tooltip">Notifications</span>
+        </button>
+        <button onclick="openCmdPalette()" class="has-tooltip w-9 h-9 rounded-lg btn-ghost flex items-center justify-center hidden md:flex">
+          <i class="fa-solid fa-command text-sm"></i>
+          <span class="tooltip">Command palette</span>
+        </button>
+        <div class="w-px h-6 bg-white/10 mx-1"></div>
+        <button class="flex items-center gap-2.5 pl-1 pr-3 py-1 rounded-lg btn-ghost">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" class="w-7 h-7 rounded-full object-cover" />
+          <span class="text-sm font-medium hidden md:inline">Alex</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main id="memberContent" class="flex-1 p-4 lg:p-8 overflow-x-hidden">
+      <!-- Pages rendered here -->
+    </main>
+  </div>
+</div>
+
+<script>
+// ============== MOCK DATA ==============
+const mockMember = {
+  name: 'Alex Morgan', email: 'alex.morgan@email.com', phone: '+1 213 555 0142',
+  age: 28, height: 182, weight: 78.2, bmi: 23.6, fat: 14.2,
+  membership: 'Annual', start: '2023-06-12', end: '2024-06-12', daysLeft: 89,
+  trainer: 'Marcus Chen', calories: 1840, calorieGoal: 2150, water: 2.4, waterGoal: 3.2,
+  steps: 8420, stepGoal: 10000, workoutCompleted: false, points: 1200, streak: 12, longestStreak: 28
+};
+
+const mockClasses = [
+  { name: 'Vinyasa Yoga', trainer: 'Aisha Patel', time: '10:00 AM', duration: '60 min', spots: 4, total: 20, cat: 'Yoga' },
+  { name: 'Boxing Fundamentals', trainer: 'Diego Ramirez', time: '12:00 PM', duration: '45 min', spots: 2, total: 12, cat: 'Boxing' },
+  { name: 'CrossFit WOD', trainer: 'Tyler Brooks', time: '5:30 PM', duration: '60 min', spots: 0, total: 15, cat: 'CrossFit' },
+  { name: 'Lap Swimming', trainer: 'Maya Thompson', time: '7:00 AM', duration: '45 min', spots: 6, total: 10, cat: 'Swimming' },
+  { name: 'HIIT Circuit', trainer: 'Tyler Brooks', time: '6:00 PM', duration: '30 min', spots: 5, total: 15, cat: 'CrossFit' },
+  { name: 'Power Yoga', trainer: 'Aisha Patel', time: '8:00 AM', duration: '60 min', spots: 8, total: 20, cat: 'Yoga' },
+];
+
+const mockEquipment = [
+  { id: 1, name: 'Smith Machine Squat', muscle: 'Legs', type: 'Machine', difficulty: 'Intermediate', image: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400&q=80' },
+  { id: 2, name: 'Cable Crossover', muscle: 'Chest', type: 'Cable', difficulty: 'Advanced', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80' },
+  { id: 3, name: 'Leg Press Machine', muscle: 'Legs', type: 'Machine', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80' },
+  { id: 4, name: 'Lat Pulldown', muscle: 'Back', type: 'Cable', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=400&q=80' },
+  { id: 5, name: 'Dumbbell Bench Press', muscle: 'Chest', type: 'Dumbbell', difficulty: 'Intermediate', image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80' },
+  { id: 6, name: 'Seated Row Machine', muscle: 'Back', type: 'Machine', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?w=400&q=80' },
+  { id: 7, name: 'Overhead Press', muscle: 'Shoulders', type: 'Barbell', difficulty: 'Intermediate', image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80' },
+  { id: 8, name: 'Leg Extension', muscle: 'Legs', type: 'Machine', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&q=80' },
+];
+
+const mockExercises = [
+  { id: 1, name: 'Barbell Bench Press', muscle: 'Chest', equipment: 'Barbell', difficulty: 'Intermediate', image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80' },
+  { id: 2, name: 'Incline Dumbbell Press', muscle: 'Chest', equipment: 'Dumbbell', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80' },
+  { id: 3, name: 'Pull-ups', muscle: 'Back', equipment: 'Bodyweight', difficulty: 'Advanced', image: 'https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400&q=80' },
+  { id: 4, name: 'Deadlift', muscle: 'Back', equipment: 'Barbell', difficulty: 'Advanced', image: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400&q=80' },
+  { id: 5, name: 'Bicep Curls', muscle: 'Arms', equipment: 'Dumbbell', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=80' },
+  { id: 6, name: 'Tricep Pushdown', muscle: 'Arms', equipment: 'Cable', difficulty: 'Beginner', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80' },
+];
+
+// ============== NAVIGATION ==============
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  const isOpen = !sb.classList.contains('-translate-x-full');
+  if (isOpen) {
+    sb.classList.add('-translate-x-full');
+    ov.classList.add('hidden');
+  } else {
+    sb.classList.remove('-translate-x-full');
+    ov.classList.remove('hidden');
+  }
+}
+
+function navigateMember(page) {
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+
+  const content = document.getElementById('memberContent');
+  content.innerHTML = '';
+  content.classList.remove('page-enter');
+  void content.offsetWidth;
+  content.classList.add('page-enter');
+
+  const pages = {
+    dashboard: renderMemberDashboard,
+    profile: renderProfile,
+    membership: renderMembership,
+    trainer: renderTrainer,
+    workouts: renderWorkouts,
+    library: renderLibrary,
+    equipment: renderEquipment,
+    nutrition: renderNutrition,
+    supplements: renderSupplements,
+    progress: renderProgress,
+    photos: renderPhotos,
+    attendance: renderMemberAttendance,
+    achievements: renderAchievements,
+    rewards: renderRewards,
+    classes: renderMemberClasses,
+    notifications: renderMemberNotifications,
+    settings: renderMemberSettings,
+    support: renderSupport,
+  };
+
+  const renderer = pages[page] || renderMemberDashboard;
+  renderer(content);
+
+  if (window.innerWidth < 1024) {
+    document.getElementById('sidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.add('hidden');
+  }
+}
+
+// ============== TOAST ==============
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+  const colors = { success: 'text-lime', error: 'text-red-400', info: 'text-blue-400', warning: 'text-ember' };
+  const toast = document.createElement('div');
+  toast.className = 'toast glass-strong rounded-xl px-4 py-3 flex items-center gap-3 min-w-[280px] max-w-md pointer-events-auto shadow-card';
+  toast.innerHTML = `<i class="fa-solid ${icons[type]} ${colors[type]} text-lg"></i><span class="text-sm">${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('out');
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+// ============== MODAL SYSTEM ==============
+function openModal(title, content, onSave, saveText = 'Save', saveColor = 'lime') {
+  const existing = document.getElementById('modalContainer');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'modalContainer';
+  modal.className = 'fixed inset-0 z-[85] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 modal-backdrop';
+  modal.innerHTML = `
+    <div class="glass-strong w-full max-w-2xl rounded-2xl overflow-hidden modal-panel max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
+        <h3 class="font-display font-bold text-lg">${title}</h3>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-lg btn-ghost flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div class="p-6 overflow-y-auto flex-1">${content}</div>
+      ${onSave ? `
+      <div class="flex gap-3 px-6 py-4 border-t border-white/5 bg-ink-900/50">
+        <button onclick="closeModal()" class="flex-1 btn-ghost py-2.5 rounded-lg text-sm font-medium">Cancel</button>
+        <button onclick="closeModal(); (${onSave})()" class="flex-1 py-2.5 rounded-lg text-sm font-semibold ${saveColor === 'ember' ? 'bg-ember text-white hover:bg-ember-600' : 'btn-primary'}">${saveText}</button>
+      </div>
+      ` : ''}
+    </div>
+  `;
+  modal.addEventListener('click', closeModal);
+  document.body.appendChild(modal);
+}
+function closeModal() {
+  const m = document.getElementById('modalContainer');
+  if (m) m.remove();
+}
+
+// ============== COMMAND PALETTE ==============
+const cmdItems = [
+  { icon: 'fa-gauge-high', label: 'Dashboard', action: () => navigateMember('dashboard') },
+  { icon: 'fa-user', label: 'My Profile', action: () => navigateMember('profile') },
+  { icon: 'fa-id-card', label: 'Membership', action: () => navigateMember('membership') },
+  { icon: 'fa-dumbbell', label: 'My Trainer', action: () => navigateMember('trainer') },
+  { icon: 'fa-list-check', label: 'Workout Program', action: () => navigateMember('workouts') },
+  { icon: 'fa-book-atlas', label: 'Exercise Library', action: () => navigateMember('library') },
+  { icon: 'fa-vault', label: 'Gym Equipment', action: () => navigateMember('equipment') },
+  { icon: 'fa-apple-whole', label: 'Nutrition Plan', action: () => navigateMember('nutrition') },
+  { icon: 'fa-chart-line', label: 'Body Progress', action: () => navigateMember('progress') },
+  { icon: 'fa-calendar-check', label: 'Attendance', action: () => navigateMember('attendance') },
+  { icon: 'fa-trophy', label: 'Achievements', action: () => navigateMember('achievements') },
+  { icon: 'fa-gift', label: 'Rewards', action: () => navigateMember('rewards') },
+];
+
+function openCmdPalette() {
+  const p = document.getElementById('cmdPalette');
+  p.classList.remove('hidden');
+  p.classList.add('flex');
+  renderCmd('');
+  setTimeout(() => document.getElementById('cmdInput').focus(), 50);
+}
+function closeCmdPalette() {
+  const p = document.getElementById('cmdPalette');
+  p.classList.add('hidden');
+  p.classList.remove('flex');
+}
+document.getElementById('cmdPalette').addEventListener('click', closeCmdPalette);
+document.getElementById('cmdInput').addEventListener('input', e => renderCmd(e.target.value));
+function renderCmd(q) {
+  const list = document.getElementById('cmdResults');
+  const filtered = cmdItems.filter(i => i.label.toLowerCase().includes(q.toLowerCase()));
+  list.innerHTML = filtered.length ? filtered.map((item, i) => `
+    <button onclick="closeCmdPalette(); cmdItems[${cmdItems.indexOf(item)}].action()" class="cmd-item w-full flex items-center gap-3 px-5 py-3 text-sm text-left ${i === 0 ? 'active' : ''}">
+      <i class="fa-solid ${item.icon} w-4 text-white/60"></i> ${item.label}
+    </button>
+  `).join('') : '<div class="px-5 py-8 text-center text-sm text-white/40">No results found</div>';
+}
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openCmdPalette(); }
+  if (e.key === 'Escape') { closeCmdPalette(); closeModal(); }
+});
+
+// ============== BEFORE/AFTER SLIDER ==============
+function startDrag(e, el) {
+  e.preventDefault();
+  const move = (clientX) => {
+    const rect = el.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const pct = (x / rect.width) * 100;
+    el.querySelector('.ba-after').style.width = pct + '%';
+    el.querySelector('.ba-handle').style.left = pct + '%';
+  };
+  const onMove = (ev) => move(ev.touches ? ev.touches[0].clientX : ev.clientX);
+  const onUp = () => {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onUp);
+  };
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchmove', onMove);
+  document.addEventListener('touchend', onUp);
+  onMove(e.touches ? e.touches[0] : e);
+}
+
+// ============== REUSABLE COMPONENTS ==============
+function kpiCard(label, value, change, dir, icon, color) {
+  return `
+    <div class="glass card-hover rounded-2xl p-5 relative overflow-hidden">
+      <div class="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-${color}/5 blur-2xl"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-${color}/10 flex items-center justify-center">
+          <i class="fa-solid ${icon} text-${color}"></i>
+        </div>
+        <span class="badge bg-${dir==='up'?'lime':'ember'}/10 text-${dir==='up'?'lime':'ember'}">
+          <i class="fa-solid fa-arrow-${dir} text-[8px]"></i> ${change}
+        </span>
+      </div>
+      <div class="font-display text-3xl font-bold">${value}</div>
+      <div class="text-xs text-white/50 mt-1">${label}</div>
+    </div>
+  `;
+}
+
+function miniKpi(label, value, icon, color) {
+  return `
+    <div class="glass rounded-xl p-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-${color}/10 flex items-center justify-center flex-shrink-0">
+        <i class="fa-solid ${icon} text-${color} text-sm"></i>
+      </div>
+      <div>
+        <div class="font-display text-xl font-bold">${value}</div>
+        <div class="text-[11px] text-white/50">${label}</div>
+      </div>
+    </div>
+  `;
+}
+
+function progressRing(percent, color, label, value) {
+  const circumference = 2 * Math.PI * 56;
+  const offset = circumference - (percent / 100) * circumference;
+  return `
+    <div class="relative w-32 h-32 flex flex-col items-center justify-center">
+      <svg class="circ-progress w-full h-full absolute">
+        <circle cx="64" cy="64" r="56" stroke="#26262C" stroke-width="8" fill="none" />
+        <circle cx="64" cy="64" r="56" stroke="${color}" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" />
+      </svg>
+      <div class="text-center relative z-10">
+        <div class="font-display text-2xl font-bold">${value}</div>
+        <div class="text-[10px] text-white/50 uppercase tracking-wider">${label}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============== MEMBER PAGE RENDERERS ==============
+
+function renderMemberDashboard(c) {
+  c.innerHTML = `
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-7">
+      <div>
+        <div class="text-xs text-white/40 mb-1">Welcome back</div>
+        <h1 class="font-display font-bold text-3xl">Hello, Alex! 👋</h1>
+        <p class="text-sm text-white/50 mt-1">Here's your fitness snapshot for today.</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="showToast('QR code opened for gym entry', 'info')" class="btn-ghost px-4 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2"><i class="fa-solid fa-qrcode text-xs"></i> Gym Entry QR</button>
+        <button onclick="showToast('Workout started!', 'success')" class="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2"><i class="fa-solid fa-play text-xs"></i> Start Workout</button>
+      </div>
+    </div>
+
+    <!-- Top Stats Grid -->
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+      <!-- Left: QR & Membership -->
+      <div class="glass rounded-2xl p-5 flex flex-col items-center text-center">
+        <div class="text-xs uppercase tracking-wider text-white/40 mb-3">Gym Entry QR Code</div>
+        <div class="w-36 h-36 bg-white p-2 rounded-xl mb-3">
+          <!-- Simulated QR Code -->
+          <svg viewBox="0 0 100 100" class="w-full h-full">
+            <rect x="0" y="0" width="100" height="100" fill="white"/>
+            <path d="M10 10h20v20h-20z M70 10h20v20h-20z M10 70h20v20h-20z M15 15h10v10h-10z M75 15h10v10h-10z M15 75h10v10h-10z M35 10h5v5h-5z M45 10h5v5h-5z M55 10h5v5h-5z M35 20h5v5h-5z M50 20h5v5h-5z M40 30h5v5h-5z M55 30h5v5h-5z M70 30h5v5h-5z M80 30h5v5h-5z M10 35h5v5h-5z M20 35h5v5h-5z M30 35h5v5h-5z M45 35h5v5h-5z M60 35h5v5h-5z M75 35h5v5h-5z M85 35h5v5h-5z M15 45h5v5h-5z M35 45h5v5h-5z M50 45h5v5h-5z M65 45h5v5h-5z M80 45h5v5h-5z M25 55h5v5h-5z M40 55h5v5h-5z M55 55h5v5h-5z M70 55h5v5h-5z M85 55h5v5h-5z M10 65h5v5h-5z M30 65h5v5h-5z M45 65h5v5h-5z M60 65h5v5h-5z M75 65h5v5h-5z M35 75h5v5h-5z M50 75h5v5h-5z M65 75h5v5h-5z M80 75h5v5h-5z M40 85h5v5h-5z M55 85h5v5h-5z M70 85h5v5h-5z M85 85h5v5h-5z" fill="black"/>
+          </svg>
+        </div>
+        <div class="text-sm font-semibold">Alex Morgan</div>
+        <div class="text-xs text-lime mt-1">Member ID: M-1042</div>
+      </div>
+
+      <!-- Middle: Membership & Trainer -->
+      <div class="glass rounded-2xl p-5 flex flex-col justify-between">
+        <div>
+          <div class="text-xs uppercase tracking-wider text-white/40 mb-2">Membership Status</div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-display text-2xl font-bold text-lime">Annual</span>
+            <span class="text-xs text-white/50">Expires in 89 days</span>
+          </div>
+          <div class="w-full h-1.5 bg-ink-700 rounded-full mt-3 overflow-hidden">
+            <div class="h-full bg-lime rounded-full" style="width: 75%"></div>
+          </div>
+          <div class="text-[10px] text-white/40 mt-1.5">Started: Jun 12, 2023 · Ends: Jun 12, 2024</div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-white/5">
+          <div class="text-xs uppercase tracking-wider text-white/40 mb-2">Assigned Trainer</div>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=100&q=80" class="w-10 h-10 rounded-full object-cover" />
+            <div class="flex-1">
+              <div class="font-medium text-sm">Marcus Chen</div>
+              <div class="text-xs text-white/50">Strength & Conditioning</div>
+            </div>
+            <button onclick="showToast('Chat opened with Marcus', 'info')" class="w-9 h-9 rounded-lg btn-ghost flex items-center justify-center"><i class="fa-solid fa-comment-dots text-sm"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Today's Rings -->
+      <div class="glass rounded-2xl p-5">
+        <div class="text-xs uppercase tracking-wider text-white/40 mb-4">Today's Goals</div>
+        <div class="grid grid-cols-3 gap-2 items-center">
+          <div class="flex flex-col items-center">
+            ${progressRing(85, '#D4FF3F', 'Calories', '1840')}
+            <div class="text-[10px] text-white/50 mt-2">of 2150 kcal</div>
+          </div>
+          <div class="flex flex-col items-center">
+            ${progressRing(75, '#FF6B35', 'Water', '2.4L')}
+            <div class="text-[10px] text-white/50 mt-2">of 3.2L</div>
+          </div>
+          <div class="flex flex-col items-center">
+            ${progressRing(84, '#60a5fa', 'Steps', '8.4k')}
+            <div class="text-[10px] text-white/50 mt-2">of 10k</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Row -->
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+      <!-- Today's Workout -->
+      <div class="lg:col-span-2 glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-display font-bold text-lg">Today's Workout</h3>
+            <p class="text-xs text-white/50">Push Day · Chest, Shoulders, Triceps</p>
+          </div>
+          <span class="badge bg-lime/10 text-lime">50 min</span>
+        </div>
+        <div class="space-y-2">
+          ${[
+            { ex: 'Barbell Bench Press', sets: '4x8', weight: '80kg', done: true },
+            { ex: 'Incline Dumbbell Press', sets: '3x12', weight: '20kg', done: true },
+            { ex: 'Overhead Press', sets: '4x10', weight: '40kg', done: false },
+            { ex: 'Lateral Raises', sets: '3x15', weight: '8kg', done: false },
+            { ex: 'Tricep Pushdown', sets: '4x12', weight: '25kg', done: false },
+          ].map(r => `
+            <div class="flex items-center gap-3 p-3 rounded-xl ${r.done ? 'bg-lime/5' : 'bg-ink-800/50'}">
+              <div onclick="this.classList.toggle('checked')" class="checkbox-custom ${r.done ? 'checked' : ''}"></div>
+              <div class="flex-1">
+                <div class="text-sm font-medium ${r.done ? 'line-through text-white/50' : ''}">${r.ex}</div>
+                <div class="text-xs text-white/40">${r.sets} · ${r.weight}</div>
+              </div>
+              <button class="text-xs text-white/40 hover:text-lime"><i class="fa-solid fa-play-circle"></i></button>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-primary w-full mt-4 py-2.5 rounded-lg text-sm font-semibold">Mark Workout Complete</button>
+      </div>
+
+      <!-- Upcoming Classes -->
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Upcoming Classes</h3>
+        <div class="space-y-3">
+          ${mockClasses.slice(0, 3).map(cl => `
+            <div class="p-3 rounded-xl bg-ink-800/50">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs uppercase tracking-wider text-lime">${cl.cat}</span>
+                <span class="text-xs text-white/50">${cl.time}</span>
+              </div>
+              <div class="font-medium text-sm">${cl.name}</div>
+              <div class="text-xs text-white/50 mt-1">${cl.trainer} · ${cl.duration}</div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="text-xs text-white/50">${cl.spots} spots left</div>
+                <button onclick="showToast('Booked ${cl.name}', 'success')" class="text-xs px-2.5 py-1 rounded-md ${cl.spots > 0 ? 'bg-lime text-ink-950 font-medium' : 'bg-ink-700 text-white/40 cursor-not-allowed'}" ${cl.spots > 0 ? '' : 'disabled'}>${cl.spots > 0 ? 'Book' : 'Full'}</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="grid lg:grid-cols-3 gap-4">
+      <!-- Latest Measurements -->
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Latest Measurements</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-3 rounded-xl bg-ink-800/50">
+            <div class="text-xs text-white/40">Weight</div>
+            <div class="font-display text-xl font-bold">78.2 kg</div>
+          </div>
+          <div class="p-3 rounded-xl bg-ink-800/50">
+            <div class="text-xs text-white/40">Body Fat</div>
+            <div class="font-display text-xl font-bold text-lime">14.2%</div>
+          </div>
+          <div class="p-3 rounded-xl bg-ink-800/50">
+            <div class="text-xs text-white/40">Muscle Mass</div>
+            <div class="font-display text-xl font-bold">64.8 kg</div>
+          </div>
+          <div class="p-3 rounded-xl bg-ink-800/50">
+            <div class="text-xs text-white/40">BMI</div>
+            <div class="font-display text-xl font-bold">23.6</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Latest Attendance -->
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Latest Attendance</h3>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between p-3 rounded-xl bg-ink-800/50">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-lime text-sm"></i>
+              <span class="text-sm">Yesterday</span>
+            </div>
+            <span class="text-xs text-white/50">1h 24m</span>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-xl bg-ink-800/50">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-lime text-sm"></i>
+              <span class="text-sm">2 days ago</span>
+            </div>
+            <span class="text-xs text-white/50">1h 05m</span>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-xl bg-ink-800/50">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-lime text-sm"></i>
+              <span class="text-sm">3 days ago</span>
+            </div>
+            <span class="text-xs text-white/50">2h 12m</span>
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-white/5 flex justify-between text-sm">
+          <span class="text-white/50">Current Streak</span>
+          <span class="font-bold text-ember">12 days 🔥</span>
+        </div>
+      </div>
+
+      <!-- New Achievement -->
+      <div class="glass rounded-2xl p-6 relative overflow-hidden">
+        <div class="glow-orb w-40 h-40 bg-ember/20 -top-10 -right-10"></div>
+        <div class="relative">
+          <div class="text-xs uppercase tracking-wider text-ember mb-3">New Achievement Unlocked!</div>
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-ember to-ember-600 flex items-center justify-center text-2xl shadow-glow-ember">
+              🏆
+            </div>
+            <div>
+              <div class="font-display font-bold text-lg">30 Visits!</div>
+              <div class="text-xs text-white/50">You've completed 30 gym visits. Keep pushing!</div>
+            </div>
+          </div>
+          <div class="mt-4 p-3 rounded-xl bg-ink-800/50 flex items-center justify-between">
+            <div class="text-sm">Reward Points</div>
+            <div class="font-display font-bold text-lime">+50 pts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProfile(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">My Profile</h1>
+      <p class="text-sm text-white/50 mt-1">Manage your personal information and fitness metrics.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <!-- Profile Card -->
+      <div class="glass rounded-2xl p-6 text-center">
+        <div class="relative inline-block">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80" class="w-28 h-28 rounded-full object-cover mx-auto border-4 border-ink-800" />
+          <button class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-lime text-ink-950 flex items-center justify-center"><i class="fa-solid fa-camera text-xs"></i></button>
+        </div>
+        <div class="font-display font-bold text-xl mt-4">Alex Morgan</div>
+        <div class="text-sm text-white/50">Annual Member · M-1042</div>
+        <div class="mt-4 flex justify-center gap-2">
+          <span class="badge bg-lime/10 text-lime">Active</span>
+          <span class="badge bg-white/5">12 Month Streak</span>
+        </div>
+        <div class="mt-6 pt-6 border-t border-white/5 grid grid-cols-3 gap-2 text-center">
+          <div><div class="font-bold text-lg">142</div><div class="text-[10px] text-white/40 uppercase">Visits</div></div>
+          <div><div class="font-bold text-lg">84</div><div class="text-[10px] text-white/40 uppercase">Workouts</div></div>
+          <div><div class="font-bold text-lg">1.2k</div><div class="text-[10px] text-white/40 uppercase">Points</div></div>
+        </div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="lg:col-span-2 glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-display font-bold text-lg">Personal Information</h3>
+          <button onclick="showToast('Edit mode enabled', 'info')" class="btn-ghost px-3 py-1.5 rounded-lg text-xs font-medium"><i class="fa-solid fa-pen text-xs mr-1"></i> Edit</button>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Full Name</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">Alex Morgan</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Email</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">alex.morgan@email.com</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Phone</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">+1 213 555 0142</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Age</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">28 years</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Height</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">182 cm</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Weight</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">78.2 kg</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">BMI</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">23.6 (Normal)</div></div>
+          <div><label class="text-xs text-white/40 uppercase tracking-wider">Body Fat</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">14.2%</div></div>
+        </div>
+        <div class="mt-6 pt-6 border-t border-white/5">
+          <h4 class="font-display font-bold text-sm mb-4">Membership Details</h4>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div><label class="text-xs text-white/40 uppercase tracking-wider">Plan</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm text-lime">Annual</div></div>
+            <div><label class="text-xs text-white/40 uppercase tracking-wider">Start Date</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">Jun 12, 2023</div></div>
+            <div><label class="text-xs text-white/40 uppercase tracking-wider">End Date</label><div class="mt-1.5 w-full bg-ink-800/50 border border-white/5 rounded-lg px-4 py-2.5 text-sm">Jun 12, 2024</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderMembership(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Membership</h1>
+      <p class="text-sm text-white/50 mt-1">View your membership status and payment history.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+      <div class="lg:col-span-2 glass rounded-2xl p-6 relative overflow-hidden">
+        <div class="glow-orb w-60 h-60 bg-lime/15 -top-20 -right-20"></div>
+        <div class="relative">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-xs uppercase tracking-wider text-lime">Current Plan</div>
+              <div class="font-display font-bold text-4xl mt-1">Annual</div>
+              <div class="text-sm text-white/50 mt-2">Valid until Jun 12, 2024</div>
+            </div>
+            <i class="fa-solid fa-crown text-lime text-2xl"></i>
+          </div>
+          <div class="mt-6">
+            <div class="flex justify-between text-xs text-white/50 mb-1">
+              <span>89 days remaining</span>
+              <span>275 / 365 days used</span>
+            </div>
+            <div class="w-full h-2 bg-ink-700 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-lime to-lime-600 rounded-full" style="width: 75%"></div>
+            </div>
+          </div>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button onclick="showToast('Renewal screen opened', 'info')" class="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold">Renew Membership</button>
+            <button onclick="showToast('Upgrade screen opened', 'info')" class="btn-ghost px-5 py-2.5 rounded-lg text-sm font-medium">Upgrade Plan</button>
+          </div>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+        <div class="text-xs uppercase tracking-wider text-white/40 mb-3">Gym Entry QR Code</div>
+        <div class="w-40 h-40 bg-white p-2 rounded-xl mb-3">
+          <svg viewBox="0 0 100 100" class="w-full h-full">
+            <rect x="0" y="0" width="100" height="100" fill="white"/>
+            <path d="M10 10h20v20h-20z M70 10h20v20h-20z M10 70h20v20h-20z M15 15h10v10h-10z M75 15h10v10h-10z M15 75h10v10h-10z M35 10h5v5h-5z M45 10h5v5h-5z M55 10h5v5h-5z M35 20h5v5h-5z M50 20h5v5h-5z M40 30h5v5h-5z M55 30h5v5h-5z M70 30h5v5h-5z M80 30h5v5h-5z M10 35h5v5h-5z M20 35h5v5h-5z M30 35h5v5h-5z M45 35h5v5h-5z M60 35h5v5h-5z M75 35h5v5h-5z M85 35h5v5h-5z M15 45h5v5h-5z M35 45h5v5h-5z M50 45h5v5h-5z M65 45h5v5h-5z M80 45h5v5h-5z M25 55h5v5h-5z M40 55h5v5h-5z M55 55h5v5h-5z M70 55h5v5h-5z M85 55h5v5h-5z M10 65h5v5h-5z M30 65h5v5h-5z M45 65h5v5h-5z M60 65h5v5h-5z M75 65h5v5h-5z M35 75h5v5h-5z M50 75h5v5h-5z M65 75h5v5h-5z M80 75h5v5h-5z M40 85h5v5h-5z M55 85h5v5h-5z M70 85h5v5h-5z M85 85h5v5h-5z" fill="black"/>
+          </svg>
+        </div>
+        <button onclick="showToast('QR code downloaded', 'success')" class="btn-ghost px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2"><i class="fa-solid fa-download text-xs"></i> Download</button>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl overflow-hidden">
+      <div class="p-4 border-b border-white/5 flex items-center justify-between">
+        <h3 class="font-display font-bold text-lg">Payment History</h3>
+        <button onclick="showToast('Invoice downloaded', 'success')" class="text-xs text-lime hover:underline flex items-center gap-1"><i class="fa-solid fa-download text-xs"></i> Download All</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data-table w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-white/40 border-b border-white/5">
+              <th class="px-4 py-3 font-medium">Invoice ID</th>
+              <th class="px-4 py-3 font-medium">Date</th>
+              <th class="px-4 py-3 font-medium">Description</th>
+              <th class="px-4 py-3 font-medium">Amount</th>
+              <th class="px-4 py-3 font-medium">Status</th>
+              <th class="px-4 py-3 font-medium text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[
+              { id: 'INV-2024-01', date: 'Jun 12, 2023', desc: 'Annual Membership', amount: '$399.00', status: 'paid' },
+              { id: 'INV-2023-12', date: 'Jun 12, 2022', desc: 'Annual Membership', amount: '$399.00', status: 'paid' },
+              { id: 'INV-2023-05', date: 'Dec 05, 2022', desc: 'Personal Training (5x)', amount: '$425.00', status: 'paid' },
+              { id: 'INV-2023-02', date: 'Sep 18, 2022', desc: 'Supplement Purchase', amount: '$113.00', status: 'paid' },
+            ].map(t => `
+              <tr class="border-b border-white/[0.03]">
+                <td class="px-4 py-3 font-mono text-xs">${t.id}</td>
+                <td class="px-4 py-3 text-white/70">${t.date}</td>
+                <td class="px-4 py-3 font-medium">${t.desc}</td>
+                <td class="px-4 py-3 font-semibold">${t.amount}</td>
+                <td class="px-4 py-3"><span class="badge bg-lime/10 text-lime">${t.status}</span></td>
+                <td class="px-4 py-3 text-right"><button onclick="showToast('Downloading ${t.id}...', 'info')" class="text-xs px-3 py-1.5 rounded-md btn-ghost"><i class="fa-solid fa-file-pdf text-xs"></i> Invoice</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderTrainer(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">My Trainer</h1>
+      <p class="text-sm text-white/50 mt-1">Your dedicated fitness coach.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <div class="glass rounded-2xl p-6 text-center">
+        <img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=200&q=80" class="w-32 h-32 rounded-full object-cover mx-auto border-4 border-ink-800" />
+        <div class="font-display font-bold text-xl mt-4">Marcus Chen</div>
+        <div class="text-sm text-lime">Strength & Conditioning</div>
+        <div class="flex items-center justify-center gap-1 mt-2 text-sm">
+          <i class="fa-solid fa-star text-lime"></i> 4.9 (142 reviews)
+        </div>
+        <div class="mt-6 space-y-2 text-left">
+          <div class="flex justify-between p-3 rounded-xl bg-ink-800/50 text-sm">
+            <span class="text-white/60">Experience</span>
+            <span class="font-medium">8 years</span>
+          </div>
+          <div class="flex justify-between p-3 rounded-xl bg-ink-800/50 text-sm">
+            <span class="text-white/60">Certifications</span>
+            <span class="font-medium">NSCA-CSCS</span>
+          </div>
+          <div class="flex justify-between p-3 rounded-xl bg-ink-800/50 text-sm">
+            <span class="text-white/60">Specialty</span>
+            <span class="font-medium">Hypertrophy</span>
+          </div>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-2">
+          <button onclick="showToast('Booking session with Marcus', 'info')" class="btn-primary py-2.5 rounded-lg text-sm font-semibold">Book Session</button>
+          <button onclick="showToast('Chat opened with Marcus', 'info')" class="btn-ghost py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2"><i class="fa-solid fa-comment-dots"></i> Chat</button>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 space-y-4">
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-display font-bold text-lg mb-3">Biography</h3>
+          <p class="text-sm text-white/70 leading-relaxed">Marcus is a former competitive powerlifter turned strength coach with a passion for helping clients build sustainable, powerful physiques. With 8 years of experience and a NSCA-CSCS certification, he specializes in science-backed hypertrophy programming and progressive overload strategies.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-display font-bold text-lg mb-4">Weekly Schedule</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            ${['Mon 9-12', 'Tue 9-12', 'Wed 9-12', 'Thu 9-12', 'Fri 9-12', 'Sat 10-2'].map(s => `
+              <div class="p-3 rounded-xl bg-ink-800/50 text-center text-sm cursor-pointer hover:bg-lime/10 hover:text-lime transition-colors">${s}</div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-display font-bold text-lg mb-4">Recent Sessions Together</h3>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between p-3 rounded-xl bg-ink-800/50">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-lime/10 flex items-center justify-center"><i class="fa-solid fa-dumbbell text-lime text-xs"></i></div>
+                <div>
+                  <div class="text-sm font-medium">Push Day · Chest & Triceps</div>
+                  <div class="text-xs text-white/40">2 days ago · 60 min</div>
+                </div>
+              </div>
+              <span class="badge bg-lime/10 text-lime">Completed</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-ink-800/50">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-ember/10 flex items-center justify-center"><i class="fa-solid fa-fire text-ember text-xs"></i></div>
+                <div>
+                  <div class="text-sm font-medium">HIIT Cardio Circuit</div>
+                  <div class="text-xs text-white/40">5 days ago · 30 min</div>
+                </div>
+              </div>
+              <span class="badge bg-lime/10 text-lime">Completed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderWorkouts(c) {
+  c.innerHTML = `
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-7">
+      <div>
+        <h1 class="font-display font-bold text-3xl">Workout Program</h1>
+        <p class="text-sm text-white/50 mt-1">Your weekly training split.</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-ghost px-4 py-2.5 rounded-lg text-sm font-medium">Previous Week</button>
+        <button class="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold">This Week</button>
+      </div>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-4">
+      ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) => `
+        <button onclick="document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active-tab')); this.classList.add('active-tab');" class="day-btn flex-shrink-0 px-5 py-3 rounded-xl text-sm font-medium glass ${i===2?'active-tab bg-lime text-ink-950':''}">
+          <div class="text-xs ${i===2?'text-ink-800':'text-white/50'}">${d}</div>
+          <div>Day ${i+1}</div>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2 glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-display font-bold text-xl">Back & Biceps</h3>
+            <p class="text-xs text-white/50">Estimated duration: 55 min</p>
+          </div>
+          <span class="badge bg-lime/10 text-lime">In Progress</span>
+        </div>
+        <div class="space-y-3">
+          ${[
+            { ex: 'Deadlift', sets: 4, reps: '6-8', weight: '100kg', rest: '2 min', done: true },
+            { ex: 'Pull-ups', sets: 3, reps: '8-10', weight: 'BW', rest: '90s', done: true },
+            { ex: 'Barbell Row', sets: 4, reps: '8-10', weight: '60kg', rest: '90s', done: false },
+            { ex: 'Lat Pulldown', sets: 3, reps: '12-15', weight: '50kg', rest: '60s', done: false },
+            { ex: 'Bicep Curls', sets: 4, reps: '10-12', weight: '15kg', rest: '60s', done: false },
+          ].map(r => `
+            <div class="flex items-center gap-3 p-4 rounded-xl ${r.done ? 'bg-lime/5' : 'bg-ink-800/50'}">
+              <div onclick="this.classList.toggle('checked')" class="checkbox-custom ${r.done ? 'checked' : ''}"></div>
+              <div class="flex-1">
+                <div class="text-sm font-medium ${r.done ? 'line-through text-white/50' : ''}">${r.ex}</div>
+                <div class="text-xs text-white/40 mt-1 flex gap-4">
+                  <span><i class="fa-solid fa-layer-group mr-1"></i>${r.sets} sets</span>
+                  <span><i class="fa-solid fa-repeat mr-1"></i>${r.reps} reps</span>
+                  <span><i class="fa-solid fa-weight-hanging mr-1"></i>${r.weight}</span>
+                  <span><i class="fa-solid fa-clock mr-1"></i>${r.rest} rest</span>
+                </div>
+              </div>
+              <button class="text-xs px-3 py-1.5 rounded-md btn-ghost"><i class="fa-solid fa-play text-xs"></i></button>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-primary w-full mt-5 py-3 rounded-lg text-sm font-semibold">Mark Workout Complete</button>
+      </div>
+
+      <div class="space-y-4">
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-display font-bold text-lg mb-3">Workout Progress</h3>
+          <div class="flex justify-center mb-4">
+            ${progressRing(40, '#D4FF3F', 'Complete', '40%')}
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-white/60">Exercises done</span><span class="font-medium">2 / 5</span></div>
+            <div class="flex justify-between"><span class="text-white/60">Volume lifted</span><span class="font-medium">3,240 kg</span></div>
+            <div class="flex justify-between"><span class="text-white/60">Time elapsed</span><span class="font-medium">22 min</span></div>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-display font-bold text-lg mb-3">Muscle Groups</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge bg-ember/10 text-ember">Back</span>
+            <span class="badge bg-lime/10 text-lime">Biceps</span>
+            <span class="badge bg-blue-400/10 text-blue-400">Forearms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderLibrary(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Exercise Library</h1>
+      <p class="text-sm text-white/50 mt-1">Browse our database of exercises.</p>
+    </div>
+
+    <div class="glass rounded-2xl p-4 mb-6 flex flex-col md:flex-row gap-3">
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm"></i>
+        <input type="text" placeholder="Search exercises..." class="w-full bg-ink-800 border border-white/5 rounded-lg pl-9 pr-4 py-2.5 text-sm outline-none focus:border-lime/30" />
+      </div>
+      <select class="bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none">
+        <option>All Categories</option><option>Chest</option><option>Back</option><option>Legs</option>
+      </select>
+      <select class="bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none">
+        <option>All Equipment</option><option>Barbell</option><option>Dumbbell</option><option>Cable</option><option>Machine</option><option>Bodyweight</option>
+      </select>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ${mockExercises.map(ex => `
+        <div onclick="openExerciseDetail(${ex.id})" class="glass card-hover rounded-2xl overflow-hidden cursor-pointer">
+          <div class="aspect-video bg-ink-800 relative">
+            <img src="${ex.image}" class="w-full h-full object-cover" />
+            <span class="absolute top-2 right-2 badge bg-ink-950/80 backdrop-blur-sm">${ex.difficulty}</span>
+          </div>
+          <div class="p-4">
+            <div class="text-xs uppercase tracking-wider text-lime">${ex.muscle}</div>
+            <div class="font-display font-bold mt-1">${ex.name}</div>
+            <div class="text-xs text-white/40 mt-1"><i class="fa-solid fa-dumbbell mr-1"></i> ${ex.equipment}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openExerciseDetail(id) {
+  const ex = mockExercises.find(e => e.id === id) || mockExercises[0];
+  openModal(ex.name, `
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <div class="aspect-video rounded-xl overflow-hidden bg-ink-800 mb-3">
+          <img src="${ex.image}" class="w-full h-full object-cover" />
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="aspect-square rounded-lg bg-ink-800 overflow-hidden"><img src="${ex.image}" class="w-full h-full object-cover" /></div>
+          <div class="aspect-square rounded-lg bg-ink-800 overflow-hidden"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&q=80" class="w-full h-full object-cover" /></div>
+          <div class="aspect-square rounded-lg bg-ink-800 overflow-hidden"><img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=200&q=80" class="w-full h-full object-cover" /></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="badge bg-lime/10 text-lime">${ex.muscle}</span>
+          <span class="badge bg-white/5">${ex.equipment}</span>
+          <span class="badge bg-ember/10 text-ember">${ex.difficulty}</span>
+        </div>
+        <p class="text-sm text-white/70 leading-relaxed mb-4">The ${ex.name} is a fundamental ${ex.muscle.toLowerCase()} exercise targeting the primary muscle groups. It's excellent for building strength and hypertrophy when performed with proper form.</p>
+        
+        <div class="space-y-3 mb-4">
+          <div>
+            <div class="text-xs uppercase tracking-wider text-white/40 mb-1">Primary Muscles</div>
+            <div class="text-sm">Pectoralis Major, Anterior Deltoids</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wider text-white/40 mb-1">Secondary Muscles</div>
+            <div class="text-sm">Triceps Brachii, Serratus Anterior</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="p-3 rounded-xl bg-ink-800/50">
+            <div class="text-xs text-white/40">Recommended Sets</div>
+            <div class="font-bold">3-4</div>
+          </div>
+          <div class="p-3 rounded-xl bg-ink-800/50">
+            <div class="text-xs text-white/40">Recommended Reps</div>
+            <div class="font-bold">8-12</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-ember/5 border border-ember/10 mb-4">
+          <div class="text-xs uppercase tracking-wider text-ember mb-1 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Common Mistakes</div>
+          <ul class="text-xs text-white/70 list-disc pl-4 space-y-1">
+            <li>Bouncing the bar off the chest</li>
+            <li>Flaring elbows too wide (keep 45°)</li>
+            <li>Lifting hips off the bench</li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-xl bg-lime/5 border border-lime/10">
+          <div class="text-xs uppercase tracking-wider text-lime mb-1 flex items-center gap-2"><i class="fa-solid fa-lightbulb"></i> Pro Tip</div>
+          <p class="text-xs text-white/70">Retract your shoulder blades before unracking to protect your shoulders and maximize chest activation.</p>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderEquipment(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Gym Equipment Explorer</h1>
+      <p class="text-sm text-white/50 mt-1">Explore our premium gym equipment and learn how to use it.</p>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-6">
+      ${['All Equipment', 'Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Abs', 'Cardio'].map((cat, i) => `
+        <button class="flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium glass ${i===0?'bg-lime text-ink-950':''}">${cat}</button>
+      `).join('')}
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ${mockEquipment.map(eq => `
+        <div onclick="openEquipmentDetail(${eq.id})" class="glass card-hover rounded-2xl overflow-hidden cursor-pointer">
+          <div class="aspect-video bg-ink-800 relative">
+            <img src="${eq.image}" class="w-full h-full object-cover" />
+            <span class="absolute top-2 right-2 badge bg-ink-950/80 backdrop-blur-sm">${eq.difficulty}</span>
+          </div>
+          <div class="p-4">
+            <div class="text-xs uppercase tracking-wider text-lime">${eq.muscle}</div>
+            <div class="font-display font-bold mt-1">${eq.name}</div>
+            <div class="text-xs text-white/40 mt-1"><i class="fa-solid fa-gear mr-1"></i> ${eq.type}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function openEquipmentDetail(id) {
+  const eq = mockEquipment.find(e => e.id === id) || mockEquipment[0];
+  openModal(eq.name, `
+    <div class="grid md:grid-cols-2 gap-6">
+      <div>
+        <div class="aspect-video rounded-xl overflow-hidden bg-ink-800 mb-3 relative">
+          <img src="${eq.image}" class="w-full h-full object-cover" />
+          <button onclick="showToast('Playing demonstration video...', 'info')" class="absolute inset-0 flex items-center justify-center bg-black/40">
+            <div class="w-16 h-16 rounded-full bg-lime flex items-center justify-center">
+              <i class="fa-solid fa-play text-ink-950 text-xl"></i>
+            </div>
+          </button>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="aspect-square rounded-lg bg-ink-800 overflow-hidden"><img src="${eq.image}" class="w-full h-full object-cover" /></div>
+          <div class="aspect-square rounded-lg bg-ink-800 overflow-hidden"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80" class="w-full h-full object-cover" /></div>
+          <div class="aspect-square rounded-lg bg-ink-800 overflow-hidden"><img src="https://images.unsplash.com/photo-1576678927484-cc907957088c?w=200&q=80" class="w-full h-full object-cover" /></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="badge bg-lime/10 text-lime">${eq.muscle}</span>
+          <span class="badge bg-white/5">${eq.type}</span>
+          <span class="badge bg-ember/10 text-ember">${eq.difficulty}</span>
+        </div>
+        
+        <div class="space-y-3 mb-4">
+          <div>
+            <div class="text-xs uppercase tracking-wider text-white/40 mb-1">Target Muscles</div>
+            <div class="text-sm">Quadriceps, Glutes, Hamstrings</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wider text-white/40 mb-1">Manufacturer</div>
+            <div class="text-sm">Hammer Strength</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-ink-800/50 mb-4">
+          <div class="text-xs uppercase tracking-wider text-white/40 mb-2">How to use</div>
+          <ol class="text-xs text-white/70 list-decimal pl-4 space-y-1">
+            <li>Adjust the seat height so the handles align with your mid-chest.</li>
+            <li>Keep your back flat against the pad and feet firmly on the floor.</li>
+            <li>Push the handles forward in a controlled motion, exhaling as you push.</li>
+            <li>Slowly return to the starting position without letting the weights touch.</li>
+          </ol>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mb-4">
+          <div class="p-3 rounded-xl bg-ink-800/50 text-center">
+            <div class="text-[10px] text-white/40 uppercase">Beginner</div>
+            <div class="font-bold text-sm mt-1">10-20kg</div>
+          </div>
+          <div class="p-3 rounded-xl bg-ink-800/50 text-center">
+            <div class="text-[10px] text-white/40 uppercase">Inter.</div>
+            <div class="font-bold text-sm mt-1 text-lime">20-40kg</div>
+          </div>
+          <div class="p-3 rounded-xl bg-ink-800/50 text-center">
+            <div class="text-[10px] text-white/40 uppercase">Adv.</div>
+            <div class="font-bold text-sm mt-1">40kg+</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-ember/5 border border-ember/10">
+          <div class="text-xs uppercase tracking-wider text-ember mb-1 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Common Mistakes</div>
+          <p class="text-xs text-white/70">Locking elbows at the top of the movement. Keep a slight bend to protect the joints.</p>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function renderNutrition(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Nutrition Plan</h1>
+      <p class="text-sm text-white/50 mt-1">Your daily meal plan and macros.</p>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+      <div class="glass rounded-xl p-4 text-center">
+        ${progressRing(85, '#D4FF3F', 'Calories', '1840')}
+        <div class="text-xs text-white/50 mt-2">of 2150 kcal</div>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <div class="font-display text-2xl font-bold text-lime">184g</div>
+        <div class="text-xs text-white/50 uppercase mt-1">Protein</div>
+        <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden"><div class="h-full bg-lime rounded-full" style="width:85%"></div></div>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <div class="font-display text-2xl font-bold text-ember">198g</div>
+        <div class="text-xs text-white/50 uppercase mt-1">Carbs</div>
+        <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden"><div class="h-full bg-ember rounded-full" style="width:92%"></div></div>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <div class="font-display text-2xl font-bold text-blue-400">62g</div>
+        <div class="text-xs text-white/50 uppercase mt-1">Fat</div>
+        <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden"><div class="h-full bg-blue-400 rounded-full" style="width:88%"></div></div>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <div class="font-display text-2xl font-bold">2.4L</div>
+        <div class="text-xs text-white/50 uppercase mt-1">Water</div>
+        <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden"><div class="h-full bg-blue-400 rounded-full" style="width:75%"></div></div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4">
+      ${[
+        { meal: 'Breakfast', time: '7:00 AM', kcal: 520, p: 38, c: 65, f: 12, img: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&q=80', name: 'Protein Oats with Berries' },
+        { meal: 'Lunch', time: '12:30 PM', kcal: 680, p: 45, c: 72, f: 18, img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80', name: 'Chicken, Rice & Broccoli' },
+        { meal: 'Snack', time: '4:00 PM', kcal: 280, p: 25, c: 30, f: 5, img: 'https://images.unsplash.com/photo-1620207418302-439b387441b0?w=400&q=80', name: 'Protein Shake & Banana' },
+        { meal: 'Dinner', time: '8:00 PM', kcal: 604, p: 42, c: 48, f: 22, img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80', name: 'Grilled Salmon & Vegetables' },
+      ].map(m => `
+        <div class="glass card-hover rounded-2xl overflow-hidden flex">
+          <div class="w-1/3 bg-ink-800">
+            <img src="${m.img}" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-4 flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs uppercase tracking-wider text-lime">${m.meal}</span>
+              <span class="text-xs text-white/40">${m.time}</span>
+            </div>
+            <div class="font-display font-bold">${m.name}</div>
+            <div class="text-xs text-white/50 mt-1">${m.kcal} kcal</div>
+            <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-white/5">
+              <div class="text-xs"><span class="text-white/40">P:</span> <span class="font-medium">${m.p}g</span></div>
+              <div class="text-xs"><span class="text-white/40">C:</span> <span class="font-medium">${m.c}g</span></div>
+              <div class="text-xs"><span class="text-white/40">F:</span> <span class="font-medium">${m.f}g</span></div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderSupplements(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Supplements</h1>
+      <p class="text-sm text-white/50 mt-1">Recommended supplements for your goals.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ${[
+        { name: 'Whey Protein', img: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&q=80', time: 'Post-Workout', dose: '1-2 scoops (30-60g)', desc: 'Fast-absorbing protein to kickstart muscle recovery and growth.' },
+        { name: 'Creatine Monohydrate', img: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80', time: 'Anytime', dose: '5g daily', desc: 'Improves strength, power output, and muscle volume.' },
+        { name: 'Multivitamin', img: 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&q=80', time: 'With Breakfast', dose: '1 tablet daily', desc: 'Fills micronutrient gaps to support overall health.' },
+      ].map(s => `
+        <div class="glass card-hover rounded-2xl overflow-hidden">
+          <div class="aspect-video bg-ink-800">
+            <img src="${s.img}" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-5">
+            <div class="font-display font-bold text-lg">${s.name}</div>
+            <p class="text-xs text-white/60 mt-1">${s.desc}</p>
+            <div class="mt-4 pt-4 border-t border-white/5 space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-white/50">Recommended Time</span>
+                <span class="font-medium text-lime">${s.time}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-white/50">Dosage</span>
+                <span class="font-medium">${s.dose}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderProgress(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Body Progress</h1>
+      <p class="text-sm text-white/50 mt-1">Track your fitness metrics over time.</p>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      ${[
+        { label: 'Weight', value: '78.2', unit: 'kg', change: '-2.4', dir: 'down', color: 'lime' },
+        { label: 'Body Fat', value: '14.2', unit: '%', change: '-3.1', dir: 'down', color: 'lime' },
+        { label: 'Muscle Mass', value: '64.8', unit: 'kg', change: '+1.8', dir: 'up', color: 'ember' },
+        { label: 'BMI', value: '23.6', unit: '', change: '-0.7', dir: 'down', color: 'blue-400' },
+      ].map(m => `
+        <div class="glass rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs uppercase tracking-wider text-white/40">${m.label}</div>
+            <span class="badge ${m.dir==='down'?'bg-lime/10 text-lime':'bg-ember/10 text-ember'}"><i class="fa-solid fa-arrow-${m.dir} text-[8px]"></i> ${m.change}</span>
+          </div>
+          <div class="font-display text-3xl font-bold">${m.value}<span class="text-base text-white/40">${m.unit}</span></div>
+          <div class="text-xs text-white/40 mt-1">vs last month</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4 mb-6">
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Weight & Body Fat Progress</h3>
+        <div class="h-64"><canvas id="memberChart1"></canvas></div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Body Measurements (cm)</h3>
+        <div class="h-64"><canvas id="memberChart2"></canvas></div>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-6">
+      <h3 class="font-display font-bold text-lg mb-4">Measurement History</h3>
+      <div class="overflow-x-auto">
+        <table class="data-table w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-white/40 border-b border-white/5">
+              <th class="px-4 py-3 font-medium">Date</th>
+              <th class="px-4 py-3 font-medium">Chest</th>
+              <th class="px-4 py-3 font-medium">Waist</th>
+              <th class="px-4 py-3 font-medium">Arms</th>
+              <th class="px-4 py-3 font-medium">Legs</th>
+              <th class="px-4 py-3 font-medium">Neck</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[
+              { d: '2024-03-15', c: 108, wa: 84, a: 38, l: 58, n: 42 },
+              { d: '2024-03-01', c: 107, wa: 86, a: 37.5, l: 57.5, n: 42 },
+              { d: '2024-02-15', c: 106, wa: 88, a: 37, l: 57, n: 41 },
+              { d: '2024-02-01', c: 105, wa: 89, a: 36.5, l: 56.5, n: 41 },
+            ].map(r => `
+              <tr class="border-b border-white/[0.03]">
+                <td class="px-4 py-3 font-medium">${r.d}</td>
+                <td class="px-4 py-3 text-white/70">${r.c}</td>
+                <td class="px-4 py-3 text-white/70">${r.wa}</td>
+                <td class="px-4 py-3 text-white/70">${r.a}</td>
+                <td class="px-4 py-3 text-white/70">${r.l}</td>
+                <td class="px-4 py-3 text-white/70">${r.n}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  setTimeout(() => {
+    new Chart(document.getElementById('memberChart1'), {
+      type: 'line',
+      data: {
+        labels: ['W1','W2','W3','W4','W5','W6','W7','W8'],
+        datasets: [
+          { label: 'Weight (kg)', data: [80.5,80.2,79.8,79.4,79.0,78.8,78.5,78.2], borderColor: '#D4FF3F', backgroundColor: 'rgba(212,255,63,0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+          { label: 'Body Fat (%)', data: [16,15.8,15.5,15.2,15.0,14.7,14.5,14.2], borderColor: '#FF6B35', backgroundColor: 'rgba(255,107,53,0.05)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top', labels: { color: '#9ca3af', font: { size: 10 }, boxWidth: 8, boxHeight: 8 } } }, scales: { x: { grid: { display: false }, ticks: { color: '#6b6b76', font: { size: 10 } } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b6b76', font: { size: 10 } } } } }
+    });
+    new Chart(document.getElementById('memberChart2'), {
+      type: 'radar',
+      data: {
+        labels: ['Chest', 'Waist', 'Arms', 'Legs', 'Shoulders', 'Neck'],
+        datasets: [
+          { label: 'Start', data: [105, 89, 36.5, 56.5, 116, 41], borderColor: '#FF6B35', backgroundColor: 'rgba(255,107,53,0.1)', borderWidth: 2 },
+          { label: 'Current', data: [108, 84, 38, 58, 120, 42], borderColor: '#D4FF3F', backgroundColor: 'rgba(212,255,63,0.1)', borderWidth: 2 }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top', labels: { color: '#9ca3af', font: { size: 10 }, boxWidth: 8, boxHeight: 8 } } }, scales: { r: { grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { color: '#9ca3af', font: { size: 11 } }, ticks: { display: false } } } }
+    });
+  }, 50);
+}
+
+function renderPhotos(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Progress Photos</h1>
+      <p class="text-sm text-white/50 mt-1">Visualize your transformation.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+      <div class="lg:col-span-2 glass rounded-2xl p-4">
+        <div class="text-xs uppercase tracking-wider text-white/40 mb-3 text-center">Drag to compare · 12 Weeks Apart</div>
+        <div class="ba-slider aspect-[4/5] max-h-[500px]" onmousedown="startDrag(event, this)" ontouchstart="startDrag(event, this)">
+          <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80" class="w-full h-full object-cover" />
+          <div class="ba-after">
+            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80" class="w-full h-full object-cover" style="min-width: 100%; width: 300%" />
+          </div>
+          <div class="ba-handle"></div>
+          <div class="absolute top-3 left-3 glass px-2.5 py-1 rounded-full text-xs">Before</div>
+          <div class="absolute top-3 right-3 glass px-2.5 py-1 rounded-full text-xs text-lime">After</div>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Photo Timeline</h3>
+        <div class="space-y-4">
+          ${[
+            { date: 'Mar 15, 2024', note: 'Week 12 - Shredded', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=200&q=80' },
+            { date: 'Feb 15, 2024', note: 'Week 8 - Cutting', img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80' },
+            { date: 'Jan 15, 2024', note: 'Week 4 - Bulking', img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&q=80' },
+            { date: 'Dec 15, 2023', note: 'Starting Point', img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=200&q=80' },
+          ].map(p => `
+            <div class="flex gap-3 items-center cursor-pointer hover:bg-white/[0.02] p-2 rounded-xl">
+              <img src="${p.img}" class="w-14 h-14 rounded-xl object-cover" />
+              <div class="flex-1">
+                <div class="text-sm font-medium">${p.date}</div>
+                <div class="text-xs text-white/40">${p.note}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <button onclick="showToast('Upload new photo', 'info')" class="btn-primary w-full mt-4 py-2.5 rounded-lg text-sm font-semibold"><i class="fa-solid fa-upload mr-2"></i> Upload New Photo</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderMemberAttendance(c) {
+  const daysInMonth = 31;
+  const startDay = 5; // Friday
+  let calendarHtml = '';
+  for(let i=0; i<startDay; i++) calendarHtml += `<div></div>`;
+  for(let i=1; i<=daysInMonth; i++) {
+    const attended = [1,2,3,5,6,8,9,10,13,15].includes(i);
+    const today = i === 15;
+    calendarHtml += `<div class="aspect-square rounded-lg flex items-center justify-center text-sm ${today ? 'bg-lime text-ink-950 font-bold' : attended ? 'bg-lime/10 text-lime border border-lime/20' : 'bg-ink-800/50 text-white/60'}">${i}</div>`;
+  }
+
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Attendance</h1>
+      <p class="text-sm text-white/50 mt-1">Your gym visit history and streaks.</p>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      ${miniKpi('Total Visits', '142', 'fa-calendar-check', 'lime')}
+      ${miniKpi('This Month', '12', 'fa-calendar', 'lime')}
+      ${miniKpi('Current Streak', '12 days 🔥', 'fa-fire', 'ember')}
+      ${miniKpi('Longest Streak', '28 days', 'fa-trophy', 'ember')}
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2 glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display font-bold text-lg">March 2024</h3>
+          <div class="flex gap-1">
+            <button class="w-8 h-8 rounded-lg btn-ghost flex items-center justify-center"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+            <button class="w-8 h-8 rounded-lg btn-ghost flex items-center justify-center"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+          </div>
+        </div>
+        <div class="grid grid-cols-7 gap-2 text-center text-xs text-white/40 mb-2">
+          ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="font-medium">${d}</div>`).join('')}
+        </div>
+        <div class="grid grid-cols-7 gap-2">
+          ${calendarHtml}
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Recent Check-ins</h3>
+        <div class="space-y-3">
+          ${[
+            { d: 'Yesterday', t: '06:42 PM', dur: '1h 24m' },
+            { d: '2 days ago', t: '07:15 AM', dur: '52m' },
+            { d: '3 days ago', t: '06:30 PM', dur: '2h 05m' },
+            { d: '4 days ago', t: '08:00 AM', dur: '1h 12m' },
+            { d: '5 days ago', t: '06:45 PM', dur: '1h 30m' },
+          ].map(r => `
+            <div class="flex items-center justify-between p-3 rounded-xl bg-ink-800/50">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-lime/10 flex items-center justify-center"><i class="fa-solid fa-circle-check text-lime text-sm"></i></div>
+                <div>
+                  <div class="text-sm font-medium">${r.d}</div>
+                  <div class="text-xs text-white/40">${r.t}</div>
+                </div>
+              </div>
+              <div class="text-sm font-medium">${r.dur}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAchievements(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Achievements</h1>
+      <p class="text-sm text-white/50 mt-1">Unlock badges by staying consistent.</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      ${[
+        { icon: 'fa-calendar-week', title: 'First Week', desc: '7 days streak', unlocked: true, color: 'lime' },
+        { icon: 'fa-fire', title: '30 Visits', desc: 'Consistent member', unlocked: true, color: 'ember' },
+        { icon: 'fa-weight-hanging', title: 'Lost 5kg', desc: 'Weight milestone', unlocked: true, color: 'lime' },
+        { icon: 'fa-dumbbell', title: '100 Workouts', desc: 'Century club', unlocked: true, color: 'ember' },
+        { icon: 'fa-sun', title: 'Early Bird', desc: '20 morning workouts', unlocked: true, color: 'lime' },
+        { icon: 'fa-moon', title: 'Night Owl', desc: '20 evening workouts', unlocked: true, color: 'ember' },
+        { icon: 'fa-bolt', title: 'HIIT Master', desc: '50 HIIT classes', unlocked: false, color: 'ink-500' },
+        { icon: 'fa-medal', title: 'Annual Beast', desc: '365 days member', unlocked: false, color: 'ink-500' },
+      ].map(a => `
+        <div class="glass card-hover rounded-2xl p-6 text-center ${!a.unlocked ? 'opacity-50' : ''}">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-${a.color}/10 flex items-center justify-center mb-3 ${a.unlocked ? 'shadow-glow-' + a.color : ''}">
+            <i class="fa-solid ${a.unlocked ? a.icon : 'fa-lock'} text-${a.color} text-2xl"></i>
+          </div>
+          <div class="font-display font-bold">${a.title}</div>
+          <div class="text-xs text-white/50 mt-1">${a.desc}</div>
+          ${a.unlocked ? '<span class="badge bg-lime/10 text-lime mt-3">Unlocked</span>' : '<span class="badge bg-white/5 text-white/40 mt-3">Locked</span>'}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderRewards(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Rewards</h1>
+      <p class="text-sm text-white/50 mt-1">Redeem your hard-earned points.</p>
+    </div>
+
+    <div class="glass rounded-2xl p-6 mb-6 relative overflow-hidden">
+      <div class="glow-orb w-60 h-60 bg-lime/20 -top-20 -right-20"></div>
+      <div class="relative flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="text-xs uppercase tracking-wider text-lime">Available Points</div>
+          <div class="font-display text-5xl font-bold mt-1">1,200 <span class="text-2xl text-white/40">pts</span></div>
+        </div>
+        <button class="btn-ghost px-5 py-2.5 rounded-lg text-sm font-medium">View History</button>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ${[
+        { name: 'Free PT Session', cost: 500, icon: 'fa-dumbbell', color: 'lime' },
+        { name: 'PULSE Merch Kit', cost: 1000, icon: 'fa-shirt', color: 'ember' },
+        { name: '1 Month Free Upgrade', cost: 800, icon: 'fa-arrow-up', color: 'lime' },
+        { name: 'Protein Shake (x5)', cost: 250, icon: 'fa-mug-hot', color: 'ember' },
+        { name: 'Guest Pass (x2)', cost: 300, icon: 'fa-user-plus', color: 'lime' },
+        { name: 'Massage Therapy', cost: 750, icon: 'fa-spa', color: 'ember' },
+      ].map(r => `
+        <div class="glass card-hover rounded-2xl p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-xl bg-${r.color}/10 flex items-center justify-center">
+              <i class="fa-solid ${r.icon} text-${r.color} text-lg"></i>
+            </div>
+            <span class="badge bg-white/5">${r.cost} pts</span>
+          </div>
+          <div class="font-display font-bold text-lg">${r.name}</div>
+          <button onclick="showToast('Redeemed ${r.name}!', 'success')" class="btn-primary w-full mt-4 py-2.5 rounded-lg text-sm font-semibold ${mockMember.points < r.cost ? 'opacity-50 pointer-events-none' : ''}">${mockMember.points >= r.cost ? 'Redeem Now' : 'Not enough points'}</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderMemberClasses(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Classes</h1>
+      <p class="text-sm text-white/50 mt-1">Book your spot in upcoming group classes.</p>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-4">
+      ${['All', 'Yoga', 'Boxing', 'CrossFit', 'Swimming'].map((cat, i) => `
+        <button class="flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium glass ${i===0?'bg-lime text-ink-950':''}">${cat}</button>
+      `).join('')}
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ${mockClasses.map(cl => `
+        <div class="glass card-hover rounded-2xl overflow-hidden">
+          <div class="aspect-video bg-ink-800 relative">
+            <img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=400&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-2 right-2 badge bg-ink-950/80 backdrop-blur-sm">${cl.cat}</span>
+          </div>
+          <div class="p-5">
+            <div class="font-display font-bold text-lg">${cl.name}</div>
+            <div class="text-xs text-white/50 mt-1">${cl.trainer} · ${cl.duration}</div>
+            <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
+              <div>
+                <div class="text-xs text-white/40">${cl.time}</div>
+                <div class="text-sm font-medium ${cl.spots > 0 ? 'text-lime' : 'text-ember'}">${cl.spots > 0 ? cl.spots + ' spots left' : 'Class Full'}</div>
+              </div>
+              <button onclick="showToast('${cl.spots > 0 ? 'Booked ' + cl.name : 'Cannot book full class'}', '${cl.spots > 0 ? 'success' : 'error'}')" class="px-4 py-2 rounded-lg text-xs font-semibold ${cl.spots > 0 ? 'btn-primary' : 'bg-ink-700 text-white/40'}" ${cl.spots > 0 ? '' : 'disabled'}>${cl.spots > 0 ? 'Book' : 'Full'}</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderMemberNotifications(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Notifications</h1>
+      <p class="text-sm text-white/50 mt-1">Stay updated on your membership and gym events.</p>
+    </div>
+
+    <div class="glass rounded-2xl p-2">
+      <div class="space-y-2">
+        ${[
+          { icon: 'fa-clock', color: 'ember', title: 'Membership Expiring Soon', desc: 'Your Annual membership expires in 89 days. Renew now to keep your streak.', time: '2 hours ago', read: false },
+          { icon: 'fa-comment-dots', color: 'lime', title: 'Message from Marcus Chen', desc: 'Great job on the bench press today! Let\'s increase the weight next session.', time: '5 hours ago', read: false },
+          { icon: 'fa-list-check', color: 'blue-400', title: 'Workout Plan Updated', desc: 'Your trainer has updated your Push Day routine. Check it out!', time: '1 day ago', read: true },
+          { icon: 'fa-tag', color: 'ember', title: 'Gym Offer: 25% Off Supplements', desc: 'Use code PULSE25 at the supplement store this week only.', time: '2 days ago', read: true },
+          { icon: 'fa-trophy', color: 'lime', title: 'Achievement Unlocked: 30 Visits!', desc: 'You\'ve completed 30 gym visits. +50 reward points added.', time: '3 days ago', read: true },
+        ].map(n => `
+          <div class="flex items-start gap-4 p-4 rounded-xl ${n.read ? 'bg-transparent' : 'bg-lime/5'} hover:bg-white/[0.03] transition-colors cursor-pointer">
+            <div class="w-10 h-10 rounded-lg bg-${n.color}/10 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid ${n.icon} text-${n.color}"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="font-semibold text-sm">${n.title}</div>
+                ${!n.read ? '<span class="w-2 h-2 rounded-full bg-lime"></span>' : ''}
+              </div>
+              <div class="text-xs text-white/60 mt-1">${n.desc}</div>
+              <div class="text-xs text-white/40 mt-1">${n.time}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderMemberSettings(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Settings</h1>
+      <p class="text-sm text-white/50 mt-1">Manage your account preferences.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4">
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Edit Profile</h3>
+        <div class="space-y-3">
+          <div><label class="text-xs text-white/50 uppercase tracking-wider">Full Name</label><input value="Alex Morgan" class="mt-1.5 w-full bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-lime/30" /></div>
+          <div><label class="text-xs text-white/50 uppercase tracking-wider">Email</label><input value="alex.morgan@email.com" class="mt-1.5 w-full bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-lime/30" /></div>
+          <div><label class="text-xs text-white/50 uppercase tracking-wider">Phone</label><input value="+1 213 555 0142" class="mt-1.5 w-full bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-lime/30" /></div>
+          <button onclick="showToast('Profile saved', 'success')" class="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold mt-2">Save Changes</button>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Change Password</h3>
+        <div class="space-y-3">
+          <div><label class="text-xs text-white/50 uppercase tracking-wider">Current Password</label><input type="password" placeholder="••••••••" class="mt-1.5 w-full bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-lime/30" /></div>
+          <div><label class="text-xs text-white/50 uppercase tracking-wider">New Password</label><input type="password" placeholder="••••••••" class="mt-1.5 w-full bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-lime/30" /></div>
+          <div><label class="text-xs text-white/50 uppercase tracking-wider">Confirm Password</label><input type="password" placeholder="••••••••" class="mt-1.5 w-full bg-ink-800 border border-white/5 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-lime/30" /></div>
+          <button onclick="showToast('Password updated', 'success')" class="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold mt-2">Update Password</button>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Preferences</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 rounded-lg bg-ink-800/50">
+            <div class="flex items-center gap-3"><i class="fa-solid fa-moon text-lime"></i><span class="text-sm">Dark Mode</span></div>
+            <div onclick="this.classList.toggle('on')" class="toggle-switch on"></div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-ink-800/50">
+            <div class="flex items-center gap-3"><i class="fa-solid fa-language text-lime"></i><span class="text-sm">Language</span></div>
+            <select class="bg-ink-700 border border-white/5 rounded-lg px-2 py-1 text-xs outline-none">
+              <option>English</option><option>Spanish</option><option>French</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-display font-bold text-lg mb-4">Notifications</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 rounded-lg bg-ink-800/50">
+            <span class="text-sm">Email Notifications</span>
+            <div onclick="this.classList.toggle('on')" class="toggle-switch on"></div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-ink-800/50">
+            <span class="text-sm">SMS Alerts</span>
+            <div onclick="this.classList.toggle('on')" class="toggle-switch on"></div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-ink-800/50">
+            <span class="text-sm">Workout Reminders</span>
+            <div onclick="this.classList.toggle('on')" class="toggle-switch"></div>
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-lg bg-ink-800/50">
+            <span class="text-sm">Promotional Offers</span>
+            <div onclick="this.classList.toggle('on')" class="toggle-switch"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderSupport(c) {
+  c.innerHTML = `
+    <div class="mb-7">
+      <h1 class="font-display font-bold text-3xl">Support</h1>
+      <p class="text-sm text-white/50 mt-1">We're here to help. How can we assist you today?</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4 mb-6">
+      <button onclick="showToast('Live chat opened', 'info')" class="glass card-hover rounded-2xl p-6 text-left">
+        <div class="w-12 h-12 rounded-xl bg-lime/10 flex items-center justify-center mb-3">
+          <i class="fa-solid fa-headset text-lime text-lg"></i>
+        </div>
+        <div class="font-display font-bold text-lg">Live Chat</div>
+        <p class="text-xs text-white/50 mt-1">Chat with our support team in real-time.</p>
+        <div class="text-xs text-lime mt-3 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-lime animate-pulse"></span> Online now</div>
+      </button>
+      <button onclick="showToast('Ticket form opened', 'info')" class="glass card-hover rounded-2xl p-6 text-left">
+        <div class="w-12 h-12 rounded-xl bg-ember/10 flex items-center justify-center mb-3">
+          <i class="fa-solid fa-ticket text-ember text-lg"></i>
+        </div>
+        <div class="font-display font-bold text-lg">Submit Ticket</div>
+        <p class="text-xs text-white/50 mt-1">For complex issues that need tracking.</p>
+        <div class="text-xs text-white/40 mt-3">Avg response: 2 hours</div>
+      </button>
+      <button onclick="showToast('Contact info displayed', 'info')" class="glass card-hover rounded-2xl p-6 text-left">
+        <div class="w-12 h-12 rounded-xl bg-blue-400/10 flex items-center justify-center mb-3">
+          <i class="fa-solid fa-phone text-blue-400 text-lg"></i>
+        </div>
+        <div class="font-display font-bold text-lg">Contact Gym</div>
+        <p class="text-xs text-white/50 mt-1">Call us directly at the front desk.</p>
+        <div class="text-xs text-white/40 mt-3">+1 (213) 555-PULSE</div>
+      </button>
+    </div>
+
+    <div class="glass rounded-2xl p-6">
+      <h3 class="font-display font-bold text-lg mb-4">Frequently Asked Questions</h3>
+      <div class="space-y-3">
+        ${[
+          { q: 'How do I freeze my membership?', a: 'You can freeze your membership for up to 60 days per year from the Membership settings page.' },
+          { q: 'Can I bring a guest?', a: 'VIP members get 4 guest passes per month. Other members can purchase day passes at the front desk.' },
+          { q: 'How do I cancel a class booking?', a: 'Go to the Classes page, find your booked class, and click "Cancel" at least 2 hours before the start time.' },
+          { q: 'Where can I find my workout history?', a: 'Your workout history is available in the Workout Program page under the "History" tab.' },
+        ].map(f => `
+          <div class="rounded-xl overflow-hidden glass">
+            <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('i').classList.toggle('rotate-45')" class="w-full p-4 flex items-center justify-between text-left">
+              <span class="font-medium text-sm">${f.q}</span>
+              <i class="fa-solid fa-plus text-lime transition-transform"></i>
+            </button>
+            <div class="hidden p-4 pt-0 text-sm text-white/60">${f.a}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ============== INITIALIZATION ==============
+window.addEventListener('load', () => {
+  navigateMember('dashboard');
+});
+</script>
+</body>
+</html>
