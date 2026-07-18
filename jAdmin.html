@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | مكتبة الجذور</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: '#F47A20',
+        'primary-dark': '#D96612',
+        'primary-light': '#FF9947',
+        ink: '#1F2937',
+        'ink-soft': '#374151',
+        'ink-light': '#4B5563',
+      },
+      fontFamily: {
+        'cairo': ['Cairo', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+
+<style>
+  * { font-family: 'Cairo', sans-serif; }
+  body { background: #f1f5f9; overflow-x: hidden; }
+  .dark body { background: #0f172a; color: #e2e8f0; }
+  
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  .dark ::-webkit-scrollbar-thumb { background: #334155; }
+  
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Sidebar Links */
+  .nav-link { transition: all 0.3s ease; position: relative; }
+  .nav-link.active { background: linear-gradient(90deg, rgba(244, 122, 32, 0.2), transparent); color: #F47A20; }
+  .nav-link.active::before { content: ''; position: absolute; right: 0; top: 10%; bottom: 10%; width: 4px; background: #F47A20; border-radius: 4px 0 0 4px; }
+  
+  /* Card Hover */
+  .stat-card { transition: all 0.3s ease; }
+  .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+  
+  /* Tables */
+  .data-table tbody tr { transition: background-color 0.2s; }
+  .data-table tbody tr:hover { background-color: rgba(244, 122, 32, 0.05); }
+  .dark .data-table tbody tr:hover { background-color: rgba(244, 122, 32, 0.1); }
+  
+  /* Transitions */
+  .page { display: none; animation: pageIn 0.4s ease-out; }
+  .page.active { display: block; }
+  @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* Sidebar Collapse */
+  .sidebar-collapsed { width: 80px; }
+  .sidebar-collapsed .nav-text { display: none; }
+  .sidebar-collapsed .brand-text { display: none; }
+  
+  /* Toast */
+  .toast { animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes slideIn { from { transform: translateX(-120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.removing { animation: slideOut 0.3s forwards; }
+  @keyframes slideOut { to { transform: translateX(-120%); opacity: 0; } }
+  
+  /* Drag & Drop */
+  .drag-area { border: 2px dashed #cbd5e1; transition: all 0.3s; }
+  .drag-area.dragover { border-color: #F47A20; background: rgba(244, 122, 32, 0.05); }
+  
+  /* Toggle Switch */
+  .toggle-bg { transition: background-color 0.3s; }
+  .toggle-dot { transition: transform 0.3s; }
+  input:checked + .toggle-bg { background-color: #F47A20; }
+  input:checked + .toggle-bg .toggle-dot { transform: translateX(-22px); }
+</style>
+</head>
+<body class="font-cairo">
+
+<div class="flex h-screen overflow-hidden">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside id="sidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 bg-ink text-gray-300 flex flex-col transition-all duration-300 transform translate-x-full lg:translate-x-0">
+    <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 shrink-0">
+      <div class="flex items-center gap-3">
+        <img src="https://z-cdn-media.chatglm.cn/files/2b298f02-bc09-4a9f-9348-44d4314b4d12.png" class="w-10 h-10 rounded-full bg-white p-0.5" alt="Logo">
+        <div class="brand-text">
+          <h1 class="text-white font-bold text-lg leading-tight">مكتبة الجذور</h1>
+          <p class="text-xs text-primary-light">لوحة الإدارة</p>
+        </div>
+      </div>
+      <button onclick="toggleSidebar()" class="lg:hidden text-gray-400"><i data-lucide="x"></i></button>
+    </div>
+
+    <div class="p-4 shrink-0">
+      <div class="relative">
+        <input type="text" placeholder="بحث سريع..." class="w-full bg-white/10 rounded-xl py-2.5 pr-10 pl-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary">
+        <i data-lucide="search" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      </div>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-3 pb-4 space-y-1">
+      <p class="nav-text text-xs text-gray-500 font-bold px-3 mt-2 mb-1">الرئيسية</p>
+      <a href="#" onclick="navigateTo('dashboard')" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i> <span class="nav-text">لوحة التحكم</span>
+      </a>
+      
+      <p class="nav-text text-xs text-gray-500 font-bold px-3 mt-4 mb-1">إدارة المتجر</p>
+      <a href="#" onclick="navigateTo('products')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="package" class="w-5 h-5 shrink-0"></i> <span class="nav-text">المنتجات</span>
+      </a>
+      <a href="#" onclick="navigateTo('add-product')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="plus-circle" class="w-5 h-5 shrink-0"></i> <span class="nav-text">إضافة منتج</span>
+      </a>
+      <a href="#" onclick="navigateTo('categories')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="folder-tree" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الأقسام</span>
+      </a>
+      <a href="#" onclick="navigateTo('booklets')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="book-marked" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الملازم الدراسية</span>
+      </a>
+      <a href="#" onclick="navigateTo('banners')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="image" class="w-5 h-5 shrink-0"></i> <span class="nav-text">إدارة البانرات</span>
+      </a>
+      <a href="#" onclick="navigateTo('offers')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="badge-percent" class="w-5 h-5 shrink-0"></i> <span class="nav-text">العروض</span>
+      </a>
+
+      <p class="nav-text text-xs text-gray-500 font-bold px-3 mt-4 mb-1">المبيعات والعملاء</p>
+      <a href="#" onclick="navigateTo('orders')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="shopping-cart" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الطلبات</span>
+        <span class="nav-text mr-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
+      </a>
+      <a href="#" onclick="navigateTo('customers')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="users" class="w-5 h-5 shrink-0"></i> <span class="nav-text">العملاء</span>
+      </a>
+      
+      <p class="nav-text text-xs text-gray-500 font-bold px-3 mt-4 mb-1">الموارد البشرية</p>
+      <a href="#" onclick="navigateTo('employees')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="user-cog" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الموظفون</span>
+      </a>
+      <a href="#" onclick="navigateTo('roles')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="shield" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الأدوار والصلاحيات</span>
+      </a>
+
+      <p class="nav-text text-xs text-gray-500 font-bold px-3 mt-4 mb-1">المخزون والتقارير</p>
+      <a href="#" onclick="navigateTo('inventory')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="archive" class="w-5 h-5 shrink-0"></i> <span class="nav-text">المخزون</span>
+      </a>
+      <a href="#" onclick="navigateTo('suppliers')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="truck" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الموردون</span>
+      </a>
+      <a href="#" onclick="navigateTo('reports')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="bar-chart-3" class="w-5 h-5 shrink-0"></i> <span class="nav-text">التقارير</span>
+      </a>
+
+      <p class="nav-text text-xs text-gray-500 font-bold px-3 mt-4 mb-1">النظام</p>
+      <a href="#" onclick="navigateTo('messages')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="mail" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الرسائل</span>
+      </a>
+      <a href="#" onclick="navigateTo('settings')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="settings" class="w-5 h-5 shrink-0"></i> <span class="nav-text">إعدادات الموقع</span>
+      </a>
+      <a href="#" onclick="navigateTo('logs')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="file-text" class="w-5 h-5 shrink-0"></i> <span class="nav-text">سجل النشاطات</span>
+      </a>
+      <a href="#" onclick="navigateTo('profile')" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-white/5">
+        <i data-lucide="user" class="w-5 h-5 shrink-0"></i> <span class="nav-text">الملف الشخصي</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-white/10 shrink-0">
+      <div class="flex items-center gap-3">
+        <img src="https://i.pravatar.cc/100?img=5" class="w-10 h-10 rounded-full" alt="User">
+        <div class="nav-text flex-1">
+          <h4 class="text-sm font-bold text-white">أحمد الإداري</h4>
+          <p class="text-xs text-gray-400">مدير النظام</p>
+        </div>
+        <button class="nav-text text-gray-400 hover:text-red-500"><i data-lucide="log-out" class="w-5 h-5"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    
+    <!-- ===== HEADER ===== -->
+    <header class="h-20 glass z-30 flex items-center justify-between px-6 shrink-0 border-b border-gray-200/50 dark:border-slate-700/50">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        <h2 id="pageTitle" class="text-xl font-extrabold text-ink dark:text-white">لوحة التحكم</h2>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="relative hidden md:block">
+          <input type="text" placeholder="بحث شامل..." class="form-input w-64 py-2 pr-10 pl-4 rounded-xl text-sm bg-gray-100 dark:bg-slate-800 border-transparent focus:bg-white dark:focus:bg-slate-700">
+          <i data-lucide="search" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <button onclick="toggleTheme()" class="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
+          <i data-lucide="sun" class="w-5 h-5 dark:hidden text-ink"></i>
+          <i data-lucide="moon" class="w-5 h-5 hidden dark:block text-white"></i>
+        </button>
+        <div class="relative">
+          <button onclick="toggleDropdown('notifDropdown')" class="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 relative">
+            <i data-lucide="bell" class="w-5 h-5 text-ink dark:text-white"></i>
+            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-slate-900"></span>
+          </button>
+          <div id="notifDropdown" class="hidden absolute left-0 mt-2 w-80 glass rounded-2xl shadow-2xl p-4 z-50">
+            <h3 class="font-bold mb-3 text-ink dark:text-white">الإشعارات</h3>
+            <div class="space-y-3 max-h-64 overflow-y-auto">
+              <div class="flex items-start gap-3 p-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl">
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div>
+                <div><p class="text-sm font-semibold text-ink dark:text-white">طلب جديد</p><p class="text-xs text-gray-500">طلب #1024 من سارة أحمد</p></div>
+              </div>
+              <div class="flex items-start gap-3 p-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl">
+                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-500"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+                <div><p class="text-sm font-semibold text-ink dark:text-white">مخزون منخفض</p><p class="text-xs text-gray-500">ملزمة الفيزياء كادت تنفد</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <button onclick="toggleDropdown('userDropdown')" class="flex items-center gap-2 p-1 pl-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800">
+            <img src="https://i.pravatar.cc/100?img=5" class="w-8 h-8 rounded-full" alt="User">
+            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500"></i>
+          </button>
+          <div id="userDropdown" class="hidden absolute left-0 mt-2 w-56 glass rounded-2xl shadow-2xl p-2 z-50">
+            <div class="p-3 border-b border-gray-100 dark:border-slate-700 mb-2">
+              <p class="font-bold text-ink dark:text-white">أحمد الإداري</p>
+              <p class="text-xs text-gray-500">admin@aljuthoor.iq</p>
+            </div>
+            <a href="#" onclick="navigateTo('profile')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-slate-700"><i data-lucide="user" class="w-4 h-4"></i> الملف الشخصي</a>
+            <a href="#" onclick="navigateTo('settings')" class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-slate-700"><i data-lucide="settings" class="w-4 h-4"></i> الإعدادات</a>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><i data-lucide="log-out" class="w-4 h-4"></i> تسجيل الخروج</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== PAGES CONTAINER ===== -->
+    <main class="flex-1 overflow-y-auto p-6">
+
+      <!-- ===== DASHBOARD PAGE ===== -->
+      <div id="page-dashboard" class="page active">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="stat-card glass p-5 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><i data-lucide="dollar-sign" class="w-6 h-6"></i></div>
+              <span class="text-xs font-bold text-green-500 bg-green-100 px-2 py-1 rounded-lg">+12.5%</span>
+            </div>
+            <h3 class="text-3xl font-black text-ink dark:text-white mb-1">2,450,000 <span class="text-sm font-normal text-gray-500">د.ع</span></h3>
+            <p class="text-sm text-gray-500">مبيعات اليوم</p>
+            <div class="h-16 mt-2"><canvas id="miniChart1"></canvas></div>
+          </div>
+          <div class="stat-card glass p-5 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-500"><i data-lucide="shopping-bag" class="w-6 h-6"></i></div>
+              <span class="text-xs font-bold text-green-500 bg-green-100 px-2 py-1 rounded-lg">+8.2%</span>
+            </div>
+            <h3 class="text-3xl font-black text-ink dark:text-white mb-1">156</h3>
+            <p class="text-sm text-gray-500">طلبات اليوم</p>
+            <div class="h-16 mt-2"><canvas id="miniChart2"></canvas></div>
+          </div>
+          <div class="stat-card glass p-5 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-500"><i data-lucide="users" class="w-6 h-6"></i></div>
+              <span class="text-xs font-bold text-red-500 bg-red-100 px-2 py-1 rounded-lg">-2.4%</span>
+            </div>
+            <h3 class="text-3xl font-black text-ink dark:text-white mb-1">1,240</h3>
+            <p class="text-sm text-gray-500">إجمالي العملاء</p>
+            <div class="h-16 mt-2"><canvas id="miniChart3"></canvas></div>
+          </div>
+          <div class="stat-card glass p-5 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-green-500"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+              <span class="text-xs font-bold text-green-500 bg-green-100 px-2 py-1 rounded-lg">+15.1%</span>
+            </div>
+            <h3 class="text-3xl font-black text-ink dark:text-white mb-1">45,200,000 <span class="text-sm font-normal text-gray-500">د.ع</span></h3>
+            <p class="text-sm text-gray-500">إجمالي الإيرادات الشهرية</p>
+            <div class="h-16 mt-2"><canvas id="miniChart4"></canvas></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="glass p-4 rounded-2xl flex items-center gap-3"><i data-lucide="alert-octagon" class="w-8 h-8 text-red-500"></i><div><p class="text-xs text-gray-500">مخزون نفد</p><h4 class="text-xl font-bold text-ink dark:text-white">12 منتج</h4></div></div>
+          <div class="glass p-4 rounded-2xl flex items-center gap-3"><i data-lucide="clock" class="w-8 h-8 text-yellow-500"></i><div><p class="text-xs text-gray-500">طلبات معلقة</p><h4 class="text-xl font-bold text-ink dark:text-white">8 طلبات</h4></div></div>
+          <div class="glass p-4 rounded-2xl flex items-center gap-3"><i data-lucide="box" class="w-8 h-8 text-blue-500"></i><div><p class="text-xs text-gray-500">إجمالي المنتجات</p><h4 class="text-xl font-bold text-ink dark:text-white">1,450</h4></div></div>
+          <div class="glass p-4 rounded-2xl flex items-center gap-3"><i data-lucide="star" class="w-8 h-8 text-primary"></i><div><p class="text-xs text-gray-500">الأكثر مبيعاً</p><h4 class="text-xl font-bold text-ink dark:text-white">ملازم السادس</h4></div></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div class="lg:col-span-2 glass p-6 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="font-bold text-ink dark:text-white">تحليل المبيعات الشهرية</h3>
+              <select class="text-sm bg-gray-100 dark:bg-slate-700 rounded-lg px-3 py-1.5 border-none focus:outline-none"><option>2025</option><option>2024</option></select>
+            </div>
+            <div class="h-80"><canvas id="mainSalesChart"></canvas></div>
+          </div>
+          <div class="glass p-6 rounded-2xl shadow-sm">
+            <h3 class="font-bold text-ink dark:text-white mb-6">المبيعات حسب القسم</h3>
+            <div class="h-80"><canvas id="categoryChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-ink dark:text-white">أحدث الطلبات</h3>
+            <a href="#" onclick="navigateTo('orders')" class="text-sm text-primary font-semibold hover:underline">عرض الكل</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="pb-3 font-medium">رقم الطلب</th><th class="pb-3 font-medium">العميل</th><th class="pb-3 font-medium">التاريخ</th><th class="pb-3 font-medium">المبلغ</th><th class="pb-3 font-medium">الحالة</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="py-3 font-bold text-primary">#1024</td><td class="py-3">سارة أحمد</td><td class="py-3 text-gray-500">2025-03-15</td><td class="py-3 font-bold">25,000 د.ع</td><td class="py-3"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs">معلق</span></td></tr>
+                <tr><td class="py-3 font-bold text-primary">#1023</td><td class="py-3">محمد علي</td><td class="py-3 text-gray-500">2025-03-15</td><td class="py-3 font-bold">120,000 د.ع</td><td class="py-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">مكتمل</span></td></tr>
+                <tr><td class="py-3 font-bold text-primary">#1022</td><td class="py-3">زينب حسن</td><td class="py-3 text-gray-500">2025-03-14</td><td class="py-3 font-bold">15,000 د.ع</td><td class="py-3"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-xs">قيد التجهيز</span></td></tr>
+                <tr><td class="py-3 font-bold text-primary">#1021</td><td class="py-3">عبدالله كريم</td><td class="py-3 text-gray-500">2025-03-14</td><td class="py-3 font-bold">45,000 د.ع</td><td class="py-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded-lg text-xs">ملغى</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PRODUCTS PAGE ===== -->
+      <div id="page-products" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <h3 class="text-xl font-bold text-ink dark:text-white">إدارة المنتجات</h3>
+            <button onclick="navigateTo('add-product')" class="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-colors"><i data-lucide="plus" class="w-5 h-5"></i> إضافة منتج جديد</button>
+          </div>
+          <div class="flex flex-wrap gap-3 mb-6">
+            <input type="text" placeholder="بحث بالاسم أو SKU..." class="form-input flex-1 min-w-[200px] px-4 py-2.5 rounded-xl text-sm">
+            <select class="form-input px-4 py-2.5 rounded-xl text-sm bg-gray-100 dark:bg-slate-800 border-transparent"><option>كل الأقسام</option><option>الكتب</option><option>الملازم</option><option>القرطاسية</option></select>
+            <select class="form-input px-4 py-2.5 rounded-xl text-sm bg-gray-100 dark:bg-slate-800 border-transparent"><option>كل الحالات</option><option>منشور</option><option>مسودة</option><option>نفد المخزون</option></select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="p-3"><input type="checkbox" class="rounded"></th><th class="p-3 font-medium">المنتج</th><th class="p-3 font-medium">SKU</th><th class="p-3 font-medium">السعر</th><th class="p-3 font-medium">المخزون</th><th class="p-3 font-medium">الحالة</th><th class="p-3 font-medium">إجراءات</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="p-3"><input type="checkbox" class="rounded"></td><td class="p-3 flex items-center gap-3"><img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=100" class="w-10 h-10 rounded-lg object-cover" alt=""><span class="font-semibold text-ink dark:text-white">ملزمة الرياضيات - سادس إعدادي</span></td><td class="p-3 text-gray-500">MTH-6TH-01</td><td class="p-3 font-bold">15,000 د.ع</td><td class="p-3"><span class="text-green-500 font-semibold">متوفر (120)</span></td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">منشور</span></td><td class="p-3"><div class="flex gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button><button onclick="navigateTo('add-product')" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td></tr>
+                <tr><td class="p-3"><input type="checkbox" class="rounded"></td><td class="p-3 flex items-center gap-3"><img src="https://images.unsplash.com/photo-1583485088034-697b5bc36b92?w=100" class="w-10 h-10 rounded-lg object-cover" alt=""><span class="font-semibold text-ink dark:text-white">مجموعة أقلام رصاص (12 قلم)</span></td><td class="p-3 text-gray-500">PEN-12-PR</td><td class="p-3 font-bold">8,000 د.ع</td><td class="p-3"><span class="text-red-500 font-semibold">نفد (0)</span></td><td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded-lg text-xs">نفد المخزون</span></td><td class="p-3"><div class="flex gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button><button onclick="navigateTo('add-product')" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td></tr>
+                <tr><td class="p-3"><input type="checkbox" class="rounded"></td><td class="p-3 flex items-center gap-3"><img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=100" class="w-10 h-10 rounded-lg object-cover" alt=""><span class="font-semibold text-ink dark:text-white">رواية ساق البامبو</span></td><td class="p-3 text-gray-500">BOOK-001</td><td class="p-3 font-bold">18,000 د.ع</td><td class="p-3"><span class="text-green-500 font-semibold">متوفر (45)</span></td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">منشور</span></td><td class="p-3"><div class="flex gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button><button onclick="navigateTo('add-product')" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td></tr>
+                <tr><td class="p-3"><input type="checkbox" class="rounded"></td><td class="p-3 flex items-center gap-3"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100" class="w-10 h-10 rounded-lg object-cover" alt=""><span class="font-semibold text-ink dark:text-white">حقيبة مدرسية ظهر احترافية</span></td><td class="p-3 text-gray-500">BAG-PR-01</td><td class="p-3 font-bold">45,000 د.ع</td><td class="p-3"><span class="text-yellow-500 font-semibold">منخفض (5)</span></td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">منشور</span></td><td class="p-3"><div class="flex gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button><button onclick="navigateTo('add-product')" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex justify-between items-center mt-6">
+            <p class="text-sm text-gray-500">عرض 1-4 من 1450 منتج</p>
+            <div class="flex gap-1">
+              <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+              <button class="px-3 py-1 rounded-lg bg-primary text-white">1</button>
+              <button class="px-3 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">2</button>
+              <button class="px-3 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">3</button>
+              <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ADD PRODUCT PAGE ===== -->
+      <div id="page-add-product" class="page">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2">
+            <div class="glass p-6 rounded-2xl shadow-sm mb-6">
+              <h3 class="text-lg font-bold text-ink dark:text-white mb-4">المعلومات الأساسية</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2"><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">اسم المنتج</label><input type="text" placeholder="مثال: ملزمة الفيزياء - سادس إعدادي" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">الوصف (عربي)</label><textarea rows="4" placeholder="أدخل وصف تفصيلي للمنتج..." class="form-input w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">القسم</label><select class="form-input w-full px-4 py-2.5 rounded-xl text-sm bg-gray-100 dark:bg-slate-800 border-transparent"><option>اختر القسم</option><option>الملازم الدراسية</option><option>الكتب</option><option>القرطاسية</option></select></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">العلامة التجارية</label><input type="text" placeholder="مثال: الجذور" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+              </div>
+            </div>
+            <div class="glass p-6 rounded-2xl shadow-sm mb-6">
+              <h3 class="text-lg font-bold text-ink dark:text-white mb-4">التسعير والمخزون</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">السعر (د.ع)</label><input type="number" placeholder="15000" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">سعر التكلفة (د.ع)</label><input type="number" placeholder="10000" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">الخصم (%)</label><input type="number" placeholder="0" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">كمية المخزون</label><input type="number" placeholder="100" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">SKU (رمز المنتج)</label><input type="text" placeholder="PRD-001" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+                <div><label class="block text-sm font-medium mb-1.5 text-gray-600 dark:text-gray-300">الباركود</label><input type="text" placeholder="123456789" class="form-input w-full px-4 py-2.5 rounded-xl text-sm"></div>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-6">
+            <div class="glass p-6 rounded-2xl shadow-sm">
+              <h3 class="text-lg font-bold text-ink dark:text-white mb-4">صور المنتج</h3>
+              <div class="drag-area p-6 rounded-2xl text-center cursor-pointer" onclick="document.getElementById('fileUpload').click()">
+                <div class="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3"><i data-lucide="upload-cloud" class="w-6 h-6"></i></div>
+                <p class="text-sm font-semibold text-ink dark:text-white">اسحب وأفلت الصور هنا</p>
+                <p class="text-xs text-gray-500 mt-1">أو انقر للاختيار (PNG, JPG)</p>
+                <input type="file" id="fileUpload" class="hidden" multiple>
+              </div>
+            </div>
+            <div class="glass p-6 rounded-2xl shadow-sm">
+              <h3 class="text-lg font-bold text-ink dark:text-white mb-4">حالة المنتج</h3>
+              <div class="space-y-3">
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm font-medium">منشور</span><input type="checkbox" class="hidden peer" checked><div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full relative peer-checked:bg-primary transition-colors"><div class="toggle-dot absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform"></div></div></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm font-medium">منتج مميز</span><input type="checkbox" class="hidden peer"><div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full relative peer-checked:bg-primary transition-colors"><div class="toggle-dot absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform"></div></div></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm font-medium">الأكثر مبيعاً</span><input type="checkbox" class="hidden peer" checked><div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full relative peer-checked:bg-primary transition-colors"><div class="toggle-dot absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform"></div></div></label>
+              </div>
+            </div>
+            <div class="glass p-6 rounded-2xl shadow-sm">
+              <button onclick="showToast('تم حفظ المنتج بنجاح!', 'success')" class="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-xl font-bold transition-colors mb-2">حفظ المنتج</button>
+              <button onclick="navigateTo('products')" class="w-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 text-ink dark:text-white py-3 rounded-xl font-bold transition-colors">إلغاء</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BOOKLETS PAGE ===== -->
+      <div id="page-booklets" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-ink dark:text-white">إدارة الملازم الدراسية</h3>
+            <button class="bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl font-semibold flex items-center gap-2"><i data-lucide="plus" class="w-5 h-5"></i> إضافة ملزمة</button>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200 dark:border-slate-700 pb-4">
+            <button class="px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold">السادس الإعدادي ⭐</button>
+            <button class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-slate-700 text-sm hover:bg-gray-200">الخامس الإعدادي</button>
+            <button class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-slate-700 text-sm hover:bg-gray-200">الرابع الإعدادي</button>
+            <button class="px-4 py-2 rounded-xl bg-gray-100 dark:bg-slate-700 text-sm hover:bg-gray-200">الثالث المتوسط</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="border border-gray-100 dark:border-slate-700 rounded-2xl p-4 flex gap-4 hover:shadow-lg transition-shadow">
+              <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200" class="w-20 h-28 object-cover rounded-lg" alt=""><div class="flex-1"><h4 class="font-bold text-ink dark:text-white">ملزمة الرياضيات</h4><p class="text-xs text-gray-500 mt-1">الأستاذ: أحمد الخفاجي</p><p class="text-sm font-bold text-primary mt-2">15,000 د.ع</p><div class="flex items-center gap-2 mt-2"><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">متوفر</span><span class="text-xs text-gray-400">120 نسخة</span></div></div><div class="flex flex-col gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+            </div>
+            <div class="border border-gray-100 dark:border-slate-700 rounded-2xl p-4 flex gap-4 hover:shadow-lg transition-shadow">
+              <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=200" class="w-20 h-28 object-cover rounded-lg" alt=""><div class="flex-1"><h4 class="font-bold text-ink dark:text-white">ملزمة الفيزياء</h4><p class="text-xs text-gray-500 mt-1">الأستاذ: علي حسين</p><p class="text-sm font-bold text-primary mt-2">15,000 د.ع</p><div class="flex items-center gap-2 mt-2"><span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">نفد</span><span class="text-xs text-gray-400">0 نسخة</span></div></div><div class="flex flex-col gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+            </div>
+            <div class="border border-gray-100 dark:border-slate-700 rounded-2xl p-4 flex gap-4 hover:shadow-lg transition-shadow">
+              <img src="https://images.unsplash.com/photo-1532153955177-f59af40d6472?w=200" class="w-20 h-28 object-cover rounded-lg" alt=""><div class="flex-1"><h4 class="font-bold text-ink dark:text-white">ملزمة الكيمياء</h4><p class="text-xs text-gray-500 mt-1">الأستاذ: محمد الكيميائي</p><p class="text-sm font-bold text-primary mt-2">15,000 د.ع</p><div class="flex items-center gap-2 mt-2"><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">متوفر</span><span class="text-xs text-gray-400">85 نسخة</span></div></div><div class="flex flex-col gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+            </div>
+            <div class="border border-gray-100 dark:border-slate-700 rounded-2xl p-4 flex gap-4 hover:shadow-lg transition-shadow">
+              <img src="https://images.unsplash.com/photo-1576063420838-6798539d3d5f?w=200" class="w-20 h-28 object-cover rounded-lg" alt=""><div class="flex-1"><h4 class="font-bold text-ink dark:text-white">ملزمة الأحياء</h4><p class="text-xs text-gray-500 mt-1">الأستاذ: سارة البيولوجية</p><p class="text-sm font-bold text-primary mt-2">15,000 د.ع</p><div class="flex items-center gap-2 mt-2"><span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">منخفض</span><span class="text-xs text-gray-400">10 نسخ</span></div></div><div class="flex flex-col gap-2"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ORDERS PAGE ===== -->
+      <div id="page-orders" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <h3 class="text-xl font-bold text-ink dark:text-white mb-6">إدارة الطلبات</h3>
+          <div class="flex flex-wrap gap-3 mb-6">
+            <input type="text" placeholder="بحث برقم الطلب أو اسم العميل..." class="form-input flex-1 min-w-[200px] px-4 py-2.5 rounded-xl text-sm">
+            <select class="form-input px-4 py-2.5 rounded-xl text-sm bg-gray-100 dark:bg-slate-800 border-transparent"><option>كل الحالات</option><option>معلق</option><option>قيد التجهيز</option><option>تم التوصيل</option><option>ملغى</option></select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="p-3 font-medium">رقم الطلب</th><th class="p-3 font-medium">العميل</th><th class="p-3 font-medium">المنتجات</th><th class="p-3 font-medium">الإجمالي</th><th class="p-3 font-medium">حالة الدفع</th><th class="p-3 font-medium">حالة الطلب</th><th class="p-3 font-medium">إجراءات</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="p-3 font-bold text-primary">#1024</td><td class="p-3">سارة أحمد</td><td class="p-3 text-gray-500">3 منتجات</td><td class="p-3 font-bold">25,000 د.ع</td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">مدفوع</span></td><td class="p-3"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs">معلق</span></td><td class="p-3"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+                <tr><td class="p-3 font-bold text-primary">#1023</td><td class="p-3">محمد علي</td><td class="p-3 text-gray-500">5 منتجات</td><td class="p-3 font-bold">120,000 د.ع</td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">مدفوع</span></td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">مكتمل</span></td><td class="p-3"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+                <tr><td class="p-3 font-bold text-primary">#1022</td><td class="p-3">زينب حسن</td><td class="p-3 text-gray-500">2 منتجات</td><td class="p-3 font-bold">15,000 د.ع</td><td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded-lg text-xs">غير مدفوع</span></td><td class="p-3"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-xs">قيد التجهيز</span></td><td class="p-3"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+                <tr><td class="p-3 font-bold text-primary">#1021</td><td class="p-3">عبدالله كريم</td><td class="p-3 text-gray-500">1 منتج</td><td class="p-3 font-bold">45,000 د.ع</td><td class="p-3"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs">استرجاع</span></td><td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded-lg text-xs">ملغى</span></td><td class="p-3"><button class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg text-gray-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== INVENTORY PAGE ===== -->
+      <div id="page-inventory" class="page">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="glass p-5 rounded-2xl"><p class="text-sm text-gray-500">إجمالي قيمة المخزون</p><h3 class="text-2xl font-black text-ink dark:text-white mt-1">45,000,000 د.ع</h3></div>
+          <div class="glass p-5 rounded-2xl"><p class="text-sm text-gray-500">مخزون منخفض</p><h3 class="text-2xl font-black text-yellow-500 mt-1">24 منتج</h3></div>
+          <div class="glass p-5 rounded-2xl"><p class="text-sm text-gray-500">مخزون نفد</p><h3 class="text-2xl font-black text-red-500 mt-1">12 منتج</h3></div>
+          <div class="glass p-5 rounded-2xl"><p class="text-sm text-gray-500">وارد قريباً</p><h3 class="text-2xl font-black text-blue-500 mt-1">500 قطعة</h3></div>
+        </div>
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <h3 class="text-xl font-bold text-ink dark:text-white mb-4">المنتجات منخفضة المخزون</h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl"><div class="flex items-center gap-3"><img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=100" class="w-12 h-12 rounded-lg object-cover" alt=""><div><h4 class="font-bold text-ink dark:text-white">ملزمة الفيزياء</h4><p class="text-xs text-gray-500">SKU: PHY-6TH</p></div></div><div class="text-center"><span class="text-yellow-600 font-bold">5</span> <span class="text-xs text-gray-500">متبقي</span></div><button class="bg-primary text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-dark">تزويد المخزون</button></div>
+            <div class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl"><div class="flex items-center gap-3"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100" class="w-12 h-12 rounded-lg object-cover" alt=""><div><h4 class="font-bold text-ink dark:text-white">حقيبة مدرسية</h4><p class="text-xs text-gray-500">SKU: BAG-PR-01</p></div></div><div class="text-center"><span class="text-yellow-600 font-bold">3</span> <span class="text-xs text-gray-500">متبقي</span></div><button class="bg-primary text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-dark">تزويد المخزون</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CATEGORIES PAGE ===== -->
+      <div id="page-categories" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between mb-6">
+            <h3 class="text-xl font-bold">الأقسام</h3>
+            <button class="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> إضافة قسم</button>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="border rounded-xl p-4 text-center hover:shadow-lg transition-shadow"><div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3"><i data-lucide="book-open" class="w-8 h-8"></i></div><h4 class="font-bold">الكتب العامة</h4><p class="text-xs text-gray-500">145 منتج</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حذف</button></div></div>
+            <div class="border rounded-xl p-4 text-center hover:shadow-lg transition-shadow"><div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3"><i data-lucide="layers" class="w-8 h-8"></i></div><h4 class="font-bold">الملازم الدراسية</h4><p class="text-xs text-gray-500">320 منتج</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حذف</button></div></div>
+            <div class="border rounded-xl p-4 text-center hover:shadow-lg transition-shadow"><div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3"><i data-lucide="pen-tool" class="w-8 h-8"></i></div><h4 class="font-bold">القرطاسية</h4><p class="text-xs text-gray-500">450 منتج</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حذف</button></div></div>
+            <div class="border rounded-xl p-4 text-center hover:shadow-lg transition-shadow"><div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3"><i data-lucide="briefcase" class="w-8 h-8"></i></div><h4 class="font-bold">الحقائب المدرسية</h4><p class="text-xs text-gray-500">85 منتج</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حذف</button></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BANNERS PAGE ===== -->
+      <div id="page-banners" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between mb-6">
+            <h3 class="text-xl font-bold">إدارة البانرات</h3>
+            <button class="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> إضافة بانر</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="border rounded-2xl overflow-hidden shadow-sm"><img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800" class="w-full h-40 object-cover" alt=""><div class="p-4"><h4 class="font-bold">بانر العودة للمدارس</h4><p class="text-sm text-gray-500 mt-1">يظهر في الصفحة الرئيسية</p><div class="flex justify-between items-center mt-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">نشط</span><div class="flex gap-2"><button class="p-2 text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div></div>
+            </div>
+            <div class="border rounded-2xl overflow-hidden shadow-sm"><img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800" class="w-full h-40 object-cover" alt=""><div class="p-4"><h4 class="font-bold">بانر ملازم السادس</h4><p class="text-sm text-gray-500 mt-1">يظهر في صفحة الملازم</p><div class="flex justify-between items-center mt-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">نشط</span><div class="flex gap-2"><button class="p-2 text-blue-500"><i data-lucide="edit" class="w-4 h-4"></i></button><button class="p-2 text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== OFFERS PAGE ===== -->
+      <div id="page-offers" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between mb-6">
+            <h3 class="text-xl font-bold">إدارة العروض</h3>
+            <button class="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> إضافة عرض</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="p-3 font-medium">اسم العرض</th><th class="p-3 font-medium">المنتج</th><th class="p-3 font-medium">نسبة الخصم</th><th class="p-3 font-medium">تاريخ البدء</th><th class="p-3 font-medium">تاريخ الانتهاء</th><th class="p-3 font-medium">الحالة</th><th class="p-3 font-medium">إجراءات</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="p-3 font-semibold">خصم الملازم</td><td class="p-3">ملازم السادس الإعدادي</td><td class="p-3 text-primary font-bold">40%</td><td class="p-3 text-gray-500">2025-03-01</td><td class="p-3 text-gray-500">2025-03-31</td><td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs">نشط</span></td><td class="p-3"><button class="text-blue-500">تعديل</button></td></tr>
+                <tr><td class="p-3 font-semibold">عرض القرطاسية</td><td class="p-3">جميع الأقلام</td><td class="p-3 text-primary font-bold">15%</td><td class="p-3 text-gray-500">2025-03-10</td><td class="p-3 text-gray-500">2025-03-20</td><td class="p-3"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs">مجدول</span></td><td class="p-3"><button class="text-blue-500">تعديل</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CUSTOMERS PAGE ===== -->
+      <div id="page-customers" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <h3 class="text-xl font-bold mb-6">إدارة العملاء</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="p-3 font-medium">العميل</th><th class="p-3 font-medium">الهاتف</th><th class="p-3 font-medium">البريد الإلكتروني</th><th class="p-3 font-medium">إجمالي الطلبات</th><th class="p-3 font-medium">إجمالي الإنفاق</th><th class="p-3 font-medium">إجراءات</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="p-3 flex items-center gap-3"><img src="https://i.pravatar.cc/100?img=1" class="w-8 h-8 rounded-full" alt=""><span>سارة أحمد</span></td><td class="p-3">07701234567</td><td class="p-3">sara@email.com</td><td class="p-3">12 طلب</td><td class="p-3 font-bold">350,000 د.ع</td><td class="p-3"><button class="p-2 text-blue-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+                <tr><td class="p-3 flex items-center gap-3"><img src="https://i.pravatar.cc/100?img=3" class="w-8 h-8 rounded-full" alt=""><span>محمد علي</span></td><td class="p-3">07801234567</td><td class="p-3">mohammed@email.com</td><td class="p-3">5 طلبات</td><td class="p-3 font-bold">120,000 د.ع</td><td class="p-3"><button class="p-2 text-blue-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+                <tr><td class="p-3 flex items-center gap-3"><img src="https://i.pravatar.cc/100?img=9" class="w-8 h-8 rounded-full" alt=""><span>زينب حسن</span></td><td class="p-3">07901234567</td><td class="p-3">zainab@email.com</td><td class="p-3">2 طلبات</td><td class="p-3 font-bold">45,000 د.ع</td><td class="p-3"><button class="p-2 text-blue-500"><i data-lucide="eye" class="w-4 h-4"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== EMPLOYEES PAGE ===== -->
+      <div id="page-employees" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between mb-6">
+            <h3 class="text-xl font-bold">إدارة الموظفين</h3>
+            <button class="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> إضافة موظف</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="border rounded-2xl p-4 text-center"><img src="https://i.pravatar.cc/100?img=5" class="w-20 h-20 rounded-full mx-auto mb-3" alt=""><h4 class="font-bold">أحمد الإداري</h4><p class="text-sm text-gray-500">مدير النظام</p><p class="text-xs text-gray-400 mt-1">07700000000</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حظر</button></div></div>
+            <div class="border rounded-2xl p-4 text-center"><img src="https://i.pravatar.cc/100?img=12" class="w-20 h-20 rounded-full mx-auto mb-3" alt=""><h4 class="font-bold">عمرSaleh</h4><p class="text-sm text-gray-500">أمين المخزون</p><p class="text-xs text-gray-400 mt-1">0780111222</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حظر</button></div></div>
+            <div class="border rounded-2xl p-4 text-center"><img src="https://i.pravatar.cc/100?img=20" class="w-20 h-20 rounded-full mx-auto mb-3" alt=""><h4 class="font-bold">فاطمة علي</h4><p class="text-sm text-gray-500">كاشير</p><p class="text-xs text-gray-400 mt-1">0790333444</p><div class="mt-3 flex gap-2 justify-center"><button class="text-blue-500 text-xs">تعديل</button> | <button class="text-red-500 text-xs">حظر</button></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SUPPLIERS PAGE ===== -->
+      <div id="page-suppliers" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <div class="flex justify-between mb-6">
+            <h3 class="text-xl font-bold">إدارة الموردين</h3>
+            <button class="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> إضافة مورد</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="p-3 font-medium">اسم الشركة</th><th class="p-3 font-medium">مسؤول التواصل</th><th class="p-3 font-medium">الهاتف</th><th class="p-3 font-medium">المنتجات الموردة</th><th class="p-3 font-medium">إجراءات</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="p-3 font-semibold">شركة دار النشر</td><td class="p-3">أبو محمد</td><td class="p-3">07701112233</td><td class="p-3">الكتب، الملازم</td><td class="p-3"><button class="text-blue-500">تعديل</button></td></tr>
+                <tr><td class="p-3 font-semibold">مصنع القرطاسية الحديثة</td><td class="p-3">سامي</td><td class="p-3">07804445566</td><td class="p-3">أقلام، دفاتر</td><td class="p-3"><button class="text-blue-500">تعديل</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== REPORTS PAGE ===== -->
+      <div id="page-reports" class="page">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="glass p-5 rounded-2xl"><h4 class="text-sm text-gray-500">إجمالي المبيعات</h4><p class="text-2xl font-black mt-2">150,000,000 د.ع</p></div>
+          <div class="glass p-5 rounded-2xl"><h4 class="text-sm text-gray-500">صافي الربح</h4><p class="text-2xl font-black mt-2 text-green-500">45,000,000 د.ع</p></div>
+          <div class="glass p-5 rounded-2xl"><h4 class="text-sm text-gray-500">المصروفات</h4><p class="text-2xl font-black mt-2 text-red-500">12,000,000 د.ع</p></div>
+        </div>
+        <div class="glass p-6 rounded-2xl shadow-sm flex justify-between items-center">
+          <h3 class="text-xl font-bold">تقرير المبيعات الشهري</h3>
+          <div class="flex gap-2">
+            <button class="bg-primary text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm"><i data-lucide="file-text" class="w-4 h-4"></i> تصدير PDF</button>
+            <button class="bg-green-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> تصدير Excel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MESSAGES PAGE ===== -->
+      <div id="page-messages" class="page">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass p-4 rounded-2xl shadow-sm space-y-3">
+            <div class="p-3 border-r-4 border-primary bg-primary/5 rounded-xl cursor-pointer"><h4 class="font-bold text-sm">سارة أحمد</h4><p class="text-xs text-gray-500 truncate">مرحبا، أريد الاستفسار عن توفر ملزمة الرياضيات...</p></div>
+            <div class="p-3 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl cursor-pointer"><h4 class="font-bold text-sm">محمد علي</h4><p class="text-xs text-gray-500 truncate">هل يوجد خصم على الكتب الجامعية؟</p></div>
+            <div class="p-3 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl cursor-pointer"><h4 class="font-bold text-sm">زينب حسن</h4><p class="text-xs text-gray-500 truncate">شكراً لكم على التوصيل السريع</p></div>
+          </div>
+          <div class="md:col-span-2 glass p-6 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-700 pb-4 mb-4">
+              <div><h3 class="font-bold text-lg">سارة أحمد</h3><p class="text-xs text-gray-500">sara@email.com</p></div>
+              <button class="text-red-500 text-sm flex items-center gap-1"><i data-lucide="trash-2" class="w-4 h-4"></i> حذف</button>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">مرحبا، أريد الاستفسار عن توفر ملزمة الرياضيات للصف السادس الإعدادي، الإصدار الجديد 2025. وهل يوجد خصم عند شراء أكثر من نسخة؟ شكراً لكم.</p>
+            <textarea class="form-input w-full p-3 rounded-xl text-sm resize-none" rows="3" placeholder="اكتب ردك هنا..."></textarea>
+            <button class="bg-primary text-white px-6 py-2.5 rounded-xl font-bold mt-3 flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> إرسال الرد</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LOGS PAGE ===== -->
+      <div id="page-logs" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <h3 class="text-xl font-bold mb-6">سجل النشاطات</h3>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3"><div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0"><i data-lucide="plus" class="w-5 h-5"></i></div><div><p class="text-sm font-semibold">تمت إضافة منتج جديد: "مجموعة ألوان مائية"</p><p class="text-xs text-gray-500">بواسطة أحمد الإداري - قبل 10 دقائق</p></div></div>
+            <div class="flex items-start gap-3"><div class="w-10 h-10 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center shrink-0"><i data-lucide="edit" class="w-5 h-5"></i></div><div><p class="text-sm font-semibold">تم تعديل سعر منتج: "ملزمة الفيزياء"</p><p class="text-xs text-gray-500">بواسطة عمر Saleh - قبل ساعة</p></div></div>
+            <div class="flex items-start gap-3"><div class="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center shrink-0"><i data-lucide="trash-2" class="w-5 h-5"></i></div><div><p class="text-sm font-semibold">تم حذف قسم: "كتب قديمة"</p><p class="text-xs text-gray-500">بواسطة أحمد الإداري - أمس</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROLES PAGE ===== -->
+      <div id="page-roles" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm">
+          <h3 class="text-xl font-bold text-ink dark:text-white mb-6">مصفوفة الأدوار والصلاحيات</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full data-table text-right">
+              <thead class="text-xs text-gray-500 border-b border-gray-200 dark:border-slate-700">
+                <tr><th class="p-3 font-medium text-right">الميزة / الصلاحية</th><th class="p-3 font-medium text-center">المدير العام</th><th class="p-3 font-medium text-center">مدير المبيعات</th><th class="p-3 font-medium text-center">أمين المخزون</th><th class="p-3 font-medium text-center">الكاشير</th></tr>
+              </thead>
+              <tbody class="text-sm divide-y divide-gray-100 dark:divide-slate-700">
+                <tr><td class="p-3 font-semibold">إدارة المنتجات</td><td class="p-3 text-center"><input type="checkbox" checked class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" checked class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" class="w-5 h-5 rounded text-primary"></td></tr>
+                <tr><td class="p-3 font-semibold">إدارة الطلبات</td><td class="p-3 text-center"><input type="checkbox" checked class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" checked class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" checked class="w-5 h-5 rounded text-primary"></td></tr>
+                <tr><td class="p-3 font-semibold">الإعدادات المالية</td><td class="p-3 text-center"><input type="checkbox" checked class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" class="w-5 h-5 rounded text-primary"></td><td class="p-3 text-center"><input type="checkbox" class="w-5 h-5 rounded text-primary"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS PAGE ===== -->
+      <div id="page-settings" class="page">
+        <div class="glass p-6 rounded-2xl shadow-sm max-w-3xl">
+          <h3 class="text-xl font-bold mb-6">إعدادات الموقع العامة</h3>
+          <div class="space-y-4">
+            <div><label class="block text-sm mb-1">اسم الموقع</label><input type="text" value="مكتبة الجذور" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+            <div><label class="block text-sm mb-1">بريد التواصل</label><input type="email" value="info@aljuthoor.iq" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+            <div><label class="block text-sm mb-1">رقم الهاتف</label><input type="text" value="07700000000" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-xl">
+              <div><h4 class="font-semibold">وضع الصيانة</h4><p class="text-xs text-gray-500">إيقاف الموقع مؤقتاً للزوار</p></div>
+              <label class="cursor-pointer"><input type="checkbox" class="hidden peer"><div class="toggle-bg w-11 h-6 bg-gray-200 rounded-full relative peer-checked:bg-primary"><div class="toggle-dot absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full"></div></div></label>
+            </div>
+            <button class="bg-primary text-white px-6 py-2.5 rounded-xl font-bold">حفظ الإعدادات</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROFILE PAGE ===== -->
+      <div id="page-profile" class="page">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass p-6 rounded-2xl shadow-sm text-center">
+            <img src="https://i.pravatar.cc/100?img=5" class="w-24 h-24 rounded-full mx-auto mb-4" alt="">
+            <h3 class="font-bold text-lg">أحمد الإداري</h3>
+            <p class="text-sm text-gray-500">مدير النظام</p>
+            <button class="mt-4 text-primary text-sm font-semibold">تغيير الصورة</button>
+          </div>
+          <div class="lg:col-span-2 glass p-6 rounded-2xl shadow-sm">
+            <h3 class="text-lg font-bold mb-4">تعديل الملف الشخصي</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label class="block text-sm mb-1">الاسم الكامل</label><input type="text" value="أحمد الإداري" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+              <div><label class="block text-sm mb-1">اسم المستخدم</label><input type="text" value="admin" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+              <div><label class="block text-sm mb-1">البريد الإلكتروني</label><input type="email" value="admin@aljuthoor.iq" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+              <div><label class="block text-sm mb-1">رقم الهاتف</label><input type="text" value="07700000000" class="form-input w-full px-4 py-2.5 rounded-xl"></div>
+            </div>
+            <button class="bg-primary text-white px-6 py-2.5 rounded-xl font-bold mt-4">حفظ التغييرات</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed top-24 left-4 z-[100] space-y-3"></div>
+
+<script>
+// ===== UI FUNCTIONS =====
+function navigateTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  
+  const page = document.getElementById('page-' + pageId);
+  const link = document.querySelector(`.nav-link[onclick="navigateTo('${pageId}')"]`);
+  
+  if (page) page.classList.add('active');
+  if (link) link.classList.add('active');
+  
+  const titles = {
+    'dashboard': 'لوحة التحكم', 'products': 'إدارة المنتجات', 'add-product': 'إضافة منتج جديد',
+    'categories': 'الأقسام', 'booklets': 'الملازم الدراسية', 'banners': 'إدارة البانرات',
+    'offers': 'العروض', 'orders': 'الطلبات', 'customers': 'العملاء', 'employees': 'الموظفون',
+    'inventory': 'المخزون', 'suppliers': 'الموردون', 'reports': 'التقارير', 'messages': 'الرسائل',
+    'settings': 'الإعدادات', 'logs': 'سجل النشاطات', 'roles': 'الأدوار والصلاحيات', 'profile': 'الملف الشخصي'
+  };
+  document.getElementById('pageTitle').textContent = titles[pageId] || 'لوحة التحكم';
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (window.innerWidth < 1024) {
+    sidebar.classList.toggle('translate-x-full');
+    overlay.classList.toggle('hidden');
+  } else {
+    sidebar.classList.toggle('sidebar-collapsed');
+  }
+}
+
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark');
+  lucide.createIcons();
+  setTimeout(initCharts, 100);
+}
+
+function toggleDropdown(id) {
+  document.getElementById(id).classList.toggle('hidden');
+}
+
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500' };
+  const icons = { success: 'check-circle', error: 'x-circle', info: 'info' };
+  toast.className = `toast glass rounded-2xl shadow-2xl p-4 min-w-[280px] flex items-center gap-3 border-r-4 ${type === 'success' ? 'border-r-green-500' : 'border-r-red-500'}`;
+  toast.innerHTML = `<div class="w-8 h-8 rounded-full ${colors[type]} flex items-center justify-center text-white shrink-0"><i data-lucide="${icons[type]}" class="w-4 h-4"></i></div><p class="font-semibold text-sm">${message}</p>`;
+  container.appendChild(toast);
+  lucide.createIcons();
+  setTimeout(() => { toast.classList.add('removing'); setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ===== CHARTS =====
+function initCharts() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const textColor = isDark ? '#94a3b8' : '#64748b';
+  const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(148, 163, 184, 0.2)';
+
+  const miniConfig = {
+    type: 'line',
+    data: {
+      labels: ['1', '2', '3', '4', '5', '6', '7'],
+      datasets: [{
+        data: [10, 20, 15, 30, 25, 40, 35],
+        borderColor: '#F47A20',
+        backgroundColor: 'rgba(244, 122, 32, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true, 
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { display: false }, y: { display: false } }
+    }
+  };
+
+  Chart.helpers.each(Chart.instances, (instance) => instance.destroy());
+
+  new Chart(document.getElementById('miniChart1'), { ...miniConfig, data: { ...miniConfig.data, datasets: [{ ...miniConfig.data.datasets[0], borderColor: '#F47A20' }] } });
+  new Chart(document.getElementById('miniChart2'), { ...miniConfig, data: { ...miniConfig.data, datasets: [{ ...miniConfig.data.datasets[0], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)' }] } });
+  new Chart(document.getElementById('miniChart3'), { ...miniConfig, data: { ...miniConfig.data, datasets: [{ ...miniConfig.data.datasets[0], borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)' }] } });
+  new Chart(document.getElementById('miniChart4'), { ...miniConfig, data: { ...miniConfig.data, datasets: [{ ...miniConfig.data.datasets[0], borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)' }] } });
+
+  const ctx1 = document.getElementById('mainSalesChart').getContext('2d');
+  const gradient1 = ctx1.createLinearGradient(0, 0, 0, 300);
+  gradient1.addColorStop(0, 'rgba(244, 122, 32, 0.3)');
+  gradient1.addColorStop(1, 'rgba(244, 122, 32, 0)');
+  
+  new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو'],
+      datasets: [{
+        label: 'المبيعات',
+        data: [12, 19, 15, 25, 22, 30, 28],
+        borderColor: '#F47A20',
+        backgroundColor: gradient1,
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#F47A20',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, 
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: gridColor }, ticks: { color: textColor } },
+        x: { grid: { display: false }, ticks: { color: textColor } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['الملازم', 'الكتب', 'القرطاسية', 'أخرى'],
+      datasets: [{
+        data: [45, 25, 20, 10],
+        backgroundColor: ['#F47A20', '#3b82f6', '#22c55e', '#a855f7'],
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true, 
+      maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: textColor, padding: 20, font: { family: 'Cairo' } }
+        }
+      }
+    }
+  });
+}
+
+// ===== INIT =====
+function init() {
+  lucide.createIcons();
+  initCharts();
+  
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+      document.querySelectorAll('[id$="Dropdown"]').forEach(d => d.classList.add('hidden'));
+    }
+  });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>
