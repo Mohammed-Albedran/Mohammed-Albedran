@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبة الجذور | Al-Juthoor Library</title>
+<meta name="description" content="مكتبة الجذور - وجهتك الأولى للكتب والملازم والقرطاسية في العراق.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: '#F47A20',
+        'primary-dark': '#D96612',
+        'primary-light': '#FF9947',
+        'primary-50': '#FFF4EB',
+        ink: '#1F2937',
+        'ink-soft': '#374151',
+      },
+      fontFamily: {
+        'cairo': ['Cairo', 'sans-serif'],
+        'tajawal': ['Tajawal', 'sans-serif'],
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+        'shine': 'shine 4s linear infinite',
+        'spin-slow': 'spin 20s linear infinite',
+      },
+      keyframes: {
+        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
+        pulseGlow: { '0%, 100%': { boxShadow: '0 0 15px rgba(244,122,32,0.4)' }, '50%': { boxShadow: '0 0 30px rgba(244,122,32,0.7)' } },
+        shine: { '0%': { backgroundPosition: '200% center' }, '100%': { backgroundPosition: '-200% center' } },
+      },
+    }
+  }
+}
+</script>
+
+<style>
+  * { font-family: 'Cairo', sans-serif; }
+  html { scroll-behavior: smooth; }
+  body { background: #f8fafc; overflow-x: hidden; }
+  .dark body { background: #0f172a; color: #e2e8f0; }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #F47A20; }
+  .dark ::-webkit-scrollbar-track { background: #1e293b; }
+  .dark ::-webkit-scrollbar-thumb { background: #334155; }
+  
+  /* Scroll Progress */
+  .scroll-progress {
+    position: fixed; top: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #F47A20, #FF9947);
+    z-index: 9999; transition: width 0.1s;
+  }
+  
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Reveal Animation */
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  
+  /* Mega Menu */
+  .mega-menu { opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s; }
+  .mega-menu-trigger:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+  
+  /* Custom Booklet Design (3D Realistic) */
+  .booklet-card {
+    perspective: 1000px;
+  }
+  .booklet-inner {
+    position: relative;
+    width: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  .booklet-card:hover .booklet-inner {
+    transform: rotateY(-5deg) translateZ(10px);
+    box-shadow: -10px 10px 20px rgba(0,0,0,0.15);
+  }
+  .booklet-cover {
+    aspect-ratio: 3/4;
+    border-radius: 2px 8px 8px 2px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    color: white;
+  }
+  .booklet-spine {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 8px;
+    background: rgba(0,0,0,0.4);
+    box-shadow: inset -2px 0 4px rgba(255,255,255,0.1);
+  }
+  .booklet-binding {
+    position: absolute;
+    right: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: rgba(255,255,255,0.2);
+  }
+  .booklet-shadow {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 20px;
+    background: linear-gradient(to right, rgba(0,0,0,0.2), transparent);
+    pointer-events: none;
+  }
+  
+  /* Product Card */
+  .product-card { transition: all 0.3s ease; }
+  .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+  .product-img { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+  .product-card:hover .product-img { transform: scale(1.05); }
+  .quick-actions { opacity: 0; transform: translateY(10px); transition: all 0.3s; }
+  .product-card:hover .quick-actions { opacity: 1; transform: translateY(0); }
+  
+  /* Hero Background Mesh */
+  .hero-mesh {
+    background-color: #1F2937;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(25, 95%, 53%, 0.4) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(25, 95%, 60%, 0.3) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(0, 0%, 100%, 0.1) 0px, transparent 50%);
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, #F47A20 0%, #FF9947 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  
+  /* Page transition */
+  .page { display: none; }
+  .page.active { display: block; animation: pageIn 0.4s ease-out; }
+  @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* Form inputs */
+  .form-input {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    transition: all 0.3s;
+  }
+  .form-input:focus {
+    border-color: #F47A20;
+    box-shadow: 0 0 0 4px rgba(244, 122, 32, 0.1);
+    outline: none;
+  }
+  .dark .form-input { background: #1e293b; border-color: #334155; color: #fff; }
+  
+  /* Drawers & Menus */
+  .mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .mobile-menu.open { transform: translateX(0); }
+  .cart-drawer { transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .cart-drawer.open { transform: translateX(0); }
+  .search-modal { opacity: 0; visibility: hidden; transition: all 0.3s; }
+  .search-modal.open { opacity: 1; visibility: visible; }
+  
+  /* Btn shine */
+  .btn-shine { position: relative; overflow: hidden; }
+  .btn-shine::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+  }
+  .btn-shine:hover::before { left: 100%; }
+  
+  /* Accordion */
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .accordion-item.active .accordion-content { max-height: 500px; }
+  .accordion-item.active .accordion-icon { transform: rotate(180deg); }
+  
+  /* Toast */
+  .toast { animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes slideInLeft { from { transform: translateX(-120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.removing { animation: slideOutLeft 0.3s forwards; }
+  @keyframes slideOutLeft { to { transform: translateX(-120%); opacity: 0; } }
+</style>
+</head>
+<body class="font-cairo bg-slate-50 dark:bg-slate-900 text-gray-800 dark:text-gray-100">
+
+<!-- Scroll Progress -->
+<div class="scroll-progress w-0" id="scrollProgress"></div>
+
+<!-- Navbar -->
+<header id="navbar" class="sticky top-0 z-50 glass transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="#" onclick="navigateTo('home')" class="flex items-center gap-3 group">
+        <img src="jj.jpg" alt="مكتبة الجذور" class="w-12 h-12 object-contain rounded-full bg-white p-0.5 transition-transform group-hover:scale-105">
+        <div>
+          <h1 class="text-xl font-extrabold text-ink dark:text-white leading-tight">مكتبة الجذور</h1>
+          <p class="text-[10px] text-primary font-bold tracking-wider">AL-JUTHOOR LIBRARY</p>
+        </div>
+      </a>
+
+      <!-- Search Bar (Desktop) -->
+      <div class="hidden lg:flex flex-1 max-w-md mx-8">
+        <div class="relative w-full">
+          <input type="text" id="searchInput" placeholder="ابحث عن كتاب، ملزمة، قرطاسية..." 
+            class="form-input w-full py-2.5 pr-10 pl-4 rounded-full text-sm"
+            oninput="handleLiveSearch(this.value)" 
+            onfocus="document.getElementById('searchDropdown').classList.add('open')"
+            onblur="setTimeout(()=>document.getElementById('searchDropdown').classList.remove('open'), 200)">
+          <i data-lucide="search" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+          <div id="searchDropdown" class="search-modal absolute top-full mt-2 w-full bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-3 max-h-96 overflow-y-auto border border-gray-100 dark:border-slate-700">
+            <div id="searchResults"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-1">
+        <button onclick="toggleTheme()" class="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" aria-label="Theme">
+          <i data-lucide="sun" class="w-5 h-5 dark:hidden text-ink"></i>
+          <i data-lucide="moon" class="w-5 h-5 hidden dark:block text-white"></i>
+        </button>
+        <button onclick="navigateTo('favorites')" class="relative p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" aria-label="Fav">
+          <i data-lucide="heart" class="w-5 h-5 text-ink dark:text-white"></i>
+          <span id="favCount" class="absolute -top-1 -left-1 bg-primary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+        <button onclick="openCart()" class="relative p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" aria-label="Cart">
+          <i data-lucide="shopping-cart" class="w-5 h-5 text-ink dark:text-white"></i>
+          <span id="cartCount" class="absolute -top-1 -left-1 bg-primary text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" aria-label="Menu">
+          <i data-lucide="menu" class="w-6 h-6 text-ink dark:text-white"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex items-center gap-1 h-12 border-t border-gray-100 dark:border-slate-700">
+      <a href="#" onclick="navigateTo('home')" class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors">الرئيسية</a>
+      
+      <div class="mega-menu-trigger relative">
+        <button class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+          الكتب <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+        <div class="mega-menu absolute top-full right-0 mt-0 w-[480px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-5 border border-gray-100 dark:border-slate-700">
+          <div class="grid grid-cols-2 gap-2">
+            <a href="#" onclick="navigateTo('books')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors">
+              <i data-lucide="book-open" class="w-5 h-5 text-primary"></i>
+              <div><h4 class="font-bold text-sm">الكتب</h4><p class="text-xs text-gray-500">كتب عامة ومنوعة</p></div>
+            </a>
+            <a href="#" onclick="navigateTo('novels')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors">
+              <i data-lucide="bookmark" class="w-5 h-5 text-primary"></i>
+              <div><h4 class="font-bold text-sm">الروايات</h4><p class="text-xs text-gray-500">أدب عربي وعالمي</p></div>
+            </a>
+            <a href="#" onclick="navigateTo('islamic')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors">
+              <i data-lucide="moon" class="w-5 h-5 text-primary"></i>
+              <div><h4 class="font-bold text-sm">الكتب الإسلامية</h4><p class="text-xs text-gray-500">علوم شرعية</p></div>
+            </a>
+            <a href="#" onclick="navigateTo('children')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors">
+              <i data-lucide="baby" class="w-5 h-5 text-primary"></i>
+              <div><h4 class="font-bold text-sm">كتب الأطفال</h4><p class="text-xs text-gray-500">قصص وتعليمية</p></div>
+            </a>
+            <a href="#" onclick="navigateTo('university')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors">
+              <i data-lucide="graduation-cap" class="w-5 h-5 text-primary"></i>
+              <div><h4 class="font-bold text-sm">الكتب الجامعية</h4><p class="text-xs text-gray-500">لكل التخصصات</p></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mega-menu-trigger relative">
+        <button class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+          الملازم <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+        <div class="mega-menu absolute top-full right-0 mt-0 w-[400px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-5 border border-gray-100 dark:border-slate-700">
+          <a href="#" onclick="navigateTo('booklets')" class="block mb-3 p-3 rounded-xl bg-gradient-to-l from-primary/10 to-transparent border border-primary/20 hover:from-primary/20 transition-colors">
+            <div class="flex items-center justify-between">
+              <div><h4 class="font-bold text-sm gradient-text">جميع الملازم</h4><p class="text-xs text-gray-500">تصفح كل المراحل</p></div>
+              <i data-lucide="arrow-left" class="w-5 h-5 text-primary"></i>
+            </div>
+          </a>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="#" onclick="navigateTo('booklets')" class="flex items-center gap-2 p-2 rounded-xl hover:bg-primary/5">
+              <i data-lucide="layers" class="w-4 h-4 text-primary"></i><span class="text-sm font-semibold">المتوسطة</span>
+            </a>
+            <a href="#" onclick="navigateTo('booklets')" class="flex items-center gap-2 p-2 rounded-xl hover:bg-primary/5">
+              <i data-lucide="book-marked" class="w-4 h-4 text-primary"></i><span class="text-sm font-semibold">الرابع الإعدادي</span>
+            </a>
+            <a href="#" onclick="navigateTo('booklets')" class="flex items-center gap-2 p-2 rounded-xl hover:bg-primary/5">
+              <i data-lucide="book-marked" class="w-4 h-4 text-primary"></i><span class="text-sm font-semibold">الخامس الإعدادي</span>
+            </a>
+            <a href="#" onclick="navigateTo('booklets')" class="flex items-center gap-2 p-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
+              <i data-lucide="star" class="w-4 h-4 fill-primary"></i><span class="text-sm font-bold">السادس الإعدادي ⭐</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mega-menu-trigger relative">
+        <button class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1">
+          القرطاسية <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+        <div class="mega-menu absolute top-full right-0 mt-0 w-[480px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-5 border border-gray-100 dark:border-slate-700">
+          <div class="grid grid-cols-2 gap-2">
+            <a href="#" onclick="navigateTo('stationery')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5"><i data-lucide="pen-tool" class="w-5 h-5 text-primary"></i><h4 class="font-bold text-sm">القرطاسية</h4></a>
+            <a href="#" onclick="navigateTo('pens')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5"><i data-lucide="pen" class="w-5 h-5 text-primary"></i><h4 class="font-bold text-sm">الأقلام</h4></a>
+            <a href="#" onclick="navigateTo('notebooks')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5"><i data-lucide="notebook" class="w-5 h-5 text-primary"></i><h4 class="font-bold text-sm">الدفاتر</h4></a>
+            <a href="#" onclick="navigateTo('art')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5"><i data-lucide="palette" class="w-5 h-5 text-primary"></i><h4 class="font-bold text-sm">الأدوات الفنية</h4></a>
+            <a href="#" onclick="navigateTo('toys')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5"><i data-lucide="puzzle" class="w-5 h-5 text-primary"></i><h4 class="font-bold text-sm">ألعاب تعليمية</h4></a>
+            <a href="#" onclick="navigateTo('bags')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5"><i data-lucide="briefcase" class="w-5 h-5 text-primary"></i><h4 class="font-bold text-sm">الحقائب</h4></a>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" onclick="navigateTo('offers')" class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors">العروض</a>
+      <a href="#" onclick="navigateTo('about')" class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors">من نحن</a>
+      <a href="#" onclick="navigateTo('contact')" class="px-4 py-2 text-sm font-bold text-ink dark:text-gray-200 hover:text-primary transition-colors">اتصل بنا</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 z-[60] w-full max-w-sm bg-white dark:bg-slate-900 shadow-2xl lg:hidden">
+  <div class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-slate-700">
+    <h2 class="font-bold">القائمة</h2>
+    <button onclick="toggleMobileMenu()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-6 h-6"></i></button>
+  </div>
+  <div class="p-4 overflow-y-auto h-[calc(100%-80px)] space-y-4">
+    <input type="text" placeholder="ابحث..." class="form-input w-full py-2.5 pr-10 pl-4 rounded-full text-sm">
+    <nav class="space-y-1">
+      <a href="#" onclick="navigateTo('home')" class="block px-4 py-2.5 rounded-xl font-semibold hover:bg-primary/10 hover:text-primary">الرئيسية</a>
+      <p class="px-4 pt-2 text-xs text-gray-400 font-bold">الكتب</p>
+      <a href="#" onclick="navigateTo('books')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الكتب</a>
+      <a href="#" onclick="navigateTo('novels')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الروايات</a>
+      <a href="#" onclick="navigateTo('islamic')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الكتب الإسلامية</a>
+      <a href="#" onclick="navigateTo('children')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">كتب الأطفال</a>
+      <a href="#" onclick="navigateTo('university')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الكتب الجامعية</a>
+      <p class="px-4 pt-2 text-xs text-gray-400 font-bold">الملازم</p>
+      <a href="#" onclick="navigateTo('booklets')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">المتوسطة والإعدادية</a>
+      <a href="#" onclick="navigateTo('booklets')" class="block px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold">السادس الإعدادي ⭐</a>
+      <p class="px-4 pt-2 text-xs text-gray-400 font-bold">القرطاسية</p>
+      <a href="#" onclick="navigateTo('stationery')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">القرطاسية</a>
+      <a href="#" onclick="navigateTo('pens')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الأقلام</a>
+      <a href="#" onclick="navigateTo('notebooks')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الدفاتر</a>
+      <a href="#" onclick="navigateTo('art')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الأدوات الفنية</a>
+      <p class="px-4 pt-2 text-xs text-gray-400 font-bold">أخرى</p>
+      <a href="#" onclick="navigateTo('offers')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">العروض</a>
+      <a href="#" onclick="navigateTo('about')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">من نحن</a>
+      <a href="#" onclick="navigateTo('contact')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">اتصل بنا</a>
+      <a href="#" onclick="navigateTo('faq')" class="block px-4 py-2 rounded-xl hover:bg-primary/10">الأسئلة الشائعة</a>
+    </nav>
+  </div>
+</div>
+<div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 z-[55] hidden lg:hidden" onclick="toggleMobileMenu()"></div>
+
+<!-- Cart Drawer -->
+<div id="cartDrawer" class="cart-drawer fixed inset-y-0 left-0 z-[70] w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl">
+  <div class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-slate-700">
+    <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="shopping-cart" class="w-5 h-5 text-primary"></i> سلة التسوق</h2>
+    <button onclick="closeCart()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-5 h-5"></i></button>
+  </div>
+  <div id="cartItems" class="p-4 overflow-y-auto" style="height: calc(100% - 200px);"></div>
+  <div id="cartFooter" class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-900 hidden">
+    <div class="flex justify-between mb-4 text-lg font-bold">
+      <span>الإجمالي</span><span id="cartTotal" class="text-primary">0 د.ع</span>
+    </div>
+    <button onclick="navigateTo('cart')" class="w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl btn-shine">إتمام الطلب</button>
+  </div>
+</div>
+<div id="cartOverlay" class="fixed inset-0 bg-black/50 z-[65] hidden" onclick="closeCart()"></div>
+
+<!-- Quick View Modal -->
+<div id="quickViewModal" class="fixed inset-0 z-[80] items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+  <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+    <button onclick="closeQuickView()" class="absolute top-4 left-4 z-10 p-2 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur hover:bg-gray-100 dark:hover:bg-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div id="quickViewContent" class="grid md:grid-cols-2 gap-6"></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed top-24 left-4 z-[90] space-y-3"></div>
+
+<!-- Back to Top -->
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hidden fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-primary text-white shadow-2xl hover:scale-110 transition-transform flex items-center justify-center">
+  <i data-lucide="arrow-up" class="w-5 h-5"></i>
+</button>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="mainContent">
+
+<!-- ===== HOME PAGE ===== -->
+<div id="page-home" class="page active">
+
+<!-- Hero Section (No Books Image, Premium Gradient Mesh) -->
+<section class="relative hero-mesh overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-l from-ink via-ink/90 to-transparent"></div>
+  
+  <!-- Floating Glass Cards -->
+  <div class="hidden md:block absolute top-1/4 left-10 w-64 p-6 glass rounded-3xl shadow-2xl animate-float">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center">
+        <i data-lucide="layers" class="w-6 h-6 text-white"></i>
+      </div>
+      <div>
+        <h4 class="text-white font-bold">ملازم السادس</h4>
+        <p class="text-gray-300 text-sm">الإصدار الجديد 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden md:block absolute bottom-1/4 left-1/4 w-56 p-6 glass rounded-3xl shadow-2xl animate-float" style="animation-delay: 1s;">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-green-500 flex items-center justify-center">
+        <i data-lucide="badge-percent" class="w-6 h-6 text-white"></i>
+      </div>
+      <div>
+        <h4 class="text-white font-bold">خصومات تصل 40%</h4>
+        <p class="text-gray-300 text-sm">على القرطاسية والملازم</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex items-center">
+    <div class="max-w-2xl">
+      <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 text-primary-light border border-primary/30 mb-6 text-sm font-semibold">
+        <i data-lucide="sparkles" class="w-4 h-4"></i> مرحباً بك في مكتبة الجذور
+      </span>
+      <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+        كل ما يحتاجه <span class="gradient-text">طالب العلم</span><br>في مكان واحد
+      </h1>
+      <p class="text-lg text-gray-300 mb-8 leading-relaxed">
+        تشكيلتنا الواسعة من الكتب، الملازم، والقرطاسية بأسعار تنافسية وجودة عالية. توصيل سريع لجميع المحافظات.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <button onclick="navigateTo('booklets')" class="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl btn-shine flex items-center gap-2 hover:scale-105 transition-all">
+          تسوق الملازم <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <button onclick="navigateTo('offers')" class="px-8 py-4 bg-white/10 backdrop-blur border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all flex items-center gap-2">
+          <i data-lucide="badge-percent" class="w-5 h-5"></i> العروض الحالية
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="text-center mb-12 reveal">
+    <h2 class="text-3xl md:text-4xl font-black text-ink dark:text-white mb-2">تصفح <span class="gradient-text">الفئات</span></h2>
+    <p class="text-gray-500">اكتشف تشكيلتنا الواسعة</p>
+  </div>
+  <div id="categoriesGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+</section>
+
+<!-- Featured: Sixth Preparatory Section (Custom Booklet Design) -->
+<section class="py-16 bg-slate-100 dark:bg-slate-800/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 reveal">
+      <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-bold mb-4 animate-pulse-glow"><i data-lucide="star" class="w-4 h-4 fill-white"></i> الأكثر طلباً</span>
+      <h2 class="text-3xl md:text-4xl font-black text-ink dark:text-white">ملازم <span class="gradient-text">السادس الإعدادي</span></h2>
+      <p class="text-gray-500 mt-2">تصميم حصري بجودة عالية لجميع المواد</p>
+    </div>
+    <div id="g6HomeGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6"></div>
+    <div class="text-center mt-10">
+      <button onclick="navigateTo('booklets')" class="px-8 py-3 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all">عرض كل الملازم</button>
+    </div>
+  </div>
+</section>
+
+<!-- Contained Offer Banner -->
+<section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="reveal relative rounded-3xl overflow-hidden bg-white dark:bg-slate-800 shadow-xl border border-gray-100 dark:border-slate-700">
+    <div class="grid md:grid-cols-2 items-center">
+      <div class="p-8 md:p-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-4">عرض محدود</span>
+        <h2 class="text-3xl md:text-4xl font-black mb-3 text-ink dark:text-white">خصم 40% على الملازم</h2>
+        <p class="text-gray-500 mb-6">سارع بالطلب قبل انتهاء العرض</p>
+        <!-- Countdown -->
+        <div class="flex gap-3 mb-8">
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 min-w-[60px] text-center"><div id="cdDays" class="text-2xl font-black text-primary">00</div><div class="text-xs text-gray-500">يوم</div></div>
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 min-w-[60px] text-center"><div id="cdHours" class="text-2xl font-black text-primary">00</div><div class="text-xs text-gray-500">ساعة</div></div>
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 min-w-[60px] text-center"><div id="cdMinutes" class="text-2xl font-black text-primary">00</div><div class="text-xs text-gray-500">دقيقة</div></div>
+          <div class="bg-slate-100 dark:bg-slate-700 rounded-xl p-3 min-w-[60px] text-center"><div id="cdSeconds" class="text-2xl font-black text-primary">00</div><div class="text-xs text-gray-500">ثانية</div></div>
+        </div>
+        <button onclick="navigateTo('offers')" class="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl btn-shine">تسوق العروض</button>
+      </div>
+      <div class="relative h-64 md:h-80 bg-primary-50">
+        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80" class="w-full h-full object-cover" alt="عرض الملازم">
+        <div class="absolute top-4 right-4 bg-red-500 text-white w-16 h-16 rounded-full flex flex-col items-center justify-center font-black text-xl shadow-lg rotate-12">40%<span class="text-[10px]">خصم</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Best Sellers -->
+<section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="flex items-end justify-between mb-10 reveal">
+    <div><h2 class="text-3xl font-black text-ink dark:text-white">الأكثر <span class="gradient-text">مبيعاً</span></h2></div>
+    <button onclick="navigateTo('bestsellers')" class="hidden md:flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all">عرض الكل <i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+  </div>
+  <div id="bestSellersGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+</section>
+
+<!-- New Arrivals -->
+<section class="py-16 bg-slate-100 dark:bg-slate-800/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-10 reveal">
+      <div><h2 class="text-3xl font-black text-ink dark:text-white">أحدث <span class="gradient-text">المنتجات</span></h2></div>
+      <button onclick="navigateTo('newarrivals')" class="hidden md:flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all">عرض الكل <i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+    </div>
+    <div id="newArrivalsGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="text-center mb-12 reveal">
+    <h2 class="text-3xl font-black text-ink dark:text-white">لماذا تختار <span class="gradient-text">مكتبة الجذور</span>؟</h2>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 reveal">
+    <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="wallet" class="w-7 h-7 text-primary"></i></div>
+      <h3 class="font-bold mb-1">أسعار مناسبة</h3><p class="text-xs text-gray-500">أفضل الأسعار مع خصومات</p>
+    </div>
+    <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="badge-check" class="w-7 h-7 text-primary"></i></div>
+      <h3 class="font-bold mb-1">منتجات أصلية</h3><p class="text-xs text-gray-500">جودة مضمونة 100%</p>
+    </div>
+    <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="zap" class="w-7 h-7 text-primary"></i></div>
+      <h3 class="font-bold mb-1">سرعة بالتجهيز</h3><p class="text-xs text-gray-500">تجهيز خلال 24 ساعة</p>
+    </div>
+    <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="headphones" class="w-7 h-7 text-primary"></i></div>
+      <h3 class="font-bold mb-1">خدمة ممتازة</h3><p class="text-xs text-gray-500">دعم متواصل لخدمتك</p>
+    </div>
+  </div>
+</section>
+
+</div>
+<!-- ===== END HOME PAGE ===== -->
+
+<!-- ===== BOOKLETS PAGE ===== -->
+<div id="page-booklets" class="page">
+  <div class="bg-slate-100 dark:bg-slate-800 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="text-sm mb-4 text-gray-500"><a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a> <span class="mx-2">/</span> <span class="text-primary">الملازم الدراسية</span></nav>
+      <h1 class="text-4xl font-black mb-2 text-ink dark:text-white">الملازم <span class="gradient-text">الدراسية</span></h1>
+      <p class="text-gray-500">ملازم لجميع المراحل بمحتوى عالي الجودة</p>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-wrap gap-2 mb-12">
+      <button onclick="filterBooklets('all', event)" class="cat-pill active px-5 py-2 rounded-full border-2 border-primary bg-primary text-white font-semibold text-sm">الكل</button>
+      <button onclick="filterBooklets('intermediate', event)" class="cat-pill px-5 py-2 rounded-full border-2 border-gray-200 dark:border-slate-700 font-semibold text-sm hover:border-primary">المرحلة المتوسطة</button>
+      <button onclick="filterBooklets('preparatory', event)" class="cat-pill px-5 py-2 rounded-full border-2 border-gray-200 dark:border-slate-700 font-semibold text-sm hover:border-primary">المرحلة الإعدادية</button>
+    </div>
+
+    <div id="intermediateSection" class="mb-16">
+      <h2 class="text-2xl font-black mb-6 text-ink dark:text-white flex items-center gap-2"><i data-lucide="layers" class="w-6 h-6 text-primary"></i> المرحلة المتوسطة</h2>
+      <div class="space-y-10">
+        <div><h3 class="text-xl font-bold mb-4 text-gray-600 dark:text-gray-300">الأول المتوسط</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="g1subjects"></div></div>
+        <div><h3 class="text-xl font-bold mb-4 text-gray-600 dark:text-gray-300">الثاني المتوسط</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="g2subjects"></div></div>
+        <div><h3 class="text-xl font-bold mb-4 text-gray-600 dark:text-gray-300">الثالث المتوسط</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="g3subjects"></div></div>
+      </div>
+    </div>
+
+    <div id="preparatorySection" class="mb-16">
+      <h2 class="text-2xl font-black mb-6 text-ink dark:text-white flex items-center gap-2"><i data-lucide="graduation-cap" class="w-6 h-6 text-primary"></i> المرحلة الإعدادية</h2>
+      <div class="space-y-10">
+        <div><h3 class="text-xl font-bold mb-4 text-gray-600 dark:text-gray-300">الرابع الإعدادي</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="g4subjects"></div></div>
+        <div><h3 class="text-xl font-bold mb-4 text-gray-600 dark:text-gray-300">الخامس الإعدادي</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="g5subjects"></div></div>
+        <div class="relative p-6 rounded-3xl bg-gradient-to-br from-primary-50 to-transparent border-2 border-primary/20">
+          <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <h3 class="text-2xl font-black flex items-center gap-3 text-ink dark:text-white">
+              <span class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center"><i data-lucide="star" class="w-6 h-6 fill-white"></i></span>
+              السادس الإعدادي <span class="text-primary text-base">⭐ الأكثر طلباً</span>
+            </h3>
+            <span class="px-4 py-1.5 rounded-full bg-primary text-white text-sm font-bold">خصم 40%</span>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="g6subjects"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GENERIC PRODUCT LIST PAGES ===== -->
+<div id="page-books" class="page"></div>
+<div id="page-novels" class="page"></div>
+<div id="page-islamic" class="page"></div>
+<div id="page-children" class="page"></div>
+<div id="page-university" class="page"></div>
+<div id="page-stationery" class="page"></div>
+<div id="page-pens" class="page"></div>
+<div id="page-notebooks" class="page"></div>
+<div id="page-art" class="page"></div>
+<div id="page-toys" class="page"></div>
+<div id="page-bags" class="page"></div>
+<div id="page-offers" class="page"></div>
+<div id="page-bestsellers" class="page"></div>
+<div id="page-newarrivals" class="page"></div>
+<div id="page-about" class="page"></div>
+<div id="page-contact" class="page"></div>
+<div id="page-faq" class="page"></div>
+<div id="page-favorites" class="page"></div>
+<div id="page-cart" class="page"></div>
+<div id="page-subject" class="page"></div>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-ink text-white pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <img src="jj.jpg" class="w-12 h-12 rounded-full bg-white p-1" alt="مكتبة الجذور">
+          <div><h3 class="font-extrabold text-lg">مكتبة الجذور</h3><p class="text-xs text-primary-light">AL-JUTHOOR</p></div>
+        </div>
+        <p class="text-gray-400 text-sm leading-relaxed mb-4">وجهتك الأولى للكتب والملازم والقرطاسية في العراق. نخدم طلاب العلم منذ أكثر من 15 عاماً.</p>
+      </div>
+      <div>
+        <h4 class="font-bold mb-4">روابط سريعة</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a></li>
+          <li><a href="#" onclick="navigateTo('about')" class="hover:text-primary">من نحن</a></li>
+          <li><a href="#" onclick="navigateTo('contact')" class="hover:text-primary">اتصل بنا</a></li>
+          <li><a href="#" onclick="navigateTo('faq')" class="hover:text-primary">الأسئلة الشائعة</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold mb-4">الفئات</h4>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li><a href="#" onclick="navigateTo('books')" class="hover:text-primary">الكتب</a></li>
+          <li><a href="#" onclick="navigateTo('booklets')" class="hover:text-primary">الملازم</a></li>
+          <li><a href="#" onclick="navigateTo('stationery')" class="hover:text-primary">القرطاسية</a></li>
+          <li><a href="#" onclick="navigateTo('art')" class="hover:text-primary">الأدوات الفنية</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold mb-4">تواصل معنا</h4>
+        <ul class="space-y-3 text-sm text-gray-400">
+          <li class="flex items-center gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-primary"></i> بغداد - شارع المتنبي</li>
+          <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-primary"></i> 07700000000</li>
+          <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-primary"></i> info@aljuthoor.iq</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10 pt-6 text-center text-sm text-gray-400">
+      <p>© 2025 مكتبة الجذور. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== DATA =====
+const categories = [
+  { name: 'الكتب', icon: 'book-open', img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80', page: 'books' },
+  { name: 'الروايات', icon: 'bookmark', img: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80', page: 'novels' },
+  { name: 'الإسلامية', icon: 'moon', img: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=400&q=80', page: 'islamic' },
+  { name: 'الأطفال', icon: 'baby', img: 'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=400&q=80', page: 'children' },
+  { name: 'الجامعية', icon: 'graduation-cap', img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&q=80', page: 'university' },
+  { name: 'الملازم', icon: 'layers', img: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80', page: 'booklets' },
+  { name: 'القرطاسية', icon: 'pen-tool', img: 'https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=400&q=80', page: 'stationery' },
+  { name: 'الأقلام', icon: 'pen', img: 'https://images.unsplash.com/photo-1583485088034-697b5bc36b92?w=400&q=80', page: 'pens' },
+  { name: 'الدفاتر', icon: 'notebook', img: 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&q=80', page: 'notebooks' },
+  { name: 'الأدوات الفنية', icon: 'palette', img: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80', page: 'art' },
+  { name: 'الألعاب', icon: 'puzzle', img: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&q=80', page: 'toys' },
+  { name: 'الحقائب', icon: 'briefcase', img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80', page: 'bags' },
+];
+
+const products = [
+  { id: 1, name: 'ملزمة الرياضيات - السادس الإعدادي', price: 15000, oldPrice: 25000, img: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&q=80', cat: 'booklets', bestseller: true, new: false, rating: 4.9 },
+  { id: 2, name: 'ملزمة الفيزياء - السادس الإعدادي', price: 15000, oldPrice: 25000, img: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80', cat: 'booklets', bestseller: true, new: true, rating: 4.8 },
+  { id: 3, name: 'رواية ساق البامبو', price: 18000, oldPrice: 22000, img: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80', cat: 'novels', bestseller: true, new: false, rating: 4.9 },
+  { id: 4, name: 'كتاب فن اللامبالاة', price: 20000, oldPrice: 28000, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80', cat: 'books', bestseller: true, new: false, rating: 4.7 },
+  { id: 5, name: 'مجموعة أقلام رصاص (12 قلم)', price: 8000, oldPrice: 12000, img: 'https://images.unsplash.com/photo-1583485088034-697b5bc36b92?w=400&q=80', cat: 'pens', bestseller: true, new: false, rating: 4.6 },
+  { id: 6, name: 'دفتر ملاحظات فاخر A5', price: 6000, img: 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&q=80', cat: 'notebooks', bestseller: false, new: true, rating: 4.5 },
+  { id: 7, name: 'مجموعة ألوان مائية (24 لون)', price: 35000, oldPrice: 45000, img: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&q=80', cat: 'art', bestseller: true, new: false, rating: 4.8 },
+  { id: 8, name: 'حقيبة مدرسية ظهر احترافية', price: 45000, oldPrice: 60000, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&q=80', cat: 'bags', bestseller: true, new: true, rating: 4.9 },
+  { id: 9, name: 'قنينة ماء ستانلس ستيل', price: 15000, oldPrice: 20000, img: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&q=80', cat: 'stationery', bestseller: false, new: true, rating: 4.7 },
+  { id: 10, name: 'آلة حاسبة علمية', price: 28000, img: 'https://images.unsplash.com/photo-1574607383476-f517f260d30b?w=400&q=80', cat: 'stationery', bestseller: true, new: false, rating: 4.8 },
+  // --- NEW ITEMS ---
+  { id: 11, name: 'رواية البؤساء', price: 30000, oldPrice: 35000, img: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&q=80', cat: 'novels', bestseller: false, new: true, rating: 4.7 },
+  { id: 12, name: 'كتاب العادات الذرية', price: 22000, oldPrice: 25000, img: 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&q=80', cat: 'books', bestseller: true, new: false, rating: 4.9 },
+  { id: 13, name: 'مجموعة أقلام حبر جل (10 أقلام)', price: 9000, oldPrice: 12000, img: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=400&q=80', cat: 'pens', bestseller: true, new: true, rating: 4.6 },
+  { id: 14, name: 'دفتر خطوط (200 ورقة)', price: 5000, img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&q=80', cat: 'notebooks', bestseller: true, new: false, rating: 4.5 },
+  { id: 15, name: 'ألوان خشبية (36 لون)', price: 15000, oldPrice: 20000, img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&q=80', cat: 'art', bestseller: false, new: true, rating: 4.8 },
+  { id: 16, name: 'حقيبة لابتوب أنيقة', price: 35000, oldPrice: 45000, img: 'https://images.unsplash.com/photo-1547949003-9792a18a2601?w=400&q=80', cat: 'bags', bestseller: true, new: true, rating: 4.7 },
+  { id: 17, name: 'أدوات هندسية كاملة', price: 10000, oldPrice: 15000, img: 'https://images.unsplash.com/photo-1503602642458-232111445657?w=400&q=80', cat: 'stationery', bestseller: false, new: false, rating: 4.6 },
+  { id: 18, name: 'كتاب تفسير الأحلام', price: 18000, img: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=400&q=80', cat: 'islamic', bestseller: true, new: false, rating: 4.9 },
+  { id: 19, name: 'سلسلة قصص الأطفال', price: 25000, oldPrice: 30000, img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&q=80', cat: 'children', bestseller: true, new: true, rating: 4.8 },
+  { id: 20, name: 'كتاب أساسيات البرمجة', price: 40000, oldPrice: 50000, img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&q=80', cat: 'university', bestseller: false, new: true, rating: 4.7 },
+  { id: 21, name: 'لعبة تركيبية تعليمية', price: 20000, img: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&q=80', cat: 'toys', bestseller: true, new: false, rating: 4.5 },
+  { id: 22, name: 'كتاب كلب الصيد', price: 15000, oldPrice: 20000, img: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80', cat: 'novels', bestseller: false, new: true, rating: 4.4 },
+  { id: 23, name: 'قلم تحديد أسود', price: 2000, img: 'https://images.unsplash.com/photo-1583485088034-697b5bc36b92?w=400&q=80', cat: 'pens', bestseller: true, new: false, rating: 4.3 },
+  { id: 24, name: 'مقلمة تنظيم مكتبية', price: 12000, oldPrice: 15000, img: 'https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=400&q=80', cat: 'stationery', bestseller: true, new: true, rating: 4.6 },
+  { id: 25, name: 'كتاب لا تحزن', price: 16000, oldPrice: 22000, img: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80', cat: 'islamic', bestseller: true, new: false, rating: 4.9 },
+];
+
+const subjects = {
+  g1: ['الرياضيات', 'العلوم', 'اللغة العربية', 'اللغة الإنجليزية', 'التربية الإسلامية', 'الاجتماعيات'],
+  g2: ['الرياضيات', 'العلوم', 'اللغة العربية', 'اللغة الإنجليزية', 'التربية الإسلامية', 'الاجتماعيات'],
+  g3: ['الرياضيات', 'العلوم', 'اللغة العربية', 'اللغة الإنجليزية', 'التربية الإسلامية', 'الاجتماعيات'],
+  g4: ['الرياضيات', 'الفيزياء', 'الكيمياء', 'الأحياء', 'اللغة العربية', 'اللغة الإنجليزية'],
+  g5: ['الرياضيات', 'الفيزياء', 'الكيمياء', 'الأحياء', 'اللغة العربية', 'اللغة الإنجليزية'],
+  g6: ['الرياضيات', 'الفيزياء', 'الكيمياء', 'الأحياء', 'اللغة العربية', 'اللغة الإنجليزية', 'الإسلامية', 'التاريخ', 'الجغرافية', 'الاقتصاد', 'الأدب', 'علم الاجتماع']
+};
+
+const bookletColors = [
+  'from-blue-600 to-blue-800',
+  'from-green-600 to-green-800',
+  'from-red-600 to-red-800',
+  'from-purple-600 to-purple-800',
+  'from-yellow-600 to-yellow-800',
+  'from-indigo-600 to-indigo-800',
+  'from-pink-600 to-pink-800',
+  'from-teal-600 to-teal-800',
+  'from-orange-600 to-orange-800',
+  'from-cyan-600 to-cyan-800',
+  'from-rose-600 to-rose-800',
+  'from-emerald-600 to-emerald-800'
+];
+
+// ===== STATE =====
+let cart = JSON.parse(localStorage.getItem('juthoor_cart') || '[]');
+let favorites = JSON.parse(localStorage.getItem('juthoor_favorites') || '[]');
+
+// ===== UTILITIES =====
+function formatPrice(price) { return new Intl.NumberFormat('ar-IQ').format(price) + ' د.ع'; }
+function saveCart() { localStorage.setItem('juthoor_cart', JSON.stringify(cart)); }
+function saveFavorites() { localStorage.setItem('juthoor_favorites', JSON.stringify(favorites)); }
+
+// ===== TOAST =====
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-primary', warning: 'bg-yellow-500' };
+  const icons = { success: 'check-circle', error: 'x-circle', info: 'info', warning: 'alert-triangle' };
+  toast.className = `toast bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-4 min-w-[260px] flex items-center gap-3 border-r-4 ${type === 'success' ? 'border-r-green-500' : type === 'error' ? 'border-r-red-500' : 'border-r-primary'}`;
+  toast.innerHTML = `<div class="w-8 h-8 rounded-full ${colors[type]} flex items-center justify-center text-white shrink-0"><i data-lucide="${icons[type]}" class="w-4 h-4"></i></div><p class="font-semibold text-sm flex-1">${message}</p>`;
+  container.appendChild(toast);
+  lucide.createIcons();
+  setTimeout(() => { toast.classList.add('removing'); setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ===== CART =====
+function addToCart(productId, qty = 1) {
+  const existing = cart.find(item => item.id === productId);
+  if (existing) existing.qty += qty;
+  else cart.push({ id: productId, qty });
+  saveCart();
+  updateCartUI();
+  showToast('تمت الإضافة إلى السلة');
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  saveCart();
+  updateCartUI();
+  renderCartPage();
+}
+
+function updateQty(productId, delta) {
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveCart();
+  updateCartUI();
+  renderCartPage();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  const cartCount = document.getElementById('cartCount');
+  cartCount.textContent = count;
+  cartCount.classList.toggle('hidden', count === 0);
+  renderCartDrawer();
+  if (document.getElementById('page-cart').classList.contains('active')) {
+    renderCartPage();
+  }
+}
+
+function renderCartDrawer() {
+  const cartItems = document.getElementById('cartItems');
+  const cartFooter = document.getElementById('cartFooter');
+  if (cart.length === 0) {
+    cartItems.innerHTML = `<div class="text-center py-20"><i data-lucide="shopping-cart" class="w-12 h-12 mx-auto text-gray-300 mb-4"></i><p class="text-gray-400">السلة فارغة</p></div>`;
+    cartFooter.classList.add('hidden');
+    lucide.createIcons();
+    return;
+  }
+  let subtotal = 0;
+  cartItems.innerHTML = cart.map(item => {
+    const product = products.find(p => p.id === item.id);
+    if (!product) return '';
+    subtotal += product.price * item.qty;
+    return `<div class="flex gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-slate-700">
+      <img src="${product.img}" class="w-16 h-16 rounded-lg object-cover" alt="${product.name}">
+      <div class="flex-1 min-w-0">
+        <h4 class="font-bold text-sm mb-1 truncate">${product.name}</h4>
+        <p class="text-primary font-bold text-sm mb-2">${formatPrice(product.price)}</p>
+        <div class="flex items-center gap-2">
+          <button onclick="updateQty(${product.id}, -1)" class="w-6 h-6 rounded-md bg-gray-100 dark:bg-slate-700 flex items-center justify-center"><i data-lucide="minus" class="w-3 h-3"></i></button>
+          <span class="font-bold text-sm w-6 text-center">${item.qty}</span>
+          <button onclick="updateQty(${product.id}, 1)" class="w-6 h-6 rounded-md bg-gray-100 dark:bg-slate-700 flex items-center justify-center"><i data-lucide="plus" class="w-3 h-3"></i></button>
+          <button onclick="removeFromCart(${product.id})" class="mr-auto text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('cartTotal').textContent = formatPrice(subtotal);
+  cartFooter.classList.remove('hidden');
+  lucide.createIcons();
+}
+
+function openCart() {
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// ===== FAVORITES =====
+function toggleFavorite(productId) {
+  const idx = favorites.indexOf(productId);
+  if (idx > -1) { favorites.splice(idx, 1); showToast('تم الحذف من المفضلة', 'info'); }
+  else { favorites.push(productId); showToast('تمت الإضافة للمفضلة'); }
+  saveFavorites();
+  updateFavoritesUI();
+  if (document.getElementById('page-favorites').classList.contains('active')) {
+    renderFavoritesPage();
+  }
+  // Update button state on current page
+  document.querySelectorAll(`[data-fav="${productId}"]`).forEach(btn => {
+    const icon = btn.querySelector('i, svg');
+    if (icon) {
+      if (favorites.includes(productId)) {
+        icon.classList.add('fill-primary');
+        btn.classList.add('text-primary');
+      } else {
+        icon.classList.remove('fill-primary');
+        btn.classList.remove('text-primary');
+      }
+    }
+  });
+}
+
+function updateFavoritesUI() {
+  const count = favorites.length;
+  const favCount = document.getElementById('favCount');
+  favCount.textContent = count;
+  favCount.classList.toggle('hidden', count === 0);
+}
+
+function renderFavoritesPage() {
+  const page = document.getElementById('page-favorites');
+  page.innerHTML = `
+    <div class="bg-slate-100 dark:bg-slate-800 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="text-sm mb-4 text-gray-500"><a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a> <span class="mx-2">/</span> <span class="text-primary">المفضلة</span></nav>
+        <h1 class="text-4xl font-black text-ink dark:text-white">قائمة <span class="gradient-text">المفضلة</span></h1>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div id="favGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+      <div id="favEmpty" class="text-center py-20 hidden">
+        <i data-lucide="heart-off" class="w-16 h-16 mx-auto text-gray-300 mb-4"></i>
+        <p class="text-gray-400 mb-4">قائمة المفضلة فارغة</p>
+        <button onclick="navigateTo('home')" class="px-6 py-2 bg-primary text-white rounded-xl">تصفح المنتجات</button>
+      </div>
+    </div>`;
+  
+  const favGrid = document.getElementById('favGrid');
+  const favEmpty = document.getElementById('favEmpty');
+  
+  if (favorites.length === 0) {
+    favEmpty.classList.remove('hidden');
+  } else {
+    favGrid.innerHTML = favorites.map(id => {
+      const product = products.find(p => p.id === id);
+      return product ? createProductCard(product) : '';
+    }).join('');
+  }
+  lucide.createIcons();
+}
+
+// ===== PRODUCT CARD =====
+function createProductCard(product) {
+  const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
+  const isFav = favorites.includes(product.id);
+  return `<div class="product-card group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-700">
+    <div class="relative overflow-hidden aspect-square bg-slate-100 dark:bg-slate-700">
+      <img src="${product.img}" class="product-img w-full h-full object-cover" alt="${product.name}" loading="lazy">
+      ${discount > 0 ? `<span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">-${discount}%</span>` : ''}
+      <div class="quick-actions absolute bottom-3 right-3 flex flex-col gap-2">
+        <button onclick="openQuickView(${product.id})" class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center"><i data-lucide="eye" class="w-4 h-4"></i></button>
+        <button onclick="toggleFavorite(${product.id})" data-fav="${product.id}" class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center ${isFav ? 'text-primary' : ''}"><i data-lucide="heart" class="w-4 h-4 ${isFav ? 'fill-primary' : ''}"></i></button>
+      </div>
+    </div>
+    <div class="p-4">
+      <div class="flex items-center gap-1 mb-2">
+        ${Array.from({length: 5}, (_, i) => `<i data-lucide="star" class="w-3 h-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}"></i>`).join('')}
+        <span class="text-xs text-gray-400 mr-1">(${product.rating})</span>
+      </div>
+      <h3 class="font-bold text-sm mb-2 line-clamp-2 min-h-[2.5rem]">${product.name}</h3>
+      <div class="flex items-center justify-between mb-3">
+        <div><span class="text-primary font-black">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="text-xs text-gray-400 line-through mr-2">${formatPrice(product.oldPrice)}</span>` : ''}</div>
+      </div>
+      <button onclick="addToCart(${product.id})" class="w-full py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold rounded-xl transition-all text-sm flex items-center justify-center gap-2"><i data-lucide="shopping-cart" class="w-4 h-4"></i> أضف للسلة</button>
+    </div>
+  </div>`;
+}
+
+// ===== CUSTOM BOOKLET DESIGN =====
+function createBookletCard(subject, grade, isSixth = false, onClickAction = null) {
+  const colorIndex = subject.length % bookletColors.length;
+  const color = bookletColors[colorIndex];
+  const price = isSixth ? '15,000' : '12,000';
+  const action = onClickAction || `addSubjectToCart('${subject} - ${grade}')`;
+  
+  return `<div class="booklet-card cursor-pointer" onclick="${action}">
+    <div class="booklet-inner">
+      <div class="booklet-cover bg-gradient-to-br ${color}">
+        <div class="booklet-spine"></div>
+        <div class="booklet-binding"></div>
+        <div class="booklet-shadow"></div>
+        <div class="text-right mt-1 ml-2">
+          <p class="text-[10px] text-white/80 font-bold">مكتبة الجذور</p>
+        </div>
+        <div class="text-center px-2">
+          <h4 class="font-black text-base md:text-lg text-white mb-1 leading-tight">${subject}</h4>
+          <p class="text-[10px] text-white/70 font-semibold">${grade}</p>
+        </div>
+        <div class="text-center mb-1">
+          <span class="bg-white/20 backdrop-blur text-white text-xs font-bold py-1 px-3 rounded-full">${price} د.ع</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSubjects(grade, subjects, gradeName, isSixth = false, isClickableSubject = false) {
+  const container = document.getElementById(grade + 'subjects');
+  if (!container) return;
+  container.innerHTML = subjects.map(subject => {
+    const action = isClickableSubject ? `navigateToSubject('${subject}')` : null;
+    return createBookletCard(subject, gradeName, isSixth, action);
+  }).join('');
+}
+
+function addSubjectToCart(name) {
+  const fakeProduct = {
+    id: 1000 + Math.floor(Math.random() * 1000),
+    name: name,
+    price: name.includes('السادس') ? 15000 : 12000,
+    img: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80'
+  };
+  // Check if exists to increment qty instead of adding duplicate
+  const existing = cart.find(item => item.name === name);
+  if (existing) {
+    existing.qty += 1;
+    saveCart();
+    updateCartUI();
+  } else {
+    products.push(fakeProduct);
+    addToCart(fakeProduct.id);
+  }
+}
+
+function navigateToSubject(subject) {
+  const page = document.getElementById('page-subject');
+  
+  // Generate mock products for this subject if they don't exist
+  const variations = ['الجزء الأول', 'الجزء الثاني', 'أسئلة الوزارية', 'ملخصات نهائية', 'حلول الملازم', 'نماذج امتحانات', 'تطبيقات وأمثلة', 'مراجعات نهائية'];
+  const subjectProducts = [];
+  const images = [
+    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&q=80',
+    'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80',
+    'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&q=80',
+    'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80',
+    'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80',
+    'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80'
+  ];
+  
+  variations.forEach((v, idx) => {
+    const prodId = 9000 + subject.charCodeAt(0) + idx;
+    let p = products.find(prod => prod.id === prodId);
+    if (!p) {
+      p = {
+        id: prodId,
+        name: `ملزمة ${subject} - ${v} (السادس الإعدادي)`,
+        price: 15000 - (idx * 500),
+        oldPrice: 25000 - (idx * 500),
+        img: images[idx % images.length],
+        cat: 'booklets',
+        bestseller: idx % 2 === 0,
+        new: idx % 3 === 0,
+        rating: 4.8
+      };
+      products.push(p);
+    }
+    subjectProducts.push(p);
+  });
+
+  page.innerHTML = `
+    <div class="bg-slate-100 dark:bg-slate-800 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="text-sm mb-4 text-gray-500">
+          <a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a> 
+          <span class="mx-2">/</span> 
+          <a href="#" onclick="navigateTo('booklets')" class="hover:text-primary">الملازم</a> 
+          <span class="mx-2">/</span> 
+          <span class="text-primary">${subject}</span>
+        </nav>
+        <h1 class="text-4xl font-black text-ink dark:text-white">ملازم <span class="gradient-text">${subject}</span></h1>
+        <p class="text-gray-500 mt-2">السادس الإعدادي - الإصدار 2025</p>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        ${subjectProducts.map(p => createProductCard(p)).join('')}
+      </div>
+    </div>`;
+  
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  page.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileMenuOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+  closeCart();
+  closeQuickView();
+  lucide.createIcons();
+}
+
+function filterBooklets(section, e) {
+  document.querySelectorAll('.cat-pill').forEach(p => {
+    p.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+    p.classList.add('border-gray-200', 'dark:border-slate-700');
+  });
+  e.target.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+  e.target.classList.remove('border-gray-200', 'dark:border-slate-700');
+  
+  const intermediate = document.getElementById('intermediateSection');
+  const preparatory = document.getElementById('preparatorySection');
+  if (section === 'all') { intermediate.style.display = ''; preparatory.style.display = ''; }
+  else if (section === 'intermediate') { intermediate.style.display = ''; preparatory.style.display = 'none'; }
+  else { intermediate.style.display = 'none'; preparatory.style.display = ''; }
+}
+
+// ===== QUICK VIEW =====
+function openQuickView(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+  document.getElementById('quickViewContent').innerHTML = `
+    <div class="relative bg-slate-100 dark:bg-slate-700 p-4"><img src="${product.img}" class="w-full h-full object-cover rounded-2xl" alt="${product.name}"></div>
+    <div class="p-6 md:p-8">
+      <h2 class="text-2xl font-black mb-4">${product.name}</h2>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-3xl font-black text-primary">${formatPrice(product.price)}</span>
+        ${product.oldPrice ? `<span class="text-xl text-gray-400 line-through">${formatPrice(product.oldPrice)}</span>` : ''}
+      </div>
+      <button onclick="addToCart(${product.id}); closeQuickView()" class="w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl btn-shine mb-3">أضف للسلة</button>
+    </div>`;
+  document.getElementById('quickViewModal').classList.remove('hidden');
+  document.getElementById('quickViewModal').classList.add('flex');
+  document.body.style.overflow = 'hidden';
+  lucide.createIcons();
+}
+
+function closeQuickView() {
+  document.getElementById('quickViewModal').classList.add('hidden');
+  document.getElementById('quickViewModal').classList.remove('flex');
+  document.body.style.overflow = '';
+}
+
+// ===== SEARCH =====
+function handleLiveSearch(query) {
+  const results = document.getElementById('searchResults');
+  if (query.length < 2) { results.innerHTML = ''; return; }
+  const filtered = products.filter(p => p.name.includes(query)).slice(0, 5);
+  if (filtered.length === 0) { results.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">لا توجد نتائج</p>'; return; }
+  results.innerHTML = filtered.map(p => `
+    <a href="#" onclick="event.preventDefault(); openQuickView(${p.id})" class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl">
+      <img src="${p.img}" class="w-10 h-10 rounded-lg object-cover" alt="">
+      <div><h4 class="font-bold text-sm">${p.name}</h4><p class="text-primary text-xs font-bold">${formatPrice(p.price)}</p></div>
+    </a>`).join('');
+}
+
+// ===== COUNTDOWN =====
+function startCountdown() {
+  const target = new Date();
+  target.setDate(target.getDate() + 7);
+  function update() {
+    const diff = target - new Date();
+    if (diff < 0) return;
+    document.getElementById('cdDays').textContent = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+    document.getElementById('cdHours').textContent = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+    document.getElementById('cdMinutes').textContent = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+    document.getElementById('cdSeconds').textContent = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+  }
+  update(); setInterval(update, 1000);
+}
+
+// ===== RENDER PAGES =====
+function renderCategories() {
+  document.getElementById('categoriesGrid').innerHTML = categories.map(cat => `
+    <button onclick="navigateTo('${cat.page}')" class="group relative overflow-hidden rounded-2xl aspect-square hover-lift">
+      <img src="${cat.img}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="${cat.name}">
+      <div class="absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent"></div>
+      <div class="absolute bottom-0 right-0 left-0 p-3 text-center">
+        <div class="w-10 h-10 mx-auto rounded-xl bg-primary/80 backdrop-blur flex items-center justify-center mb-2 group-hover:bg-primary transition-colors"><i data-lucide="${cat.icon}" class="w-5 h-5 text-white"></i></div>
+        <h3 class="font-bold text-sm text-white">${cat.name}</h3>
+      </div>
+    </button>`).join('');
+  lucide.createIcons();
+}
+
+function renderHomeProducts() {
+  const best = products.filter(p => p.bestseller).slice(0, 5);
+  document.getElementById('bestSellersGrid').innerHTML = best.map(p => createProductCard(p)).join('');
+  const newArr = products.filter(p => p.new).slice(0, 5);
+  document.getElementById('newArrivalsGrid').innerHTML = newArr.map(p => createProductCard(p)).join('');
+  lucide.createIcons();
+}
+
+function generateGenericPage(pageId, title, category) {
+  const page = document.getElementById('page-' + pageId);
+  if (!page) return;
+  page.innerHTML = `
+    <div class="bg-slate-100 dark:bg-slate-800 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="text-sm mb-4 text-gray-500"><a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a> <span class="mx-2">/</span> <span class="text-primary">${title}</span></nav>
+        <h1 class="text-4xl font-black text-ink dark:text-white">${title}</h1>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div id="${pageId}Grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+    </div>`;
+  const grid = document.getElementById(pageId + 'Grid');
+  const filtered = category === 'all' ? products : products.filter(p => p.cat === category);
+  grid.innerHTML = filtered.map(p => createProductCard(p)).join('');
+  lucide.createIcons();
+}
+
+function renderCartPage() {
+  const page = document.getElementById('page-cart');
+  let subtotal = 0;
+  cart.forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (product) subtotal += product.price * item.qty;
+  });
+
+  page.innerHTML = `
+    <div class="bg-slate-100 dark:bg-slate-800 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="text-sm mb-4 text-gray-500"><a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a> <span class="mx-2">/</span> <span class="text-primary">السلة</span></nav>
+        <h1 class="text-4xl font-black text-ink dark:text-white">سلة <span class="gradient-text">التسوق</span></h1>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      ${cart.length === 0 ? `
+        <div class="text-center py-20">
+          <i data-lucide="shopping-cart" class="w-16 h-16 mx-auto text-gray-300 mb-4"></i>
+          <p class="text-gray-400 mb-4">السلة فارغة</p>
+          <button onclick="navigateTo('home')" class="px-6 py-2 bg-primary text-white rounded-xl">تصفح المنتجات</button>
+        </div>
+      ` : `
+        <div class="grid lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2 space-y-4">
+            ${cart.map(item => {
+              const product = products.find(p => p.id === item.id);
+              if (!product) return '';
+              return `
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-gray-100 dark:border-slate-700 flex gap-4">
+                  <img src="${product.img}" class="w-24 h-24 rounded-xl object-cover" alt="${product.name}">
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start mb-2">
+                      <h3 class="font-bold">${product.name}</h3>
+                      <button onclick="removeFromCart(${product.id})" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-lg"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                    </div>
+                    <p class="text-primary font-bold mb-3">${formatPrice(product.price)}</p>
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 rounded-xl p-1">
+                        <button onclick="updateQty(${product.id}, -1)" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 hover:bg-primary hover:text-white transition-colors flex items-center justify-center"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                        <span class="font-bold w-8 text-center">${item.qty}</span>
+                        <button onclick="updateQty(${product.id}, 1)" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 hover:bg-primary hover:text-white transition-colors flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                      </div>
+                      <span class="text-gray-500 text-sm">${formatPrice(product.price * item.qty)}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 sticky top-24">
+              <h3 class="text-xl font-black mb-6">ملخص الطلب</h3>
+              <div class="space-y-3 mb-4">
+                <div class="flex justify-between text-sm"><span class="text-gray-500">المجموع الفرعي</span><span class="font-bold">${formatPrice(subtotal)}</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-500">الشحن</span><span class="font-bold text-green-600">مجاني</span></div>
+              </div>
+              <div class="border-t border-gray-100 dark:border-slate-700 pt-4 mb-4">
+                <div class="flex justify-between text-lg font-black"><span>الإجمالي</span><span class="text-primary">${formatPrice(subtotal)}</span></div>
+              </div>
+              <button onclick="checkout()" class="w-full py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl btn-shine mb-3">إتمام الطلب</button>
+              <button onclick="navigateTo('home')" class="w-full py-3 border-2 border-gray-200 dark:border-slate-700 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">متابعة التسوق</button>
+            </div>
+          </div>
+        </div>
+      `}
+    </div>`;
+  lucide.createIcons();
+}
+
+function checkout() {
+  showToast('سيتم التواصل معك قريباً لإتمام الطلب!', 'success');
+  cart = [];
+  saveCart();
+  updateCartUI();
+  navigateTo('home');
+}
+
+// ===== NAVIGATION =====
+function navigateTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) {
+    page.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => { page.querySelectorAll('.reveal').forEach(el => el.classList.add('visible')); }, 100);
+    
+    if (pageId === 'favorites') renderFavoritesPage();
+    if (pageId === 'cart') renderCartPage();
+  }
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileMenuOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+  closeCart();
+  closeQuickView();
+}
+
+// ===== UI FUNCTIONS =====
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+  document.getElementById('mobileMenuOverlay').classList.toggle('hidden');
+}
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark');
+  localStorage.setItem('juthoor_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  lucide.createIcons();
+}
+function handleScroll() {
+  const winHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('scrollProgress').style.width = ((window.scrollY / winHeight) * 100) + '%';
+  const backToTop = document.getElementById('backToTop');
+  if (window.scrollY > 500) backToTop.classList.remove('hidden');
+  else backToTop.classList.add('hidden');
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('visible');
+  });
+}
+
+// ===== INIT =====
+function init() {
+  if (localStorage.getItem('juthoor_theme') === 'dark') document.documentElement.classList.add('dark');
+  lucide.createIcons();
+  
+  renderCategories();
+  renderHomeProducts();
+  
+  // Render Home Sixth Preparatory (Clickable to Subject Pages)
+  const g6HomeGrid = document.getElementById('g6HomeGrid');
+  if (g6HomeGrid) {
+    g6HomeGrid.innerHTML = subjects.g6.slice(0, 6).map(s => createBookletCard(s, 'السادس الإعدادي', true, `navigateToSubject('${s}')`)).join('');
+  }
+  
+  // Render Booklets Page (g6 is clickable, others add to cart directly)
+  renderSubjects('g1subjects', subjects.g1, 'الأول المتوسط');
+  renderSubjects('g2subjects', subjects.g2, 'الثاني المتوسط');
+  renderSubjects('g3subjects', subjects.g3, 'الثالث المتوسط');
+  renderSubjects('g4subjects', subjects.g4, 'الرابع الإعدادي');
+  renderSubjects('g5subjects', subjects.g5, 'الخامس الإعدادي');
+  renderSubjects('g6subjects', subjects.g6, 'السادس الإعدادي', true, true);
+  
+  // Generate Generic Pages
+  generateGenericPage('books', 'الكتب العامة', 'books');
+  generateGenericPage('novels', 'الروايات', 'novels');
+  generateGenericPage('islamic', 'الكتب الإسلامية', 'islamic');
+  generateGenericPage('children', 'كتب الأطفال', 'children');
+  generateGenericPage('university', 'الكتب الجامعية', 'university');
+  generateGenericPage('stationery', 'القرطاسية', 'stationery');
+  generateGenericPage('pens', 'الأقلام', 'pens');
+  generateGenericPage('notebooks', 'الدفاتر', 'notebooks');
+  generateGenericPage('art', 'الأدوات الفنية', 'art');
+  generateGenericPage('toys', 'الألعاب التعليمية', 'toys');
+  generateGenericPage('bags', 'الحقائب', 'bags');
+  
+  // Generate simple content for other generic pages (offers, about, etc.) if needed
+  ['offers', 'bestsellers', 'newarrivals', 'about', 'contact', 'faq'].forEach(pid => {
+    const p = document.getElementById('page-' + pid);
+    if (p && !p.innerHTML.trim()) {
+      let title = pid === 'faq' ? 'الأسئلة الشائعة' : pid === 'about' ? 'من نحن' : pid === 'contact' ? 'اتصل بنا' : pid === 'offers' ? 'العروض' : pid === 'bestsellers' ? 'الأكثر مبيعاً' : 'أحدث المنتجات';
+      let list = pid === 'offers' ? products.filter(p => p.oldPrice) : pid === 'bestsellers' ? products.filter(p => p.bestseller) : pid === 'newarrivals' ? products.filter(p => p.new) : products;
+      p.innerHTML = `
+        <div class="bg-slate-100 dark:bg-slate-800 py-12">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="text-sm mb-4 text-gray-500"><a href="#" onclick="navigateTo('home')" class="hover:text-primary">الرئيسية</a> <span class="mx-2">/</span> <span class="text-primary">${title}</span></nav>
+            <h1 class="text-4xl font-black text-ink dark:text-white">${title}</h1>
+          </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          ${pid === 'about' || pid === 'contact' || pid === 'faq' ? `
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-gray-100 dark:border-slate-700">
+              <h2 class="text-2xl font-bold mb-4">${title}</h2>
+              <p class="text-gray-500">هذا النص هو مثال يمكن استبداله بالمحتوى الحقيقي لصفحة ${title}. مكتبة الجذور تقدم أفضل الخدمات لطلاب العراق.</p>
+            </div>
+          ` : `
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              ${list.slice(0, 10).map(prod => createProductCard(prod)).join('')}
+            </div>
+          `}
+        </div>`;
+    }
+  });
+
+  updateCartUI();
+  updateFavoritesUI();
+  startCountdown();
+  
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  setTimeout(() => { document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); }); }, 100);
+
+  // Close modal on overlay click
+  document.getElementById('quickViewModal').addEventListener('click', (e) => {
+    if (e.target.id === 'quickViewModal') closeQuickView();
+  });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>
